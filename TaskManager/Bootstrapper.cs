@@ -1,22 +1,26 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using TaskManager.ViewModels;
 
 namespace TaskManager
 {
     public class Bootstrapper : BootstrapperBase
     {
+        private SimpleContainer _container;
         public Bootstrapper()
         {
             Initialize();
         }
+        protected override void Configure()
+        {
+            _container = new SimpleContainer();
+            _container.Instance(_container);
+            _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.PerRequest<MainViewModel>();
+        }
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            //DisplayRootViewFor<MainViewModel>();
+            DisplayRootViewFor<MainViewModel>();
         }
     }
 }
