@@ -13,7 +13,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,29 +29,23 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Rectangle Width="10" Height="10" Fill="#CCCEDB" Margin="4"/>
+            <Rectangle Style="{StaticResource TM.PriorityIndicator.Low}"/>
             <TextBlock Grid.Column="1" Text="Low" VerticalAlignment="Center"/>
-            <Rectangle Width="10" Grid.Column="2" Height="10" Fill="#FBBF79" Margin="4"/>
+            <Rectangle  Grid.Column="2" Style="{StaticResource TM.PriorityIndicator.Medium}"/>
             <TextBlock Grid.Column="3" Text="Medium" VerticalAlignment="Center"/>
-            <Rectangle Width="10" Grid.Column="4" Height="10" Fill="#CD5849" Margin="4"/>
+            <Rectangle Style="{StaticResource TM.PriorityIndicator.High}" Grid.Column="4" />
             <TextBlock Grid.Column="5" Text="High" VerticalAlignment="Center" Margin="0 0 10 0"/>
         </Grid>
         <TextBlock Grid.Row="1" 
-                   Text="Create Task"
-                   FontWeight="DemiBold" Margin="15 0 0 0"
-                   FontSize="16"/>
+                   Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}"
+                   Margin="15 0 0 0" Foreground="Black" Background="White"
+                   />
         <TextBlock Grid.Row="1"  Grid.Column="1"
-                   Text="New" Foreground="White"
-                   FontWeight="DemiBold" 
-                   FontSize="16" Background="#41B1E1"/>
+                   Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
         <TextBlock Grid.Row="1"  Grid.Column="2"
-                   Text="In Progress" Foreground="White"
-                   FontWeight="DemiBold" 
-                   FontSize="16" Background="#41B1E1"/>
+                   Text="In Progress" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
         <TextBlock Grid.Row="1"  Grid.Column="3"
-                   Text="Completed" Foreground="White"
-                   FontWeight="DemiBold" 
-                   FontSize="16" Background="#41B1E1"/>
+                   Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
         <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
             <Grid Grid.Row="2" Margin="15">
                 <Grid.RowDefinitions>
@@ -74,7 +68,7 @@
                          x:Name="Description" Grid.Row="3" Height="50"  TextWrapping="Wrap"/>
                 <TextBlock Grid.Row="4" Text="Status" Margin="0 8 0 0"/>
                 <ComboBox x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}" Grid.Row="5" >
-                    
+
                 </ComboBox>
                 <TextBlock Text="Due Date" Grid.Row="6" Margin="0 8 0 0"/>
                 <mah:DateTimePicker SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" />
@@ -103,27 +97,19 @@
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropHandler($eventArgs)]"
                      ItemsSource="{Binding NewTasks}"
-                     Grid.Row="2" Grid.Column="1">
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     Grid.Row="2" Grid.Column="1"
+                     ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
+                     ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
         </Border>
-        
+
         <Border BorderBrush="Black" Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1">
             <ListBox x:Name="InProgressList" AllowDrop="True"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropHandler($eventArgs)];"
                      ItemsSource="{Binding InProgressTasks}" 
-                     Grid.Row="2" Grid.Column="2">
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     Grid.Row="2" Grid.Column="2"
+                     ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
+                     ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
         </Border>
 
 
@@ -131,15 +117,11 @@
             <ListBox x:Name="CompletedList" AllowDrop="True"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropHandler($eventArgs)]"
-                     ItemsSource="{Binding CompletedTasks}" Grid.Row="2" Grid.Column="3">
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     ItemsSource="{Binding CompletedTasks}" Grid.Row="2" Grid.Column="3"
+                     ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
+                     ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
         </Border>
-        
+
     </Grid>
-    
+
 </UserControl>

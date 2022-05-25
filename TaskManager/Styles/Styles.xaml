@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:converters="clr-namespace:TaskManager.Converters">
+
+
+    <converters:StatusToColorConverter x:Key="TM.Converters.StatusToColorConverter"/>
+    <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
+    <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="#CCCEDB"/>
+    <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FBBF79"/>
+    <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#CD5849"/>
+    <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Margin" Value="4"/>
+    </Style>
+    <Style x:Key="TM.PriorityIndicator.Low" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.LowPriority}"/>
+    </Style>
+    <Style x:Key="TM.PriorityIndicator.Medium" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.MediumPriority}"/>
+    </Style>
+    <Style x:Key="TM.PriorityIndicator.High" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.HighPriority}"/>
+    </Style>
+    <Style x:Key="TM.TextBlock.PrimaryHeading" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
+    </Style>
+    <DataTemplate x:Key="TM.ListBox.TaskItemTemplate">
+        <TextBlock Text="{Binding Name}" ToolTip="{Binding Description}" />
+    </DataTemplate>
+    <Style x:Key="TM.ListBox.ListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Background" Value="{Binding Priority, Converter={StaticResource TM.Converters.StatusToColorConverter}}"/>
+    </Style>
+</ResourceDictionary>
