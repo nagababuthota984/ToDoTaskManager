@@ -67,9 +67,9 @@
                 <TextBox mah:TextBoxHelper.Watermark="Please enter description"
                          x:Name="Description" Grid.Row="3" Height="50"  TextWrapping="Wrap"/>
                 <TextBlock Grid.Row="4" Text="Status" Margin="0 8 0 0"/>
-                <ComboBox x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}" Grid.Row="5" >
-
-                </ComboBox>
+                <ComboBox x:Name="StatusOptions" 
+                          SelectedItem="{Binding SelectedStatus,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                          Grid.Row="5" />
                 <TextBlock Text="Due Date" Grid.Row="6" Margin="0 8 0 0"/>
                 <mah:DateTimePicker SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" />
                 <TextBlock Text="Priority" Grid.Row="8"  Margin="0 8 0 0"/>
@@ -95,9 +95,21 @@
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="1" x:Name="CreateTask" Content="Create" MinWidth="40"  
-                            Background="#16A05D" Foreground="White">
-                        
-
+                            Background="#16A05D" Foreground="White" Margin="0 0 5 0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Style>
+                        </Button.Style>
                     </Button>
                     <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" />
                 </Grid>
@@ -108,8 +120,10 @@
                      ItemsSource="{Binding NewTasks}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropOnNewTasks($eventArgs)]"
+                     [Event Drop] = [Action DropOnNewTasks($eventArgs)];
+                     [Event SelectionChanged]=[Action ShowSelectedTask()]"
                      Grid.Row="2" Grid.Column="1"
+                     SelectedItem="{Binding SelectedTask}"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
         </Border>
@@ -119,18 +133,23 @@
                      ItemsSource="{Binding InProgressTasks}" 
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropOnInProgressTasks($eventArgs)];"
+                     [Event Drop] = [Action DropOnInProgressTasks($eventArgs)];
+                     [Event SelectionChanged]=[Action ShowSelectedTask()]"
+                     SelectedItem="{Binding SelectedTask}"
                      Grid.Row="2" Grid.Column="2"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
-                     ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
+                     ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}">
+            </ListBox>
         </Border>
 
 
         <Border BorderBrush="Black" Grid.Row="2" Grid.Column="3" BorderThickness="0 1 1 1">
             <ListBox x:Name="CompletedList" AllowDrop="True" DataContext="{Binding}" Background="#F6F5F9"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropOnCompletedTasks($eventArgs)]"
+                     [Event Drop] = [Action DropOnCompletedTasks($eventArgs)];
+                     [Event SelectionChanged]=[Action ShowSelectedTask()]"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     SelectedItem="{Binding SelectedTask}"
                      ItemsSource="{Binding CompletedTasks}" Grid.Row="2" Grid.Column="3"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>

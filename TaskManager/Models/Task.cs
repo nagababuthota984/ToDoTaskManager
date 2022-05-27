@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static TaskManager.Models.Enums;
 
 namespace TaskManager.Models
@@ -22,10 +18,11 @@ namespace TaskManager.Models
         {
             Id = Guid.NewGuid();
         }
-        public Task(string name, string description, Status status, Priority priority,DateTime dueDate)        {
+        public Task(string name, string description, Status status, Priority priority, DateTime dueDate)
+        {
             Id = Guid.NewGuid();
             Name = name;
-            Description = description;
+            Description = description == null || description == string.Empty ? "No description" : description;
             Status = status;
             Priority = priority;
             CreatedOn = DateTime.Now;

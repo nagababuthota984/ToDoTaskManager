@@ -16,6 +16,7 @@ namespace TaskManager.ViewModels
         #region Fields
         private DateTime _dueDate;
         private string _name;
+        private Task _selectedTask;
         private string _description;
         private ObservableCollection<Task> _newTasks;
         private ObservableCollection<Task> _inProgressTasks;
@@ -95,6 +96,8 @@ namespace TaskManager.ViewModels
                 _statusOptions = value; NotifyOfPropertyChange(nameof(StatusOptions));
             }
         }
+       
+
 
         public string Name
         {
@@ -108,6 +111,12 @@ namespace TaskManager.ViewModels
         }
 
 
+
+        public Task SelectedTask
+        {
+            get { return _selectedTask; }
+            set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+        }
 
 
         #endregion
@@ -126,11 +135,18 @@ namespace TaskManager.ViewModels
         public void CreateTask()
         {
             if (SelectedStatus == Status.New)
+            {
                 NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            }
             else if (SelectedStatus == Status.InProgress)
+            {
                 InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            }
             else
+            {
                 CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            }
+
             ResetInputControls();
         }
 
@@ -138,8 +154,6 @@ namespace TaskManager.ViewModels
         {
             Name = string.Empty;
             Description = string.Empty;
-            SelectedStatus = Status.New;
-            SelectedPriority = Priority.Low;
         }
 
         public void Cancel()
@@ -148,7 +162,7 @@ namespace TaskManager.ViewModels
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox &&lbox.SelectedItem!=null)
+            if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox && lbox.SelectedItem != null)
             {
                 DragDrop.DoDragDrop(lbox, lbox.SelectedItem, DragDropEffects.Move);
             }
@@ -182,9 +196,9 @@ namespace TaskManager.ViewModels
         }
         private void RemoveTaskFromDragSource(Task task)
         {
-            switch(task.Status)
+            switch (task.Status)
             {
-                case Status.New: 
+                case Status.New:
                     NewTasks.Remove(task);
                     break;
                 case Status.InProgress:
@@ -193,6 +207,43 @@ namespace TaskManager.ViewModels
                 case Status.Completed:
                     CompletedTasks.Remove(task);
                     break;
+            }
+        }
+        public void DeleteById(Guid id, Status status)
+        {
+            if(MessageBoxResult.Yes ==  MessageBox.Show("Are you sure you want to delete the task?","Delete Task",MessageBoxButton.YesNo))
+            {
+                try
+                {
+                    switch (status)
+                    {
+                        case Status.New:
+                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.InProgress:
+                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.Completed:
+                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                    }
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show("Couldn't delete the task. Please try again", "Delete Unsuccessful");
+                }
+                
+            }  
+        }
+        public void ShowSelectedTask()
+        {
+            if (SelectedTask!=null)
+            {
+                Name = SelectedTask.Name;
+                Description = SelectedTask.Description;
+                SelectedStatus = SelectedTask.Status;
+                SelectedPriority = SelectedTask.Priority;
+                DueDate = SelectedTask.DueDate; 
             }
         }
     }

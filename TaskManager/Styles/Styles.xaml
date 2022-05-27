@@ -1,11 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:converters="clr-namespace:TaskManager.Converters">
+                    xmlns:converters="clr-namespace:TaskManager.Converters"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:cal ="http://www.caliburnproject.org">
 
 
     <converters:StatusToColorConverter x:Key="TM.Converters.StatusToColorConverter"/>
     <converters:PriorityToBooleanConverter x:Key="TM.Converters.PriorityToBooleanConverter"/>
     <converters:DateTimeToStringConverter x:Key="TM.Converters.DateTimeToStringConverter"/>
+    <converters:BooleanToVisibilityConverter x:Key="TM.Converters.BooleanToVisibilityConverter"/>
     <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
     <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="LightSkyBlue"/>
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FBBF79"/>
@@ -34,31 +39,43 @@
     <DataTemplate x:Key="TM.ListBox.TaskItemTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <WrapPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left" ToolTip="{Binding Description}" >
                 <TextBlock Text="{Binding Name}" FontWeight="DemiBold" 
                            VerticalAlignment="Top" FontSize="13.5" Margin="3 0 0 0" />
-                <TextBlock Text="{Binding Description}" Width="Auto" FontSize="10"
+                <TextBlock Text="{Binding Description}"  FontSize="10"
                            Foreground="Black" Opacity="0.5"
-                           TextTrimming="CharacterEllipsis"  VerticalAlignment="Bottom" Padding="3" />
+                           TextTrimming="CharacterEllipsis" Width="200"  VerticalAlignment="Bottom" Padding="3" />
             </WrapPanel>
             <TextBlock Grid.Column="1" VerticalAlignment="Bottom"  
                        HorizontalAlignment="Right"
-                       Text="{Binding DueDate, 
-                       Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" 
-                       FontSize="10" Padding="3"
+                       Text="{Binding DueDate, Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" 
+                       FontSize="10" Padding="3" Margin="0 0 5 0" 
                        ToolTip="Due on"
-                       Foreground="Red"/>
+                       Foreground="{StaticResource TM.Colors.PrimaryColor}"/>
+            <Button Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"  
+                     Width="Auto" 
+                    BorderThickness="0" Background="Transparent" Foreground="#E65B65"
+                    Style="{x:Null}" Margin="0 0 5 0">
+                <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <cal:ActionMessage MethodName="DeleteById">
+                            <cal:Parameter Value="{Binding Id}" />
+                            <cal:Parameter Value="{Binding Status}" />
+                        </cal:ActionMessage>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
         </Grid>
-
-
     </DataTemplate>
+    
     <Style x:Key="TM.ListBox.ListBoxItemStyle" TargetType="ListBoxItem">
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Visibility" Value="{Binding IsDeleted, Converter={StaticResource TM.Converters.BooleanToVisibilityConverter}}"/>
         <Setter Property="FontWeight" Value="DemiBold"/>
-        <Setter Property="Height" Value="60"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Padding" Value="5"/>
