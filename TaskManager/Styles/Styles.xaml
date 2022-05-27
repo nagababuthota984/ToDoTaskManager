@@ -4,8 +4,10 @@
 
 
     <converters:StatusToColorConverter x:Key="TM.Converters.StatusToColorConverter"/>
+    <converters:PriorityToBooleanConverter x:Key="TM.Converters.PriorityToBooleanConverter"/>
+    <converters:DateTimeToStringConverter x:Key="TM.Converters.DateTimeToStringConverter"/>
     <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
-    <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="#CCCEDB"/>
+    <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="LightSkyBlue"/>
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FBBF79"/>
     <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#CD5849"/>
     <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
@@ -28,15 +30,40 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
     </Style>
+    
     <DataTemplate x:Key="TM.ListBox.TaskItemTemplate">
-        <TextBlock Text="{Binding Name}" ToolTip="{Binding Description}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left" ToolTip="{Binding Description}" >
+                <TextBlock Text="{Binding Name}" FontWeight="DemiBold" 
+                           VerticalAlignment="Top" FontSize="13.5" Margin="3 0 0 0" />
+                <TextBlock Text="{Binding Description}" Width="Auto" FontSize="10"
+                           Foreground="Black" Opacity="0.5"
+                           TextTrimming="CharacterEllipsis"  VerticalAlignment="Bottom" Padding="3" />
+            </WrapPanel>
+            <TextBlock Grid.Column="1" VerticalAlignment="Bottom"  
+                       HorizontalAlignment="Right"
+                       Text="{Binding DueDate, 
+                       Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" 
+                       FontSize="10" Padding="3"
+                       ToolTip="Due on"
+                       Foreground="Red"/>
+        </Grid>
+
+
     </DataTemplate>
     <Style x:Key="TM.ListBox.ListBoxItemStyle" TargetType="ListBoxItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="DemiBold"/>
-        <Setter Property="Height" Value="30"/>
+        <Setter Property="Height" Value="60"/>
         <Setter Property="Margin" Value="5"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Padding" Value="5"/>
-        <Setter Property="Background" Value="{Binding Priority, Converter={StaticResource TM.Converters.StatusToColorConverter}}"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="Foreground" Value="{Binding Priority, Converter={StaticResource TM.Converters.StatusToColorConverter}}"/>
     </Style>
 </ResourceDictionary>

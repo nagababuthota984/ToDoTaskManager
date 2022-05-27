@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,5 @@ namespace TaskManager.ViewModels
         {
             ActivateItemAsync(new HomeViewModel());
         }
-        
     }
 }

@@ -9,6 +9,7 @@
                 mc:Ignorable="d"
                 TitleBarHeight="25"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
+                WindowState="Maximized"
                 Title="Task Manager" Height="450" Width="800">
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
@@ -21,6 +22,9 @@
         <mah:WindowCommands>
             <Button x:Name="Settings" ToolTip="Settings">
                 <iconPacks:PackIconModern Kind="Settings" Width="15" Height="12"/>
+            </Button>
+            <Button  Click="SwitchTheme" ToolTip="Switch Theme">
+                <iconPacks:PackIconModern Kind="Moon" Width="15" Height="12"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>

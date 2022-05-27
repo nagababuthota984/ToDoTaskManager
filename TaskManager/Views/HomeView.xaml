@@ -8,7 +8,7 @@
              xmlns:cal ="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -41,11 +41,11 @@
                    Margin="15 0 0 0" Foreground="Black" Background="White"
                    />
         <TextBlock Grid.Row="1"  Grid.Column="1"
-                   Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
+                   Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
         <TextBlock Grid.Row="1"  Grid.Column="2"
                    Text="In Progress" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
         <TextBlock Grid.Row="1"  Grid.Column="3"
-                   Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
+                   Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
         <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
             <Grid Grid.Row="2" Margin="15">
                 <Grid.RowDefinitions>
@@ -75,38 +75,51 @@
                 <TextBlock Text="Priority" Grid.Row="8"  Margin="0 8 0 0"/>
                 <WrapPanel Grid.Row="9" >
                     <RadioButton 
+                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.PriorityToBooleanConverter},
+                        ConverterParameter=0}"
                              Content="Low" Margin="5"/>
                     <RadioButton 
+                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.PriorityToBooleanConverter},
+                        ConverterParameter=1}"
                              Content="Medium" Margin="5"/>
                     <RadioButton 
+                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.PriorityToBooleanConverter},
+                        ConverterParameter=2}"
                              Content="High" Margin="5"/>
                 </WrapPanel>
+                <!--another wrap panel-->
                 <Grid Grid.Row="10" Margin="0 15 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" x:Name="Create" Content="Create" MinWidth="40"  Background="#16A05D" Foreground="White"/>
+                    <Button Grid.Column="1" x:Name="CreateTask" Content="Create" MinWidth="40"  
+                            Background="#16A05D" Foreground="White">
+                        
+
+                    </Button>
                     <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" />
                 </Grid>
             </Grid>
         </Border>
-        <Border BorderBrush="Black" Grid.Column="1" Grid.Row="2" BorderThickness="0 1 1 1">
-            <ListBox AllowDrop="True" x:Name="NewList"
-                     cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropHandler($eventArgs)]"
+        <Border BorderBrush="Black" Grid.Column="1" Grid.Row="2" BorderThickness="0 1 1 1" >
+            <ListBox AllowDrop="True" x:Name="NewList" DataContext="{Binding}" Background="#F6F5F9"
                      ItemsSource="{Binding NewTasks}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
+                     [Event Drop] = [Action DropOnNewTasks($eventArgs)]"
                      Grid.Row="2" Grid.Column="1"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
         </Border>
 
         <Border BorderBrush="Black" Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1">
-            <ListBox x:Name="InProgressList" AllowDrop="True"
-                     cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropHandler($eventArgs)];"
+            <ListBox x:Name="InProgressList" AllowDrop="True" DataContext="{Binding}" Background="#F6F5F9"
                      ItemsSource="{Binding InProgressTasks}" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
+                     [Event Drop] = [Action DropOnInProgressTasks($eventArgs)];"
                      Grid.Row="2" Grid.Column="2"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
@@ -114,9 +127,10 @@
 
 
         <Border BorderBrush="Black" Grid.Row="2" Grid.Column="3" BorderThickness="0 1 1 1">
-            <ListBox x:Name="CompletedList" AllowDrop="True"
+            <ListBox x:Name="CompletedList" AllowDrop="True" DataContext="{Binding}" Background="#F6F5F9"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
-                     [Event Drop] = [Action DropHandler($eventArgs)]"
+                     [Event Drop] = [Action DropOnCompletedTasks($eventArgs)]"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemsSource="{Binding CompletedTasks}" Grid.Row="2" Grid.Column="3"
                      ItemTemplate="{StaticResource TM.ListBox.TaskItemTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>

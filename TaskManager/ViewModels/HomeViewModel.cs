@@ -14,7 +14,9 @@ namespace TaskManager.ViewModels
     public class HomeViewModel : Screen
     {
         #region Fields
-        private DateTime _dueData;
+        private DateTime _dueDate;
+        private string _name;
+        private string _description;
         private ObservableCollection<Task> _newTasks;
         private ObservableCollection<Task> _inProgressTasks;
         private ObservableCollection<Task> _completedTasks;
@@ -27,11 +29,11 @@ namespace TaskManager.ViewModels
         {
             get
             {
-                return _dueData;
+                return _dueDate;
             }
             set
             {
-                _dueData = value;
+                _dueDate = value;
                 NotifyOfPropertyChange(nameof(DueDate));
             }
 
@@ -93,7 +95,20 @@ namespace TaskManager.ViewModels
                 _statusOptions = value; NotifyOfPropertyChange(nameof(StatusOptions));
             }
         }
-        
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; NotifyOfPropertyChange(nameof(Name)); }
+        }
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
+        }
+
+
+
 
         #endregion
 
@@ -104,64 +119,81 @@ namespace TaskManager.ViewModels
             NewTasks = new();
             InProgressTasks = new();
             CompletedTasks = new();
-        }
-        public void Create(string name,string description)
-        {
-            if (SelectedStatus == Status.New)
-                NewTasks.Add(new(name, description, SelectedStatus, SelectedPriority, DueDate));
-            else if (SelectedStatus == Status.InProgress)
-                InProgressTasks.Add(new(name, description, SelectedStatus, SelectedPriority, DueDate));
-            else
-                CompletedTasks.Add(new(name, description, SelectedStatus, SelectedPriority, DueDate));
+            Name = string.Empty;
+            Description = string.Empty;
 
         }
+        public void CreateTask()
+        {
+            if (SelectedStatus == Status.New)
+                NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            else if (SelectedStatus == Status.InProgress)
+                InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            else
+                CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            ResetInputControls();
+        }
+
+        private void ResetInputControls()
+        {
+            Name = string.Empty;
+            Description = string.Empty;
+            SelectedStatus = Status.New;
+            SelectedPriority = Priority.Low;
+        }
+
         public void Cancel()
         {
-            //reset inputs
+            ResetInputControls();
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
-            if ( e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox &&lbox.SelectedItem!=null)
             {
-                if (e.Source is ListBox lbox)
-                    DragDrop.DoDragDrop(lbox, lbox.SelectedItem, DragDropEffects.Move);
+                DragDrop.DoDragDrop(lbox, lbox.SelectedItem, DragDropEffects.Move);
             }
         }
-        public void DropHandler(DragEventArgs e)
+        public void DropOnNewTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(Task)) is Task task && e.Source is ListBox lb)
-                AddTaskToTarget(task, lb.Name);
-        }
-        private void AddTaskToTarget(Task task, string targetControlName)
-        {
-            if (task.Status!=Status.New && targetControlName.Equals("newlist", StringComparison.OrdinalIgnoreCase))
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
             {
-                RemoveTaskFromSource(task);
+                RemoveTaskFromDragSource(task);
                 task.Status = Status.New;
                 NewTasks.Add(task);
             }
-            else if (targetControlName.Equals("inprogresslist", StringComparison.OrdinalIgnoreCase))
+        }
+        public void DropOnInProgressTasks(DragEventArgs e)
+        {
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
             {
-                RemoveTaskFromSource(task);
+                RemoveTaskFromDragSource(task);
                 task.Status = Status.InProgress;
                 InProgressTasks.Add(task);
             }
-            else if(task.Status!=Status.Completed && targetControlName.Equals("completedlist",StringComparison.OrdinalIgnoreCase))
+        }
+        public void DropOnCompletedTasks(DragEventArgs e)
+        {
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
             {
-                RemoveTaskFromSource(task);
+                RemoveTaskFromDragSource(task);
                 task.Status = Status.Completed;
                 CompletedTasks.Add(task);
             }
         }
-
-        private void RemoveTaskFromSource(Task task)
+        private void RemoveTaskFromDragSource(Task task)
         {
-            if (task.Status == Status.New)
-                NewTasks.Remove(task);
-            else if (task.Status == Status.InProgress)
-                InProgressTasks.Remove(task);
-            else
-                CompletedTasks.Remove(task);
+            switch(task.Status)
+            {
+                case Status.New: 
+                    NewTasks.Remove(task);
+                    break;
+                case Status.InProgress:
+                    InProgressTasks.Remove(task);
+                    break;
+                case Status.Completed:
+                    CompletedTasks.Remove(task);
+                    break;
+            }
         }
     }
 }
