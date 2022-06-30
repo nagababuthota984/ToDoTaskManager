@@ -37,7 +37,6 @@ namespace TaskManager.ViewModels
                 _dueDate = value;
                 NotifyOfPropertyChange(nameof(DueDate));
             }
-
         }
         public ObservableCollection<Task> NewTasks
         {
@@ -85,20 +84,13 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(SelectedStatus));
             }
         }
-        public List<string> StatusOptions
+        public IEnumerable<Status> StatusOptions
         {
             get
             {
-                return _statusOptions;
-            }
-            set
-            {
-                _statusOptions = value; NotifyOfPropertyChange(nameof(StatusOptions));
+                return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
-       
-
-
         public string Name
         {
             get { return _name; }
@@ -109,28 +101,23 @@ namespace TaskManager.ViewModels
             get { return _description; }
             set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
         }
-
-
-
         public Task SelectedTask
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
         }
 
-
         #endregion
 
         public HomeViewModel()
         {
             DueDate = DateTime.Now;
-            StatusOptions = Enum.GetNames<Status>().ToList();
             NewTasks = new();
             InProgressTasks = new();
             CompletedTasks = new();
             Name = string.Empty;
             Description = string.Empty;
-
+            SelectedStatus = Status.New;
         }
         public void CreateTask()
         {
@@ -154,6 +141,8 @@ namespace TaskManager.ViewModels
         {
             Name = string.Empty;
             Description = string.Empty;
+            SelectedPriority = Priority.Low;
+            SelectedStatus = Status.New;
         }
 
         public void Cancel()
@@ -211,7 +200,7 @@ namespace TaskManager.ViewModels
         }
         public void DeleteById(Guid id, Status status)
         {
-            if(MessageBoxResult.Yes ==  MessageBox.Show("Are you sure you want to delete the task?","Delete Task",MessageBoxButton.YesNo))
+            if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to delete the task?", "Delete Task", MessageBoxButton.YesNo))
             {
                 try
                 {
@@ -228,23 +217,25 @@ namespace TaskManager.ViewModels
                             break;
                     }
                 }
-                catch(Exception e)
+                catch (Exception)
                 {
                     MessageBox.Show("Couldn't delete the task. Please try again", "Delete Unsuccessful");
                 }
-                
-            }  
+
+            }
         }
         public void ShowSelectedTask()
         {
-            if (SelectedTask!=null)
+            if (SelectedTask != null)
             {
                 Name = SelectedTask.Name;
                 Description = SelectedTask.Description;
                 SelectedStatus = SelectedTask.Status;
                 SelectedPriority = SelectedTask.Priority;
-                DueDate = SelectedTask.DueDate; 
+                DueDate = SelectedTask.DueDate;
             }
+            else
+                ResetInputControls();
         }
     }
 }

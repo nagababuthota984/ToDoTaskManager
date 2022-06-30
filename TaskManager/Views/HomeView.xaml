@@ -41,11 +41,11 @@
                    Margin="15 0 0 0" Foreground="Black" Background="White"
                    />
         <TextBlock Grid.Row="1"  Grid.Column="1"
-                   Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
+                   Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Padding="5 0 0 0" />
         <TextBlock Grid.Row="1"  Grid.Column="2"
-                   Text="In Progress" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
+                   Text="In Progress" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Padding="5 0 0 0"/>
         <TextBlock Grid.Row="1"  Grid.Column="3"
-                   Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
+                   Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Padding="5 0 0 0"/>
         <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
             <Grid Grid.Row="2" Margin="15">
                 <Grid.RowDefinitions>
@@ -61,18 +61,17 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Name"  />
-                <TextBox Grid.Row="1" mah:TextBoxHelper.Watermark="Please enter name" x:Name="Name"/>
-                <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0"/>
-                <TextBox mah:TextBoxHelper.Watermark="Please enter description"
+                <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.BoldLabels}" />
+                <TextBox Grid.Row="1" mah:TextBoxHelper.Watermark="Please enter task name" x:Name="Name"/>
+                <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                <TextBox mah:TextBoxHelper.Watermark="give a brief description about the task"
                          x:Name="Description" Grid.Row="3" Height="50"  TextWrapping="Wrap"/>
-                <TextBlock Grid.Row="4" Text="Status" Margin="0 8 0 0"/>
-                <ComboBox x:Name="StatusOptions" 
-                          SelectedItem="{Binding SelectedStatus,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                <TextBlock Grid.Row="4" Text="Status" Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                <ComboBox x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}"
                           Grid.Row="5" />
-                <TextBlock Text="Due Date" Grid.Row="6" Margin="0 8 0 0"/>
+                <TextBlock Text="Due Date" Grid.Row="6" Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
                 <mah:DateTimePicker SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" />
-                <TextBlock Text="Priority" Grid.Row="8"  Margin="0 8 0 0"/>
+                <TextBlock Text="Priority" Grid.Row="8"  Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
                 <WrapPanel Grid.Row="9" >
                     <RadioButton 
                         IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.PriorityToBooleanConverter},
@@ -87,7 +86,7 @@
                         ConverterParameter=2}"
                              Content="High" Margin="5"/>
                 </WrapPanel>
-                <!--another wrap panel-->
+                
                 <Grid Grid.Row="10" Margin="0 15 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -111,7 +110,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" />
+                    <Button Grid.Column="2" x:Name="Cancel" Content="Cancel"  />
                 </Grid>
             </Grid>
         </Border>
