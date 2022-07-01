@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TaskManager.Common;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
 
@@ -23,7 +24,7 @@ namespace TaskManager.ViewModels
         private ObservableCollection<Task> _completedTasks;
         private Priority _selectedPriority;
         private Status _selectedStatus;
-        private List<string> _statusOptions;
+        private string _submitBtnContent;
         #endregion
         #region Properties
         public DateTime DueDate
@@ -94,7 +95,12 @@ namespace TaskManager.ViewModels
         public string Name
         {
             get { return _name; }
-            set { _name = value; NotifyOfPropertyChange(nameof(Name)); }
+            set
+            {
+                _name = value;
+                NotifyOfPropertyChange(nameof(Name));
+                NotifyOfPropertyChange(nameof(CanCreateOrUpdateTask));
+            }
         }
         public string Description
         {
@@ -105,6 +111,16 @@ namespace TaskManager.ViewModels
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+        }
+        //acts similar to a guard method for "CreateOrUpdateTask"
+        public bool CanCreateOrUpdateTask
+        {
+            get { return !string.IsNullOrWhiteSpace(Name); }
+        }
+        public string SubmitBtnContent
+        {
+            get { return _submitBtnContent; }
+            set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
         }
 
         #endregion
@@ -118,36 +134,48 @@ namespace TaskManager.ViewModels
             Name = string.Empty;
             Description = string.Empty;
             SelectedStatus = Status.New;
+            SubmitBtnContent = MessageStrings.Create;
+        }
+
+        //method signature for guard method "CanCreateOrUpdateTask" should be same as this one.
+        public void CreateOrUpdateTask()
+        {
+            if (SubmitBtnContent.Equals(MessageStrings.Create, StringComparison.OrdinalIgnoreCase))
+                CreateTask();
+            else
+                UpdateTask();
+            ResetInputControls();
         }
         public void CreateTask()
         {
-            if (SelectedStatus == Status.New)
+            switch (SelectedStatus)
             {
-                NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                case Status.New:
+                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    break;
+                case Status.InProgress:
+                    InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    break;
+                case Status.Completed:
+                    CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    break;
             }
-            else if (SelectedStatus == Status.InProgress)
-            {
-                InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
-            }
-            else
-            {
-                CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
-            }
-
-            ResetInputControls();
         }
-
-        private void ResetInputControls()
+        public void UpdateTask()
+        {
+            SelectedTask.Name = Name;
+            SelectedTask.Description = Description;
+            SelectedTask.Status = SelectedStatus;
+            SelectedTask.Priority = SelectedPriority;
+            SelectedTask.DueDate = DueDate;
+        }
+        public void ResetInputControls()
         {
             Name = string.Empty;
             Description = string.Empty;
             SelectedPriority = Priority.Low;
             SelectedStatus = Status.New;
-        }
-
-        public void Cancel()
-        {
-            ResetInputControls();
+            DueDate = DateTime.Now;
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
@@ -200,7 +228,7 @@ namespace TaskManager.ViewModels
         }
         public void DeleteById(Guid id, Status status)
         {
-            if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to delete the task?", "Delete Task", MessageBoxButton.YesNo))
+            if (MessageBoxResult.Yes == MessageBox.Show(MessageStrings.ConfirmDeleteMsg, MessageStrings.ConfirmDeleteWinTitle, MessageBoxButton.YesNo))
             {
                 try
                 {
@@ -219,7 +247,7 @@ namespace TaskManager.ViewModels
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Couldn't delete the task. Please try again", "Delete Unsuccessful");
+                    MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
                 }
 
             }
@@ -228,6 +256,7 @@ namespace TaskManager.ViewModels
         {
             if (SelectedTask != null)
             {
+                SubmitBtnContent = MessageStrings.Update;
                 Name = SelectedTask.Name;
                 Description = SelectedTask.Description;
                 SelectedStatus = SelectedTask.Status;

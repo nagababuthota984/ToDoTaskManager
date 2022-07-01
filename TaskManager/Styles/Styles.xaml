@@ -16,8 +16,8 @@
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FBBF79"/>
     <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#CD5849"/>
     <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
-        <Setter Property="Width" Value="10"/>
-        <Setter Property="Height" Value="10"/>
+        <Setter Property="Width" Value="12"/>
+        <Setter Property="Height" Value="12"/>
         <Setter Property="Margin" Value="4"/>
     </Style>
     <Style x:Key="TM.PriorityIndicator.Low" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">

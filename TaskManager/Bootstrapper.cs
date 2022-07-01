@@ -23,7 +23,7 @@ namespace TaskManager
             _container.PerRequest<MainViewModel>();
         }
 
-        //gets the control last.. not called by initialize(). Gets control when startup event is raised in app.xaml
+        //not called by initialize(). Gets control when the app starts up.
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<MainViewModel>();

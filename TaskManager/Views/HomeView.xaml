@@ -38,7 +38,7 @@
         </Grid>
         <TextBlock Grid.Row="1" 
                    Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}"
-                   Margin="15 0 0 0" Foreground="Black" Background="White"
+                   Margin="15 0 0 0" Foreground="Black" Background="White" Height="25"
                    />
         <TextBlock Grid.Row="1"  Grid.Column="1"
                    Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Padding="5 0 0 0" />
@@ -93,7 +93,7 @@
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" x:Name="CreateTask" Content="Create" MinWidth="40"  
+                    <Button Grid.Column="1" x:Name="CreateOrUpdateTask" Content="{Binding SubmitBtnContent}" MinWidth="40"  
                             Background="#16A05D" Foreground="White" Margin="0 0 5 0">
                         <Button.Style>
                             <Style TargetType="Button">
@@ -110,7 +110,8 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Grid.Column="2" x:Name="Cancel" Content="Cancel"  />
+                    <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" 
+                            cal:Message.Attach="[Event Click] = [Action ResetInputControls()]" />
                 </Grid>
             </Grid>
         </Border>
