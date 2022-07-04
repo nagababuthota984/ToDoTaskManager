@@ -6,18 +6,14 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:local="clr-namespace:TaskManager"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                Dialog:DialogParticipation.Register="{Binding}"
                 mc:Ignorable="d"
+                Icon="/Styles/AppIcon.png"
                 TitleBarHeight="30"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                 WindowState="Maximized"
                 Title="Task Manager" MinHeight="450" MinWidth="800">
-    <mah:MetroWindow.LeftWindowCommands>
-        <mah:WindowCommands>
-            <Button x:Name="LaunchSourceSite" ToolTip="Go to technovert official site">
-                <iconPacks:Material Width="15" Height="15" Kind="AlphaT" />
-            </Button>
-        </mah:WindowCommands>
-    </mah:MetroWindow.LeftWindowCommands>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <Button x:Name="Settings" ToolTip="Settings">

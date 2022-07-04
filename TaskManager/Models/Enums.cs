@@ -14,5 +14,12 @@
             Medium,
             High
         }
+        public enum Category
+        {
+            NewFeature,
+            BugFix,
+            LearningTask,
+            Others
+        }
     }
 }

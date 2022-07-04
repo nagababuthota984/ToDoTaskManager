@@ -9,6 +9,7 @@ using System.Windows.Input;
 using TaskManager.Common;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace TaskManager.ViewModels
 {
@@ -25,7 +26,10 @@ namespace TaskManager.ViewModels
         private Priority _selectedPriority;
         private Status _selectedStatus;
         private string _submitBtnContent;
+        private float _percentageComplete;
+        private Category _selectedCategory;
         #endregion
+
         #region Properties
         public DateTime DueDate
         {
@@ -82,6 +86,8 @@ namespace TaskManager.ViewModels
             set
             {
                 _selectedStatus = value;
+                if (SelectedStatus == Status.Completed && PercentageComplete != 100)
+                    PercentageComplete = 100;
                 NotifyOfPropertyChange(nameof(SelectedStatus));
             }
         }
@@ -90,6 +96,17 @@ namespace TaskManager.ViewModels
             get
             {
                 return Enum.GetValues(typeof(Status)).Cast<Status>();
+            }
+        }
+        public float PercentageComplete
+        {
+            get { return _percentageComplete; }
+            set
+            {
+                _percentageComplete = value;
+                if (value == 100 )
+                    SelectedStatus = Status.Completed;
+                NotifyOfPropertyChange(nameof(PercentageComplete));
             }
         }
         public string Name
@@ -111,6 +128,15 @@ namespace TaskManager.ViewModels
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+        }
+        public Category SelectedCategory
+        {
+            get { return _selectedCategory; }
+            set
+            {
+                _selectedCategory = value;
+                NotifyOfPropertyChange(nameof(SelectedCategory));
+            }
         }
         //acts similar to a guard method for "CreateOrUpdateTask"
         public bool CanCreateOrUpdateTask
@@ -137,7 +163,7 @@ namespace TaskManager.ViewModels
             SubmitBtnContent = MessageStrings.Create;
         }
 
-        //method signature for guard method "CanCreateOrUpdateTask" should be same as this one.
+
         public void CreateOrUpdateTask()
         {
             if (SubmitBtnContent.Equals(MessageStrings.Create, StringComparison.OrdinalIgnoreCase))
@@ -151,13 +177,13 @@ namespace TaskManager.ViewModels
             switch (SelectedStatus)
             {
                 case Status.New:
-                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate,SelectedCategory,PercentageComplete));
                     break;
                 case Status.InProgress:
-                    InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
                     break;
                 case Status.Completed:
-                    CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                    CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
                     break;
             }
         }
@@ -167,6 +193,8 @@ namespace TaskManager.ViewModels
             SelectedTask.Description = Description;
             SelectedTask.Status = SelectedStatus;
             SelectedTask.Priority = SelectedPriority;
+            SelectedTask.Category =  SelectedCategory;
+            SelectedTask.PercentageCompleted = PercentageComplete;
             SelectedTask.DueDate = DueDate;
         }
         public void ResetInputControls()
@@ -175,7 +203,11 @@ namespace TaskManager.ViewModels
             Description = string.Empty;
             SelectedPriority = Priority.Low;
             SelectedStatus = Status.New;
+            SelectedCategory = Category.NewFeature;
             DueDate = DateTime.Now;
+            SubmitBtnContent = MessageStrings.Create;
+            PercentageComplete = 0;
+            
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
@@ -228,29 +260,26 @@ namespace TaskManager.ViewModels
         }
         public void DeleteById(Guid id, Status status)
         {
-            if (MessageBoxResult.Yes == MessageBox.Show(MessageStrings.ConfirmDeleteMsg, MessageStrings.ConfirmDeleteWinTitle, MessageBoxButton.YesNo))
+            try
             {
-                try
+                switch (status)
                 {
-                    switch (status)
-                    {
-                        case Status.New:
-                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.InProgress:
-                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.Completed:
-                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                    }
+                    case Status.New:
+                        NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
+                    case Status.InProgress:
+                        InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
+                    case Status.Completed:
+                        CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
-                }
-
             }
+            catch (Exception)
+            {
+                MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
+            }
+
         }
         public void ShowSelectedTask()
         {
@@ -261,10 +290,13 @@ namespace TaskManager.ViewModels
                 Description = SelectedTask.Description;
                 SelectedStatus = SelectedTask.Status;
                 SelectedPriority = SelectedTask.Priority;
+                SelectedCategory = SelectedTask.Category;
                 DueDate = SelectedTask.DueDate;
+                PercentageComplete = SelectedTask.PercentageCompleted;
             }
             else
                 ResetInputControls();
         }
+
     }
 }
