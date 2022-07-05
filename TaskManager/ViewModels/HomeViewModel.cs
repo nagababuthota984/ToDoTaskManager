@@ -10,6 +10,7 @@ using TaskManager.Common;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
 using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls;
 
 namespace TaskManager.ViewModels
 {
@@ -28,6 +29,7 @@ namespace TaskManager.ViewModels
         private string _submitBtnContent;
         private float _percentageComplete;
         private Category _selectedCategory;
+        private IDialogCoordinator _dialogCoordinator;
         #endregion
 
         #region Properties
@@ -104,7 +106,7 @@ namespace TaskManager.ViewModels
             set
             {
                 _percentageComplete = value;
-                if (value == 100 )
+                if (value == 100)
                     SelectedStatus = Status.Completed;
                 NotifyOfPropertyChange(nameof(PercentageComplete));
             }
@@ -177,7 +179,7 @@ namespace TaskManager.ViewModels
             switch (SelectedStatus)
             {
                 case Status.New:
-                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate,SelectedCategory,PercentageComplete));
+                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
                     break;
                 case Status.InProgress:
                     InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
@@ -193,7 +195,7 @@ namespace TaskManager.ViewModels
             SelectedTask.Description = Description;
             SelectedTask.Status = SelectedStatus;
             SelectedTask.Priority = SelectedPriority;
-            SelectedTask.Category =  SelectedCategory;
+            SelectedTask.Category = SelectedCategory;
             SelectedTask.PercentageCompleted = PercentageComplete;
             SelectedTask.DueDate = DueDate;
         }
@@ -207,7 +209,7 @@ namespace TaskManager.ViewModels
             DueDate = DateTime.Now;
             SubmitBtnContent = MessageStrings.Create;
             PercentageComplete = 0;
-            
+
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
@@ -258,26 +260,29 @@ namespace TaskManager.ViewModels
                     break;
             }
         }
-        public void DeleteById(Guid id, Status status)
+        public async void DeleteById(Guid id, Status status)
         {
-            try
+            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(MessageStrings.ConfirmDeleteWinTitle, MessageStrings.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
             {
-                switch (status)
+                try
                 {
-                    case Status.New:
-                        NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        break;
-                    case Status.InProgress:
-                        InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        break;
-                    case Status.Completed:
-                        CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        break;
+                    switch (status)
+                    {
+                        case Status.New:
+                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.InProgress:
+                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.Completed:
+                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
+                catch (Exception)
+                {
+                    MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
+                }
             }
 
         }

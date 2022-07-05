@@ -36,7 +36,7 @@ namespace TaskManager.Converters
                         return Category.Others;
                 }
             }
-            return Category.Others;
+            return Binding.DoNothing;
         }
     }
 }

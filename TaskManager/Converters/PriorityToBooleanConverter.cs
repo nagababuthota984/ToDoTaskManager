@@ -38,7 +38,7 @@ namespace TaskManager.Converters
             }
             else
             {
-                return Priority.Low;
+                return Binding.DoNothing;
             }
         }
     }

@@ -91,16 +91,16 @@
                 </WrapPanel>
                 <TextBlock Text="Task Category" Grid.Row="10"  Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
                 <WrapPanel Grid.Row="11">
-                    <RadioButton GroupName="Category" Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
+                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.CategoryToBooleanConverter},
                                    ConverterParameter=0}"/>
-                    <RadioButton GroupName="Category" Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Bug Fix"
+                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Bug Fix"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.CategoryToBooleanConverter},
                                    ConverterParameter=1}"/>
-                    <RadioButton GroupName="Category" Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Learning task"
+                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Learning task"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.CategoryToBooleanConverter},
                                    ConverterParameter=2}"/>
-                    <RadioButton GroupName="Category" Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Others"
+                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Others"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.CategoryToBooleanConverter},
                                    ConverterParameter=3}"/>
                     
