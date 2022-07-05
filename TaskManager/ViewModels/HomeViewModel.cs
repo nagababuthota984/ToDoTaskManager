@@ -11,6 +11,7 @@ using TaskManager.Models;
 using static TaskManager.Models.Enums;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
+using TaskManager.Data;
 
 namespace TaskManager.ViewModels
 {
@@ -19,17 +20,17 @@ namespace TaskManager.ViewModels
         #region Fields
         private DateTime _dueDate;
         private string _name;
-        private Task _selectedTask;
+        private TaskDisplayModel _selectedTask;
         private string _description;
-        private ObservableCollection<Task> _newTasks;
-        private ObservableCollection<Task> _inProgressTasks;
-        private ObservableCollection<Task> _completedTasks;
+        private ObservableCollection<TaskDisplayModel> _newTasks;
+        private ObservableCollection<TaskDisplayModel> _inProgressTasks;
+        private ObservableCollection<TaskDisplayModel> _completedTasks;
         private Priority _selectedPriority;
         private Status _selectedStatus;
         private string _submitBtnContent;
         private float _percentageComplete;
         private Category _selectedCategory;
-        private IDialogCoordinator _dialogCoordinator;
+        private readonly ITaskRepository _repository;
         #endregion
 
         #region Properties
@@ -45,7 +46,7 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(DueDate));
             }
         }
-        public ObservableCollection<Task> NewTasks
+        public ObservableCollection<TaskDisplayModel> NewTasks
         {
             get { return _newTasks; }
             set
@@ -55,7 +56,7 @@ namespace TaskManager.ViewModels
             }
 
         }
-        public ObservableCollection<Task> InProgressTasks
+        public ObservableCollection<TaskDisplayModel> InProgressTasks
         {
             get { return _inProgressTasks; }
             set
@@ -64,7 +65,7 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(InProgressTasks));
             }
         }
-        public ObservableCollection<Task> CompletedTasks
+        public ObservableCollection<TaskDisplayModel> CompletedTasks
         {
             get { return _completedTasks; }
             set
@@ -126,7 +127,7 @@ namespace TaskManager.ViewModels
             get { return _description; }
             set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
         }
-        public Task SelectedTask
+        public TaskDisplayModel SelectedTask
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
@@ -153,10 +154,11 @@ namespace TaskManager.ViewModels
 
         #endregion
 
-        public HomeViewModel()
+        public HomeViewModel(ITaskRepository repository)
         {
+            _repository = repository;
             DueDate = DateTime.Now;
-            NewTasks = new();
+            NewTasks = new(_repository.GetAllTasks());
             InProgressTasks = new();
             CompletedTasks = new();
             Name = string.Empty;
@@ -220,7 +222,7 @@ namespace TaskManager.ViewModels
         }
         public void DropOnNewTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
+            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.New)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.New;
@@ -229,7 +231,7 @@ namespace TaskManager.ViewModels
         }
         public void DropOnInProgressTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
+            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.InProgress)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.InProgress;
@@ -238,14 +240,14 @@ namespace TaskManager.ViewModels
         }
         public void DropOnCompletedTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
+            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.Completed)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.Completed;
                 CompletedTasks.Add(task);
             }
         }
-        private void RemoveTaskFromDragSource(Task task)
+        private void RemoveTaskFromDragSource(TaskDisplayModel task)
         {
             switch (task.Status)
             {

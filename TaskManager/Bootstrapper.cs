@@ -1,8 +1,12 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using TaskManager.Data;
+using TaskManager.Models;
 using TaskManager.ViewModels;
 
 namespace TaskManager
@@ -21,10 +25,26 @@ namespace TaskManager
         //called by the Initialize() method. (order of exec-2)
         protected override void Configure()
         {
-            _container.Singleton<IWindowManager, WindowManager>();
-            _container.Singleton<IEventAggregator, EventAggregator>();
-            _container.PerRequest<HomeViewModel>();
-            _container.PerRequest<MainViewModel>();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Task, TaskDisplayModel>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+            _container.Instance(mapper);
+
+            _container
+                .Singleton<IWindowManager, WindowManager>()
+                .Singleton<IEventAggregator, EventAggregator>()
+                .PerRequest<HomeViewModel>()
+                .PerRequest<MainViewModel>()
+                .PerRequest<ITaskRepository, SQLServerRepository>();
+
+
+            var options = new DbContextOptionsBuilder<ToDoTaskManagerContext>()
+                .UseSqlServer("Data Source=NAG-HP\\SQLEXPRESS;Initial Catalog=ToDoTaskManager;Integrated Security=True")
+                .Options;
+            _container.Instance(new ToDoTaskManagerContext(options));
+
         }
         protected override object GetInstance(Type service, string key)
         {
