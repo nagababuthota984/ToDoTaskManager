@@ -32,7 +32,6 @@ namespace TaskManager.ViewModels
         private Category _selectedCategory;
         private readonly ITaskRepository _repository;
         #endregion
-
         #region Properties
         public DateTime DueDate
         {
@@ -89,8 +88,6 @@ namespace TaskManager.ViewModels
             set
             {
                 _selectedStatus = value;
-                if (SelectedStatus == Status.Completed && PercentageComplete != 100)
-                    PercentageComplete = 100;
                 NotifyOfPropertyChange(nameof(SelectedStatus));
             }
         }
@@ -157,16 +154,19 @@ namespace TaskManager.ViewModels
         public HomeViewModel(ITaskRepository repository)
         {
             _repository = repository;
-            DueDate = DateTime.Now;
-            NewTasks = new(_repository.GetAllTasks());
-            InProgressTasks = new();
-            CompletedTasks = new();
+            InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
+            DueDate = DateTime.Now;
             SelectedStatus = Status.New;
             SubmitBtnContent = MessageStrings.Create;
         }
-
+        private void InitializeTaskLists()
+        {
+            NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
+            InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
+            CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
+        }
 
         public void CreateOrUpdateTask()
         {
@@ -178,16 +178,18 @@ namespace TaskManager.ViewModels
         }
         public void CreateTask()
         {
-            switch (SelectedStatus)
+            TaskDisplayModel task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
+            _repository.CreateTask(task);
+            switch (task.Status)
             {
                 case Status.New:
-                    NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
+                    NewTasks.Add(task);
                     break;
                 case Status.InProgress:
-                    InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
+                    InProgressTasks.Add(task);
                     break;
                 case Status.Completed:
-                    CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete));
+                    CompletedTasks.Add(task);
                     break;
             }
         }
@@ -200,6 +202,7 @@ namespace TaskManager.ViewModels
             SelectedTask.Category = SelectedCategory;
             SelectedTask.PercentageCompleted = PercentageComplete;
             SelectedTask.DueDate = DueDate;
+            _repository.UpdateTask(SelectedTask);
         }
         public void ResetInputControls()
         {
@@ -226,6 +229,7 @@ namespace TaskManager.ViewModels
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.New;
+                _repository.UpdateTask(task);
                 NewTasks.Add(task);
             }
         }
@@ -235,6 +239,7 @@ namespace TaskManager.ViewModels
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.InProgress;
+                _repository.UpdateTask(task);
                 InProgressTasks.Add(task);
             }
         }
@@ -244,6 +249,7 @@ namespace TaskManager.ViewModels
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.Completed;
+                _repository.UpdateTask(task);
                 CompletedTasks.Add(task);
             }
         }
@@ -268,6 +274,7 @@ namespace TaskManager.ViewModels
             {
                 try
                 {
+                    _repository.DeleteTaskById(id);
                     switch (status)
                     {
                         case Status.New:

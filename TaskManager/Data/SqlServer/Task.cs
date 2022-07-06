@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TaskManager.Data
+namespace TaskManager.Data.SqlServer
 {
     public partial class Task
     {

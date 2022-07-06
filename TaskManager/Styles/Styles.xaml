@@ -13,6 +13,7 @@
     <converters:DateTimeToStringConverter x:Key="TM.Converters.DateTimeToStringConverter"/>
     <converters:BooleanToVisibilityConverter x:Key="TM.Converters.BooleanToVisibilityConverter"/>
     <converters:DescriptionToMessageConverter x:Key="TM.Converters.DescriptionToMessageConverter"/>
+    <converters:StatusToVisibilityConverter x:Key="TM.Converters.StatusToVisibilityConverter"/>
 
     
     <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
@@ -46,18 +47,22 @@
     </Style>
     
     <DataTemplate x:Key="TM.ListBox.TaskItemTemplate">
-        <Grid Height="45">
+        <Grid Height="65">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <WrapPanel Orientation="Vertical"  HorizontalAlignment="Left" ToolTip="{Binding Description}" >
+            
+            <WrapPanel Orientation="Vertical" ToolTip="{Binding Description}" >
                 <TextBlock Text="{Binding Name}" FontWeight="DemiBold" 
                            VerticalAlignment="Top" FontSize="15" Margin="3 0 0 0" />
                 <TextBlock Text="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}" FontSize="12"
-                           Foreground="Black" Opacity="0.5"
-                           TextTrimming="CharacterEllipsis" Width="200"  VerticalAlignment="Bottom" Padding="3"/>
+                           Foreground="Black" Opacity="0.7"
+                           TextTrimming="CharacterEllipsis" Width="200"  VerticalAlignment="Center" Padding="3"/>
+                <TextBlock Text="{Binding Category}" Foreground="DarkBlue"
+                           VerticalAlignment="Bottom" FontSize="11" Opacity="0.5" Padding="3"/>
             </WrapPanel>
+            
             <WrapPanel Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                 <iconPacks:PackIconBootstrapIcons Kind="ClockFill"  
                                               Height="11" VerticalAlignment="Bottom"

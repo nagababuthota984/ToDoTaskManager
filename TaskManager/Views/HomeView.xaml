@@ -105,9 +105,12 @@
                                    ConverterParameter=3}"/>
                     
                 </WrapPanel>
-                           
-                <TextBlock Text="% Complete" Grid.Row="12"  Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+
+                <TextBlock Text="% Complete" Grid.Row="12" 
+                           Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
+                           Margin="0 8 0 0" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
                 <Slider Value="{Binding PercentageComplete}"  Grid.Row="13" 
+                        Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
                         IsSnapToTickEnabled="True"
                         TickPlacement="BottomRight" 
                         TickFrequency="20" 

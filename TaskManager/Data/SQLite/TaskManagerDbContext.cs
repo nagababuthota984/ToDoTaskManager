@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TaskManager.Data
+namespace TaskManager.Data.SQLite
 {
-    public partial class ToDoTaskManagerContext : DbContext
+    public partial class TaskManagerDbContext : DbContext
     {
-        public ToDoTaskManagerContext()
+        public TaskManagerDbContext()
         {
         }
 
-        public ToDoTaskManagerContext(DbContextOptions<ToDoTaskManagerContext> options)
+        public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options)
             : base(options)
         {
         }
@@ -22,7 +22,7 @@ namespace TaskManager.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=NAG-HP\\SQLEXPRESS;Initial Catalog=ToDoTaskManager;Integrated Security=True");
+                optionsBuilder.UseSqlite("Data Source=E:\\Technovert Projects\\TaskManager\\TaskManager\\Data\\SQLite\\TaskManagerDb.db");
             }
         }
 
@@ -31,18 +31,6 @@ namespace TaskManager.Data
             modelBuilder.Entity<Task>(entity =>
             {
                 entity.ToTable("Task");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.DueDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Name).HasMaxLength(255);
-
-                entity.Property(e => e.PercentageCompleted).HasColumnType("decimal(18, 0)");
             });
 
             OnModelCreatingPartial(modelBuilder);

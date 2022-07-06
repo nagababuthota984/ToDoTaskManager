@@ -1,14 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+    
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+	
 
   <ItemGroup>
+    <None Remove="Data\SQLite\TaskManagerDb.db" />
     <None Remove="Styles\AppIcon.png" />
+  </ItemGroup>
+	
+
+  <ItemGroup>
+    <Content Include="Data\SQLite\TaskManagerDb.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
