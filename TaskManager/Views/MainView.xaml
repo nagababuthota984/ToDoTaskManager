@@ -16,7 +16,7 @@
                 Title="Task Manager" MinHeight="450" MinWidth="800">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button Click="Settings" ToolTip="Settings">
+            <Button  ToolTip="Settings">
                 <iconPacks:PackIconModern Kind="Settings" Width="20" Height="15"/>
             </Button>
             <Button  Click="SwitchTheme" ToolTip="Switch Theme">
