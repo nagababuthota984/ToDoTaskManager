@@ -44,6 +44,8 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
         <Setter Property="Padding" Value="0 5 0 0"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Padding" Value="5 0 0 0"/>
     </Style>
     
     <DataTemplate x:Key="TM.ListBox.TaskItemTemplate">
@@ -92,6 +94,17 @@
     
     <Style x:Key="TM.TextBlock.BoldLabels" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style>
+
+    <Style x:Key="TM.TextBlock.TitleBarDbName" TargetType="TextBlock">
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Background" Value="#41B1E1"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="ToolBar.ToolTip" Value="Connected"/>
+
     </Style>
     
     <Style x:Key="TM.ListBox.ListBoxItemStyle" TargetType="ListBoxItem">

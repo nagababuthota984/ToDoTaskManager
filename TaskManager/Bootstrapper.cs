@@ -17,7 +17,6 @@ namespace TaskManager
     {
         private SimpleContainer _container;
 
-        //gets the control first (order of exec-1)
         public Bootstrapper()
         {
             _container = new();
@@ -27,10 +26,12 @@ namespace TaskManager
         //called by the Initialize() method. (order of exec-2)
         protected override void Configure()
         {
+            _container.Instance(_container);
+            
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Data.SqlServer.Task, TaskDisplayModel>();
-                cfg.CreateMap<TaskDisplayModel, Data.SqlServer.Task>();
+                cfg.CreateMap<Data.SqlServer.Task, Models.Task>();
+                cfg.CreateMap<Models.Task, Data.SqlServer.Task>();
 
             });
             var mapper = mapperConfig.CreateMapper();
@@ -39,16 +40,10 @@ namespace TaskManager
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
+                .PerRequest<SqliteRepository>()
+                .PerRequest<SqlServerRepository>()
                 .PerRequest<HomeViewModel>()
-                .PerRequest<MainViewModel>()
-                .PerRequest<ITaskRepository, SqliteRepository>();
-
-
-            var options = new DbContextOptionsBuilder<SQLiteDbContext>()
-                .UseSqlite("Data Source=E:\\Technovert Projects\\TaskManager\\TaskManager\\Data\\SQLite\\TaskManager.db")
-                .Options;
-            _container.Instance(new SQLiteDbContext(options));
-
+                .PerRequest<MainViewModel>();
         }
         protected override object GetInstance(Type service, string key)
         {
@@ -63,7 +58,6 @@ namespace TaskManager
             _container.BuildUp(instance);
         }
 
-        //not called by initialize(). Gets control when the app starts up.
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<MainViewModel>();

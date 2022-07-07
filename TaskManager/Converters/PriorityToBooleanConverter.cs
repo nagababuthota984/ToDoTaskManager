@@ -12,9 +12,7 @@ namespace TaskManager.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (int.TryParse(parameter.ToString(), out int priority))
-            {
                 return (int)value == priority;
-            }
             return false;
 
         }
@@ -37,9 +35,7 @@ namespace TaskManager.Converters
                 }
             }
             else
-            {
                 return Binding.DoNothing;
-            }
         }
     }
 }

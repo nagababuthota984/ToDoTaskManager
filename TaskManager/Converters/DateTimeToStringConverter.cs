@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using TaskManager.Common;
 
 namespace TaskManager.Converters
 {
@@ -12,9 +13,9 @@ namespace TaskManager.Converters
             if(value is DateTime dueDate)
             {
                 if (dueDate.Date == DateTime.Today.Date)
-                    result = "Today";
+                    result = MessageStrings.Today;
                 else if (dueDate.Date == DateTime.Today.Date.AddDays(1))
-                    result = "Tomorrow";
+                    result = MessageStrings.Tomorrow;
                 else
                     result += $"{dueDate.ToShortDateString()}";
                 result += $" | {dueDate.ToShortTimeString()}";
