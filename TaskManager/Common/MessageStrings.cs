@@ -14,6 +14,10 @@ namespace TaskManager.Common
         public const string ConfirmDeleteWinTitle = "Delete task?";
         public const string DeleteFailedMsg = "Couldn't delete the task. Please try again";
         public const string DeleteFailedWinTitle = "Delete Unsuccessful";
+        public const string Database = "Database";
+        public const string Sqlite = "Sqlite";
+        public const string Sqlserver = "Sqlserver";
+        
 
     }
 }

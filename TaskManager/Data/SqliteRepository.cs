@@ -13,9 +13,9 @@ namespace TaskManager.Data
     {
         private readonly SQLiteDbContext _context;
 
-        public SqliteRepository(SQLiteDbContext context)
+        public SqliteRepository()
         {
-            _context = context;
+            _context = DbContextFactory.GetSQLiteDbContext();
         }
         public void CreateTask(TaskDisplayModel task)
         {

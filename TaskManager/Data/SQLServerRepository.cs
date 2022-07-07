@@ -13,9 +13,9 @@ namespace TaskManager.Data
         private readonly TaskManagerDbContext _context;
         private readonly IMapper _mapper;
 
-        public SqlServerRepository(TaskManagerDbContext context, IMapper mapper)
+        public SqlServerRepository(IMapper mapper)
         {
-            _context = context;
+            _context = DbContextFactory.GetSqlServerDbContext();
             _mapper = mapper;
         }
         public void CreateTask(TaskDisplayModel task)

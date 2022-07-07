@@ -36,19 +36,17 @@ namespace TaskManager
             var mapper = mapperConfig.CreateMapper();
             _container.Instance(mapper);
 
+            _container.Instance(_container);
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
+                .PerRequest<SqliteRepository>()
+                .PerRequest<SqlServerRepository>()
                 .PerRequest<HomeViewModel>()
-                .PerRequest<MainViewModel>()
-                .PerRequest<ITaskRepository, SqliteRepository>();
+                .PerRequest<MainViewModel>();
 
-
-            var options = new DbContextOptionsBuilder<SQLiteDbContext>()
-                .UseSqlite("Data Source=E:\\Technovert Projects\\TaskManager\\TaskManager\\Data\\SQLite\\TaskManager.db")
-                .Options;
-            _container.Instance(new SQLiteDbContext(options));
-
+            
+            
         }
         protected override object GetInstance(Type service, string key)
         {

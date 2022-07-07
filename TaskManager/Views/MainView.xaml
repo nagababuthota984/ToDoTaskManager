@@ -7,6 +7,7 @@
                 xmlns:local="clr-namespace:TaskManager"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                 xmlns:cal ="http://www.caliburnproject.org"
                 Dialog:DialogParticipation.Register="{Binding}"
                 mc:Ignorable="d"
                 Icon="/Styles/AppIcon.png"
@@ -16,7 +17,7 @@
                 Title="Task Manager" MinHeight="450" MinWidth="800">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button  ToolTip="Settings">
+            <Button  ToolTip="Settings" cal:Message.Attach="[Event Click] = [Action ChangeDb()]">
                 <iconPacks:PackIconModern Kind="Settings" Width="20" Height="15"/>
             </Button>
             <Button  Click="SwitchTheme" ToolTip="Switch Theme">

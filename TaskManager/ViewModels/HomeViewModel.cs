@@ -151,9 +151,9 @@ namespace TaskManager.ViewModels
 
         #endregion
 
-        public HomeViewModel(ITaskRepository repository)
+        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
         {
-            _repository = repository;
+            _repository = Application.Current.Properties[MessageStrings.Database]==MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
@@ -166,6 +166,7 @@ namespace TaskManager.ViewModels
             NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
             InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
             CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
+            
         }
 
         public void CreateOrUpdateTask()
