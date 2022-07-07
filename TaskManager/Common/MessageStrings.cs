@@ -17,7 +17,13 @@ namespace TaskManager.Common
         public const string Database = "Database";
         public const string Sqlite = "Sqlite";
         public const string Sqlserver = "Sqlserver";
-        
+        public const string ChangeDbTitleMsg = "Change database";
+        public const string DbChangeResultsIn = "This action results in switching to ";
+        public const string ConfirmChangeDb = "Are you sure you want to change the database?";
+        public const string Today = "Today";
+        public const string Tomorrow = "Tomorrow";
+
+
 
     }
 }

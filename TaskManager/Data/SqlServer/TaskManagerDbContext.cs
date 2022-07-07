@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using TaskManager.Common;
 
 namespace TaskManager.Data.SqlServer
 {
@@ -9,6 +10,7 @@ namespace TaskManager.Data.SqlServer
     {
         public TaskManagerDbContext()
         {
+            Database.EnsureCreated();
         }
 
         public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options)
@@ -22,7 +24,7 @@ namespace TaskManager.Data.SqlServer
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=NAG-HP\\SQLEXPRESS;Initial Catalog=TaskManagerDb;Integrated Security=True");
+                optionsBuilder.UseSqlServer(DbContextFactory.sqlServerConnectionString);
             }
         }
 

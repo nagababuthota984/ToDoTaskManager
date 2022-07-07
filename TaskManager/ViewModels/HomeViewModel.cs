@@ -20,11 +20,11 @@ namespace TaskManager.ViewModels
         #region Fields
         private DateTime _dueDate;
         private string _name;
-        private TaskDisplayModel _selectedTask;
+        private Task _selectedTask;
         private string _description;
-        private ObservableCollection<TaskDisplayModel> _newTasks;
-        private ObservableCollection<TaskDisplayModel> _inProgressTasks;
-        private ObservableCollection<TaskDisplayModel> _completedTasks;
+        private ObservableCollection<Task> _newTasks;
+        private ObservableCollection<Task> _inProgressTasks;
+        private ObservableCollection<Task> _completedTasks;
         private Priority _selectedPriority;
         private Status _selectedStatus;
         private string _submitBtnContent;
@@ -33,82 +33,6 @@ namespace TaskManager.ViewModels
         private readonly ITaskRepository _repository;
         #endregion
         #region Properties
-        public DateTime DueDate
-        {
-            get
-            {
-                return _dueDate;
-            }
-            set
-            {
-                _dueDate = value;
-                NotifyOfPropertyChange(nameof(DueDate));
-            }
-        }
-        public ObservableCollection<TaskDisplayModel> NewTasks
-        {
-            get { return _newTasks; }
-            set
-            {
-                _newTasks = value;
-                NotifyOfPropertyChange(nameof(NewTasks));
-            }
-
-        }
-        public ObservableCollection<TaskDisplayModel> InProgressTasks
-        {
-            get { return _inProgressTasks; }
-            set
-            {
-                _inProgressTasks = value;
-                NotifyOfPropertyChange(nameof(InProgressTasks));
-            }
-        }
-        public ObservableCollection<TaskDisplayModel> CompletedTasks
-        {
-            get { return _completedTasks; }
-            set
-            {
-                _completedTasks = value;
-                NotifyOfPropertyChange(nameof(CompletedTasks));
-            }
-        }
-        public Priority SelectedPriority
-        {
-            get { return _selectedPriority; }
-            set
-            {
-                _selectedPriority = value;
-                NotifyOfPropertyChange(nameof(SelectedPriority));
-            }
-        }
-        public Status SelectedStatus
-        {
-            get { return _selectedStatus; }
-            set
-            {
-                _selectedStatus = value;
-                NotifyOfPropertyChange(nameof(SelectedStatus));
-            }
-        }
-        public IEnumerable<Status> StatusOptions
-        {
-            get
-            {
-                return Enum.GetValues(typeof(Status)).Cast<Status>();
-            }
-        }
-        public float PercentageComplete
-        {
-            get { return _percentageComplete; }
-            set
-            {
-                _percentageComplete = value;
-                if (value == 100)
-                    SelectedStatus = Status.Completed;
-                NotifyOfPropertyChange(nameof(PercentageComplete));
-            }
-        }
         public string Name
         {
             get { return _name; }
@@ -124,10 +48,23 @@ namespace TaskManager.ViewModels
             get { return _description; }
             set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
         }
-        public TaskDisplayModel SelectedTask
+        public Status SelectedStatus
         {
-            get { return _selectedTask; }
-            set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+            get { return _selectedStatus; }
+            set
+            {
+                _selectedStatus = value;
+                NotifyOfPropertyChange(nameof(SelectedStatus));
+            }
+        }
+        public Priority SelectedPriority
+        {
+            get { return _selectedPriority; }
+            set
+            {
+                _selectedPriority = value;
+                NotifyOfPropertyChange(nameof(SelectedPriority));
+            }
         }
         public Category SelectedCategory
         {
@@ -138,7 +75,69 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(SelectedCategory));
             }
         }
-        //acts similar to a guard method for "CreateOrUpdateTask"
+        public DateTime DueDate
+        {
+            get
+            {
+                return _dueDate;
+            }
+            set
+            {
+                _dueDate = value;
+                NotifyOfPropertyChange(nameof(DueDate));
+            }
+        }
+        public float PercentageComplete
+        {
+            get { return _percentageComplete; }
+            set
+            {
+                _percentageComplete = value;
+                if (value == 100)
+                    SelectedStatus = Status.Completed;
+                NotifyOfPropertyChange(nameof(PercentageComplete));
+            }
+        }
+        public Task SelectedTask
+        {
+            get { return _selectedTask; }
+            set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+        }
+        public ObservableCollection<Task> NewTasks
+        {
+            get { return _newTasks; }
+            set
+            {
+                _newTasks = value;
+                NotifyOfPropertyChange(nameof(NewTasks));
+            }
+
+        }
+        public ObservableCollection<Task> InProgressTasks
+        {
+            get { return _inProgressTasks; }
+            set
+            {
+                _inProgressTasks = value;
+                NotifyOfPropertyChange(nameof(InProgressTasks));
+            }
+        }
+        public ObservableCollection<Task> CompletedTasks
+        {
+            get { return _completedTasks; }
+            set
+            {
+                _completedTasks = value;
+                NotifyOfPropertyChange(nameof(CompletedTasks));
+            }
+        }
+        public IEnumerable<Status> StatusOptions
+        {
+            get
+            {
+                return Enum.GetValues(typeof(Status)).Cast<Status>();
+            }
+        }
         public bool CanCreateOrUpdateTask
         {
             get { return !string.IsNullOrWhiteSpace(Name); }
@@ -153,7 +152,7 @@ namespace TaskManager.ViewModels
 
         public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
         {
-            _repository = Application.Current.Properties[MessageStrings.Database]==MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
+            _repository = Application.Current.Properties[MessageStrings.Database].ToString()==MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
@@ -166,9 +165,7 @@ namespace TaskManager.ViewModels
             NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
             InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
             CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
-            
         }
-
         public void CreateOrUpdateTask()
         {
             if (SubmitBtnContent.Equals(MessageStrings.Create, StringComparison.OrdinalIgnoreCase))
@@ -179,7 +176,7 @@ namespace TaskManager.ViewModels
         }
         public void CreateTask()
         {
-            TaskDisplayModel task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
+            Task task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
             _repository.CreateTask(task);
             switch (task.Status)
             {
@@ -204,6 +201,7 @@ namespace TaskManager.ViewModels
             SelectedTask.PercentageCompleted = PercentageComplete;
             SelectedTask.DueDate = DueDate;
             _repository.UpdateTask(SelectedTask);
+            InitializeTaskLists();
         }
         public void ResetInputControls()
         {
@@ -226,7 +224,7 @@ namespace TaskManager.ViewModels
         }
         public void DropOnNewTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.New)
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.New;
@@ -236,7 +234,7 @@ namespace TaskManager.ViewModels
         }
         public void DropOnInProgressTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.InProgress)
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.InProgress;
@@ -246,7 +244,7 @@ namespace TaskManager.ViewModels
         }
         public void DropOnCompletedTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(TaskDisplayModel)) is TaskDisplayModel task && task.Status != Status.Completed)
+            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.Completed;
@@ -254,7 +252,7 @@ namespace TaskManager.ViewModels
                 CompletedTasks.Add(task);
             }
         }
-        private void RemoveTaskFromDragSource(TaskDisplayModel task)
+        private void RemoveTaskFromDragSource(Task task)
         {
             switch (task.Status)
             {

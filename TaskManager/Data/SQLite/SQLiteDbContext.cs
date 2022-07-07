@@ -10,6 +10,7 @@ namespace TaskManager.Data.SQLite
     {
         public SQLiteDbContext()
         {
+            Database.EnsureCreated();
         }
 
         public SQLiteDbContext(DbContextOptions<SQLiteDbContext> options)
@@ -17,13 +18,13 @@ namespace TaskManager.Data.SQLite
         {
         }
 
-        public  DbSet<TaskDisplayModel> Tasks { get; set; } 
+        public  DbSet<Task> Tasks { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=E:\\Technovert Projects\\TaskManager\\TaskManager\\Data\\SQLite\\TaskManager.db");
+                optionsBuilder.UseSqlite(DbContextFactory.sqliteConnectionString);
             }
         }
 

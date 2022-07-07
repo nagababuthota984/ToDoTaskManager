@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TaskManager.Data.SqlServer;
-using TaskManager.Models;
 
 namespace TaskManager.Data
 {
-    public class SqlServerRepository:ITaskRepository
+    public class SqlServerRepository : ITaskRepository
     {
         private readonly TaskManagerDbContext _context;
         private readonly IMapper _mapper;
@@ -18,25 +16,25 @@ namespace TaskManager.Data
             _context = DbContextFactory.GetSqlServerDbContext();
             _mapper = mapper;
         }
-        public void CreateTask(TaskDisplayModel task)
+        public void CreateTask(Models.Task task)
         {
-            _context.Tasks.Add(_mapper.Map<Task>(task));
+            _context.Tasks.Add(_mapper.Map<SqlServer.Task>(task));
             _context.SaveChanges();
         }
 
         public void DeleteTaskById(Guid id)
         {
-            _context.Tasks.FirstOrDefault(tsk => tsk.Id == id).IsDeleted = true ;
+            _context.Tasks.FirstOrDefault(tsk => tsk.Id == id).IsDeleted = true;
             _context.SaveChanges();
         }
-        public List<TaskDisplayModel> GetAllTasks()
+        public List<Models.Task> GetAllTasks()
         {
-            return _mapper.Map<List<TaskDisplayModel>>(_context.Tasks);
+            return _mapper.Map<List<Models.Task>>(_context.Tasks);
         }
 
-        public void UpdateTask(TaskDisplayModel taskChanges)
+        public void UpdateTask(Models.Task taskChanges)
         {
-            var task = _mapper.Map<Task>(taskChanges);
+            var task = _mapper.Map<SqlServer.Task>(taskChanges);
             _context.Tasks.Remove(_context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id));
             _context.Tasks.Add(task);
             _context.SaveChanges();

@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskManager.Data.SQLite;
-using TaskManager.Models;
 
 namespace TaskManager.Data
 {
@@ -17,7 +13,7 @@ namespace TaskManager.Data
         {
             _context = DbContextFactory.GetSQLiteDbContext();
         }
-        public void CreateTask(TaskDisplayModel task)
+        public void CreateTask(Models.Task task)
         {
             _context.Tasks.Add(task);
             _context.SaveChanges();
@@ -29,11 +25,11 @@ namespace TaskManager.Data
             _context.SaveChanges();
         }
 
-        public List<TaskDisplayModel> GetAllTasks()
+        public List<Models.Task> GetAllTasks()
         {
             return _context.Tasks.ToList();
         }
-        public void UpdateTask(TaskDisplayModel taskChanges)
+        public void UpdateTask(Models.Task taskChanges)
         {
             _context.SaveChanges();
         }

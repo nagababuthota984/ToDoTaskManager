@@ -13,10 +13,7 @@ namespace TaskManager.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value)    //value => Task.IsDeleted
-                return Visibility.Collapsed;
-            else
-                return Visibility.Visible;
+            return (bool)value ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -4,7 +4,7 @@ using static TaskManager.Models.Enums;
 
 namespace TaskManager.Models
 {
-    public class TaskDisplayModel : PropertyChangedBase
+    public class Task : PropertyChangedBase
     {
         #region Fields
         private string _name;
@@ -57,11 +57,11 @@ namespace TaskManager.Models
         public bool IsDeleted { get; set; }
         #endregion
 
-        public TaskDisplayModel()
+        public Task()
         {
             Id = Guid.NewGuid();
         }
-        public TaskDisplayModel(string name, string description, Status status, Priority priority, DateTime dueDate,Category taskCategory, float percentageCompleted)
+        public Task(string name, string description, Status status, Priority priority, DateTime dueDate,Category taskCategory, float percentageCompleted)
         {
             Id = Guid.NewGuid();
             Name = name;

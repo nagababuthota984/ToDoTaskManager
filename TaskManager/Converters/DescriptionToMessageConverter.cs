@@ -14,8 +14,7 @@ namespace TaskManager.Converters
         {
             if (value is string desc && string.IsNullOrWhiteSpace(desc))
                 return "No description";
-            else
-                return value.ToString();
+            return value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

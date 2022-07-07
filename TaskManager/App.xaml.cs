@@ -10,7 +10,7 @@ namespace TaskManager
     {
         public App()
         {
-            this.Properties.Add(MessageStrings.Database, MessageStrings.Sqlite);
+            Properties.Add(MessageStrings.Database, MessageStrings.Sqlite);
         }
     }
 }

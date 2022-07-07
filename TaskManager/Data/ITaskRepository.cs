@@ -6,9 +6,9 @@ namespace TaskManager.Data
 {
     public interface ITaskRepository
     {
-        void CreateTask(TaskDisplayModel task);
-        void UpdateTask(TaskDisplayModel taskChanges);
-        List<TaskDisplayModel> GetAllTasks();
+        void CreateTask(Task task);
+        void UpdateTask(Task taskChanges);
+        List<Task> GetAllTasks();
         void DeleteTaskById(Guid id);
     }
 }
