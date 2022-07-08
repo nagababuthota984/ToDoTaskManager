@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using TaskManager.Common;
 
 namespace TaskManager
 {
@@ -13,5 +8,9 @@ namespace TaskManager
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Properties.Add(MessageStrings.Database, MessageStrings.Sqlite);
+        }
     }
 }

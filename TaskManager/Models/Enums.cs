@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskManager.Models
+﻿namespace TaskManager.Models
 {
     public class Enums
     {
@@ -19,6 +13,13 @@ namespace TaskManager.Models
             Low,
             Medium,
             High
-        } 
+        }
+        public enum Category
+        {
+            NewFeature,
+            BugFix,
+            LearningTask,
+            Others
+        }
     }
 }
