@@ -19,7 +19,7 @@
         <mah:WindowCommands>
             <TextBlock Text="Db Provider" Style="{StaticResource TM.TextBlock.TitleBarDbName}"/>
             <ComboBox ItemsSource="{Binding DatabaseProvidersList}" 
-                      SelectedItem="{Binding DatabaseProviderName}" 
+                      SelectedItem="{Binding DatabaseProviderName,Mode=TwoWay}" 
                       cal:Message.Attach="[Event SelectionChanged] = [Action ChangeDb()]"
                       Width="160" Margin="3"
                       FontWeight="DemiBold" Background="#F6F5F9"/>
