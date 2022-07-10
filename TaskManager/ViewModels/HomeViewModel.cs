@@ -152,7 +152,7 @@ namespace TaskManager.ViewModels
 
         public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
         {
-            _repository = Application.Current.Properties[MessageStrings.Database].ToString()==MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
+            _repository = Application.Current.Properties[MessageStrings.Database].ToString() == MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
@@ -160,12 +160,14 @@ namespace TaskManager.ViewModels
             SelectedStatus = Status.New;
             SubmitBtnContent = MessageStrings.Create;
         }
+
         private void InitializeTaskLists()
         {
             NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
             InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
             CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
         }
+
         public void CreateOrUpdateTask()
         {
             if (SubmitBtnContent.Equals(MessageStrings.Create, StringComparison.OrdinalIgnoreCase))
@@ -174,6 +176,7 @@ namespace TaskManager.ViewModels
                 UpdateTask();
             ResetInputControls();
         }
+
         public void CreateTask()
         {
             Task task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
@@ -191,6 +194,7 @@ namespace TaskManager.ViewModels
                     break;
             }
         }
+
         public void UpdateTask()
         {
             SelectedTask.Name = Name;
@@ -203,10 +207,10 @@ namespace TaskManager.ViewModels
             _repository.UpdateTask(SelectedTask);
             InitializeTaskLists();
         }
+
         public void ResetInputControls()
         {
-            Name = string.Empty;
-            Description = string.Empty;
+            Description = Name = string.Empty;
             SelectedPriority = Priority.Low;
             SelectedStatus = Status.New;
             SelectedCategory = Category.NewFeature;
@@ -215,6 +219,7 @@ namespace TaskManager.ViewModels
             PercentageComplete = 0;
 
         }
+
         public void MouseMoveHandler(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox && lbox.SelectedItem != null)
@@ -222,6 +227,7 @@ namespace TaskManager.ViewModels
                 DragDrop.DoDragDrop(lbox, lbox.SelectedItem, DragDropEffects.Move);
             }
         }
+
         public void DropOnNewTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
@@ -232,6 +238,7 @@ namespace TaskManager.ViewModels
                 NewTasks.Add(task);
             }
         }
+
         public void DropOnInProgressTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
@@ -242,6 +249,7 @@ namespace TaskManager.ViewModels
                 InProgressTasks.Add(task);
             }
         }
+
         public void DropOnCompletedTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
@@ -252,6 +260,7 @@ namespace TaskManager.ViewModels
                 CompletedTasks.Add(task);
             }
         }
+
         private void RemoveTaskFromDragSource(Task task)
         {
             switch (task.Status)
@@ -267,6 +276,7 @@ namespace TaskManager.ViewModels
                     break;
             }
         }
+
         public async void DeleteById(Guid id, Status status)
         {
             if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(MessageStrings.ConfirmDeleteWinTitle, MessageStrings.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
@@ -294,6 +304,7 @@ namespace TaskManager.ViewModels
             }
 
         }
+
         public void ShowSelectedTask()
         {
             if (SelectedTask != null)

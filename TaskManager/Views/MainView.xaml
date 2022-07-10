@@ -7,29 +7,25 @@
                 xmlns:local="clr-namespace:TaskManager"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                 xmlns:cal ="http://www.caliburnproject.org"
+                xmlns:cal ="http://www.caliburnproject.org"
                 Dialog:DialogParticipation.Register="{Binding}"
-                mc:Ignorable="d"
-                Icon="/Styles/AppIcon.png"
+                mc:Ignorable="d" Icon="/Styles/AppIcon.png"
                 TitleBarHeight="30"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                 WindowState="Maximized"
                 Title="Task Manager" MinHeight="450" MinWidth="800">
+
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <TextBlock Text="Db Provider" Style="{StaticResource TM.TextBlock.TitleBarDbName}"/>
-            <ComboBox ItemsSource="{Binding DatabaseProvidersList}" 
-                      SelectedItem="{Binding DatabaseProviderName,Mode=TwoWay}" 
-                      cal:Message.Attach="[Event SelectionChanged] = [Action ChangeDb()]"
-                      Width="160" Margin="3"
-                      FontWeight="DemiBold" Background="#F6F5F9"/>
-            <Button  Click="SwitchTheme" ToolTip="Switch Theme">
+            <ComboBox ItemsSource="{Binding DatabaseProvidersList}" SelectedItem="{Binding DatabaseProviderName,Mode=TwoWay}" 
+                      cal:Message.Attach="[Event SelectionChanged] = [Action ChangeDb()]" Width="160" Margin="3" FontWeight="DemiBold" Background="#F6F5F9"/>
+            <Button Click="SwitchTheme" ToolTip="Switch Theme">
                 <iconPacks:PackIconModern Kind="Moon" Width="20" Height="15"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
-   
-        <ContentControl x:Name="ActiveItem"/>
-       
+
+    <ContentControl x:Name="ActiveItem"/>
 
 </mah:MetroWindow>
