@@ -38,13 +38,13 @@ namespace TaskManager.Models
             get { return _priority; }
             set { _priority = value; NotifyOfPropertyChange(nameof(Priority)); }
         }
-        public Category Category 
+        public Category Category
         {
             get { return _category; }
             set { _category = value; NotifyOfPropertyChange(nameof(Category)); }
         }
-        public float PercentageCompleted 
-        { 
+        public float PercentageCompleted
+        {
             get { return _percentageCompleted; }
             set { _percentageCompleted = value; NotifyOfPropertyChange(nameof(PercentageCompleted)); }
         }
@@ -61,7 +61,7 @@ namespace TaskManager.Models
         {
             Id = Guid.NewGuid();
         }
-        public Task(string name, string description, Status status, Priority priority, DateTime dueDate,Category taskCategory, float percentageCompleted)
+        public Task(string name, string description, Status status, Priority priority, DateTime dueDate, Category taskCategory, float percentageCompleted)
         {
             Id = Guid.NewGuid();
             Name = name;
