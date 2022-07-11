@@ -20,6 +20,7 @@
     <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="LightSkyBlue"/>
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FBBF79"/>
     <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#CD5849"/>
+    
     <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
         <Setter Property="Width" Value="12"/>
         <Setter Property="Height" Value="12"/>
