@@ -44,11 +44,24 @@
                            Foreground="Black" Opacity="0.5"
                            TextTrimming="CharacterEllipsis"  VerticalAlignment="Bottom" Padding="3" />
             </WrapPanel>
-            <TextBlock Grid.Column="1" VerticalAlignment="Bottom"  
-                       HorizontalAlignment="Right"
-                       Text="{Binding DueDate, 
-                       Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" 
-                       FontSize="10" Padding="3"
+            
+            <WrapPanel Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <iconPacks:PackIconBootstrapIcons Kind="ClockFill" Visibility="Collapsed" 
+                                              Height="11" VerticalAlignment="Bottom"
+                                              Foreground="{StaticResource TM.Colors.PrimaryColor}"
+                                              Margin="0 0 0 4">
+                    <iconPacks:PackIconBootstrapIcons.Style>
+                        <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </iconPacks:PackIconBootstrapIcons.Style>
+                </iconPacks:PackIconBootstrapIcons>
+                <TextBlock Text="{Binding DueDate, Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" 
+                       FontSize="10" Padding="3" Margin="0 0 5 0" 
                        ToolTip="Due on"
                        Foreground="Red"/>
         </Grid>
@@ -66,4 +79,32 @@
         <Setter Property="BorderBrush" Value="LightGray"/>
         <Setter Property="Foreground" Value="{Binding Priority, Converter={StaticResource TM.Converters.StatusToColorConverter}}"/>
     </Style>
+
+    <Style x:Key="TM.Button.DefaultStyle" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Background" Value="Red"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TM.RadioButton.DefaultStyle" TargetType="RadioButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="5"/>
+        
+    </Style>
+
+    
 </ResourceDictionary>

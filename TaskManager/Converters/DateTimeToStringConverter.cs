@@ -16,9 +16,9 @@ namespace TaskManager.Converters
             if(value is DateTime dueDate && dueDate!=null)
             {
                 if (dueDate.Date == DateTime.Today.Date)
-                    result += "Today";
+                    result = Constant.Today;
                 else if (dueDate.Date == DateTime.Today.Date.AddDays(1))
-                    result += "Tomorrow";
+                    result = Constant.Tomorrow;
                 else
                     result += $"{dueDate.ToShortDateString()}";
                 result += $" | {dueDate.ToShortTimeString()}";

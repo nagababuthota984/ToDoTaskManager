@@ -11,6 +11,7 @@ namespace TaskManager
         {
             Initialize();
         }
+
         protected override void Configure()
         {
             _container = new SimpleContainer();

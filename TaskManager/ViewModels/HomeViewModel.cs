@@ -114,21 +114,20 @@ namespace TaskManager.ViewModels
 
         public HomeViewModel()
         {
-            DueDate = DateTime.Now;
-            StatusOptions = Enum.GetNames<Status>().ToList();
-            NewTasks = new();
-            InProgressTasks = new();
-            CompletedTasks = new();
+            _repository = Application.Current.Properties[Constant.Database].ToString() == Constant.Sqlite ? sqliteRepository : sqlServerRepository;
+            InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
+            DueDate = DateTime.Now;
+            SelectedStatus = Status.New;
+            SubmitBtnContent = Constant.Create;
+        }
 
         }
         public void CreateTask()
         {
-            if (SelectedStatus == Status.New)
-                NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
-            else if (SelectedStatus == Status.InProgress)
-                InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            if (SubmitBtnContent.Equals(Constant.Create, StringComparison.OrdinalIgnoreCase))
+                CreateTask();
             else
                 CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
             ResetInputControls();
@@ -144,7 +143,14 @@ namespace TaskManager.ViewModels
 
         public void Cancel()
         {
-            ResetInputControls();
+            Description = Name = string.Empty;
+            SelectedPriority = Priority.Low;
+            SelectedStatus = Status.New;
+            SelectedCategory = Category.NewFeature;
+            DueDate = DateTime.Now;
+            SubmitBtnContent = Constant.Create;
+            PercentageComplete = 0;
+
         }
         public void MouseMoveHandler(MouseEventArgs e)
         {
@@ -194,6 +200,51 @@ namespace TaskManager.ViewModels
                     CompletedTasks.Remove(task);
                     break;
             }
+        }
+
+        public async void DeleteById(Guid id, Status status)
+        {
+            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            {
+                try
+                {
+                    _repository.DeleteTaskById(id);
+                    switch (status)
+                    {
+                        case Status.New:
+                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.InProgress:
+                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                        case Status.Completed:
+                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
+                }
+            }
+
+        }
+
+        public void ShowSelectedTask()
+        {
+            if (SelectedTask != null)
+            {
+                SubmitBtnContent = Constant.Update;
+                Name = SelectedTask.Name;
+                Description = SelectedTask.Description;
+                SelectedStatus = SelectedTask.Status;
+                SelectedPriority = SelectedTask.Priority;
+                SelectedCategory = SelectedTask.Category;
+                DueDate = SelectedTask.DueDate;
+                PercentageComplete = SelectedTask.PercentageCompleted;
+            }
+            else
+                ResetInputControls();
         }
     }
 }
