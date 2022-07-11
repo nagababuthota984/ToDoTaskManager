@@ -14,7 +14,7 @@ namespace TaskManager.Views
             InitializeComponent();
         }
 
-        private void SwitchTheme(object sender, System.Windows.RoutedEventArgs e)
+        private void SwitchTheme(object sender, RoutedEventArgs e)
         {
             switch (ThemeManager.Current.DetectTheme(Application.Current).Name)
             {
@@ -24,8 +24,9 @@ namespace TaskManager.Views
                 case "Light.Blue":
                     ThemeManager.Current.ChangeTheme(Application.Current, "Dark.Blue");
                     break;
-
             }
         }
+        
+        
     }
 }

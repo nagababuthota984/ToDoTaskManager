@@ -6,8 +6,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TaskManager.Common;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls;
+using TaskManager.Data;
 
 namespace TaskManager.ViewModels
 {
@@ -16,15 +20,61 @@ namespace TaskManager.ViewModels
         #region Fields
         private DateTime _dueDate;
         private string _name;
+        private Task _selectedTask;
         private string _description;
         private ObservableCollection<Task> _newTasks;
         private ObservableCollection<Task> _inProgressTasks;
         private ObservableCollection<Task> _completedTasks;
         private Priority _selectedPriority;
         private Status _selectedStatus;
-        private List<string> _statusOptions;
+        private string _submitBtnContent;
+        private float _percentageComplete;
+        private Category _selectedCategory;
+        private readonly ITaskRepository _repository;
         #endregion
         #region Properties
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                NotifyOfPropertyChange(nameof(Name));
+                NotifyOfPropertyChange(nameof(CanCreateOrUpdateTask));
+            }
+        }
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
+        }
+        public Status SelectedStatus
+        {
+            get { return _selectedStatus; }
+            set
+            {
+                _selectedStatus = value;
+                NotifyOfPropertyChange(nameof(SelectedStatus));
+            }
+        }
+        public Priority SelectedPriority
+        {
+            get { return _selectedPriority; }
+            set
+            {
+                _selectedPriority = value;
+                NotifyOfPropertyChange(nameof(SelectedPriority));
+            }
+        }
+        public Category SelectedCategory
+        {
+            get { return _selectedCategory; }
+            set
+            {
+                _selectedCategory = value;
+                NotifyOfPropertyChange(nameof(SelectedCategory));
+            }
+        }
         public DateTime DueDate
         {
             get
@@ -36,7 +86,22 @@ namespace TaskManager.ViewModels
                 _dueDate = value;
                 NotifyOfPropertyChange(nameof(DueDate));
             }
-
+        }
+        public float PercentageComplete
+        {
+            get { return _percentageComplete; }
+            set
+            {
+                _percentageComplete = value;
+                if (value == 100)
+                    SelectedStatus = Status.Completed;
+                NotifyOfPropertyChange(nameof(PercentageComplete));
+            }
+        }
+        public Task SelectedTask
+        {
+            get { return _selectedTask; }
+            set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
         }
         public ObservableCollection<Task> NewTasks
         {
@@ -66,131 +131,132 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CompletedTasks));
             }
         }
-        public Priority SelectedPriority
-        {
-            get { return _selectedPriority; }
-            set
-            {
-                _selectedPriority = value;
-                NotifyOfPropertyChange(nameof(SelectedPriority));
-            }
-        }
-        public Status SelectedStatus
-        {
-            get { return _selectedStatus; }
-            set
-            {
-                _selectedStatus = value;
-                NotifyOfPropertyChange(nameof(SelectedStatus));
-            }
-        }
-        public List<string> StatusOptions
+        public IEnumerable<Status> StatusOptions
         {
             get
             {
-                return _statusOptions;
-            }
-            set
-            {
-                _statusOptions = value; NotifyOfPropertyChange(nameof(StatusOptions));
+                return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
-
-        public string Name
+        public bool CanCreateOrUpdateTask
         {
-            get { return _name; }
-            set { _name = value; NotifyOfPropertyChange(nameof(Name)); }
+            get { return !string.IsNullOrWhiteSpace(Name); }
         }
-        public string Description
+        public string SubmitBtnContent
         {
-            get { return _description; }
-            set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
+            get { return _submitBtnContent; }
+            set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
         }
-
-
-
 
         #endregion
 
-        public HomeViewModel()
+        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
         {
             _repository = Application.Current.Properties[Constant.Database].ToString() == Constant.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
-            DueDate = DateTime.Now;
-            SelectedStatus = Status.New;
-            SubmitBtnContent = Constant.Create;
+
+        private void InitializeTaskLists()
+        {
+            NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
+            InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
+            CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
         }
 
-        }
-        public void CreateTask()
+        public void CreateOrUpdateTask()
         {
-            if (SubmitBtnContent.Equals(Constant.Create, StringComparison.OrdinalIgnoreCase))
-                CreateTask();
+            if (SelectedStatus == Status.New)
+                NewTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+            else if (SelectedStatus == Status.InProgress)
+                InProgressTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
             else
-                CompletedTasks.Add(new(Name, Description, SelectedStatus, SelectedPriority, DueDate));
+                UpdateTask();
             ResetInputControls();
         }
 
-        private void ResetInputControls()
+        public void CreateTask()
         {
-            Name = string.Empty;
-            Description = string.Empty;
-            SelectedStatus = Status.New;
-            SelectedPriority = Priority.Low;
+            Task task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
+            _repository.CreateTask(task);
+            switch (task.Status)
+            {
+                case Status.New:
+                    NewTasks.Add(task);
+                    break;
+                case Status.InProgress:
+                    InProgressTasks.Add(task);
+                    break;
+                case Status.Completed:
+                    CompletedTasks.Add(task);
+                    break;
+            }
         }
 
-        public void Cancel()
+        public void UpdateTask()
         {
-            Description = Name = string.Empty;
-            SelectedPriority = Priority.Low;
-            SelectedStatus = Status.New;
-            SelectedCategory = Category.NewFeature;
-            DueDate = DateTime.Now;
-            SubmitBtnContent = Constant.Create;
-            PercentageComplete = 0;
-
+            SelectedTask.Name = Name;
+            SelectedTask.Description = Description;
+            SelectedTask.Status = SelectedStatus;
+            SelectedTask.Priority = SelectedPriority;
+            SelectedTask.Category = SelectedCategory;
+            SelectedTask.PercentageCompleted = PercentageComplete;
+            SelectedTask.DueDate = DueDate;
+            _repository.UpdateTask(SelectedTask);
+            InitializeTaskLists();
         }
+
+        public void ResetInputControls()
+        {
+            ResetInputControls();
+        }
+
         public void MouseMoveHandler(MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox &&lbox.SelectedItem!=null)
+            if (e.LeftButton == MouseButtonState.Pressed && e.Source is ListBox lbox && lbox.SelectedItem != null)
             {
                 DragDrop.DoDragDrop(lbox, lbox.SelectedItem, DragDropEffects.Move);
             }
         }
+
         public void DropOnNewTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.New;
+                _repository.UpdateTask(task);
                 NewTasks.Add(task);
             }
         }
+
         public void DropOnInProgressTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.InProgress;
+                _repository.UpdateTask(task);
                 InProgressTasks.Add(task);
             }
         }
+
         public void DropOnCompletedTasks(DragEventArgs e)
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
             {
                 RemoveTaskFromDragSource(task);
                 task.Status = Status.Completed;
+                _repository.UpdateTask(task);
                 CompletedTasks.Add(task);
             }
         }
+
         private void RemoveTaskFromDragSource(Task task)
         {
-            switch(task.Status)
+            switch (task.Status)
             {
-                case Status.New: 
+                case Status.New:
                     NewTasks.Remove(task);
                     break;
                 case Status.InProgress:
@@ -202,49 +268,5 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public async void DeleteById(Guid id, Status status)
-        {
-            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
-            {
-                try
-                {
-                    _repository.DeleteTaskById(id);
-                    switch (status)
-                    {
-                        case Status.New:
-                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.InProgress:
-                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.Completed:
-                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                    }
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
-                }
-            }
-
-        }
-
-        public void ShowSelectedTask()
-        {
-            if (SelectedTask != null)
-            {
-                SubmitBtnContent = Constant.Update;
-                Name = SelectedTask.Name;
-                Description = SelectedTask.Description;
-                SelectedStatus = SelectedTask.Status;
-                SelectedPriority = SelectedTask.Priority;
-                SelectedCategory = SelectedTask.Category;
-                DueDate = SelectedTask.DueDate;
-                PercentageComplete = SelectedTask.PercentageCompleted;
-            }
-            else
-                ResetInputControls();
-        }
     }
 }
