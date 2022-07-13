@@ -85,6 +85,7 @@
     </Style>
     
     <DataTemplate x:Key="TM.ListBox.TaskListViewTemplate">
+        
         <Grid Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*"/>
@@ -95,8 +96,18 @@
             <TextBlock Text="{Binding Name}" FontWeight="DemiBold" FontSize="17" Padding="3"/>
             
             <Button  Grid.Column="1" HorizontalAlignment="Right" Width="Auto" VerticalAlignment="Top" BorderThickness="0" Background="Transparent"
-                    Foreground="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}" 
+                    Foreground="{StaticResource TM.Colors.PrimaryColor}" 
                     ToolTip="Edit task" >
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
                 <iconPacks:BoxIcons Kind="SolidPencil"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
@@ -109,7 +120,18 @@
             <Button  Grid.Column="2" HorizontalAlignment="Right"
                      Width="Auto" VerticalAlignment="Top" ToolTip="Delete task"
                     BorderThickness="0" Background="Transparent" Foreground="#E65B65"
-                    Style="{StaticResource TM.Button.DefaultStyle}" Margin="0 0 5 0" >
+                     Margin="0 0 5 0" >
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
                 <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
@@ -151,8 +173,19 @@
                        Foreground="{Binding DueDate, Converter ={StaticResource TM.Converters.DueDateToColorConverter}}"/>
             </WrapPanel>
             <Button  Grid.Column="1" HorizontalAlignment="Center" Width="Auto" VerticalAlignment="Top" BorderThickness="0" Background="Transparent"
-                    Foreground="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}"
+                    Foreground="{StaticResource TM.Colors.PrimaryColor}" 
                     ToolTip="Edit task" >
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
                 <iconPacks:BoxIcons Kind="SolidPencil"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
@@ -165,7 +198,17 @@
             <Button  Grid.Column="1" HorizontalAlignment="Right"
                      Width="Auto" VerticalAlignment="Top" ToolTip="Delete task"
                     BorderThickness="0" Background="Transparent" Foreground="#E65B65"
-                    Style="{StaticResource TM.Button.DefaultStyle}" Margin="0 0 5 0" >
+                     Margin="0 0 5 0" >
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
                 <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
