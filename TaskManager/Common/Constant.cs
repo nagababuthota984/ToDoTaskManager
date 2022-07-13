@@ -16,6 +16,11 @@
         public const string ConfirmChangeDb = "Are you sure you want to change the database?";
         public const string Today = "Today";
         public const string Tomorrow = "Tomorrow";
+        public const string TaskCompletedWinTitle = "Task Completed?";
+        public const string TaskCompletedMsg = "Once a task moved to Completed stage,it can't be brought back. are you sure that you want to move it to completed stage?";
+        public const string Overdue = "Overdue";
+        public const string ErrorOccured = "Error Occured";
+
 
 
 

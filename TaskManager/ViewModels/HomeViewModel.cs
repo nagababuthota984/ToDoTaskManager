@@ -24,12 +24,16 @@ namespace TaskManager.ViewModels
         private string _description;
         private ObservableCollection<Task> _newTasks;
         private ObservableCollection<Task> _inProgressTasks;
-        private ObservableCollection<Task> _completedTasks;
+        private ObservableCollection<Task> _completedFilteredTasks;
         private Priority _selectedPriority;
+        private TaskViewMode _selectedTaskView;
         private Status _selectedStatus;
         private string _submitBtnContent;
         private float _percentageComplete;
+        private string _searchKeyword;
         private Category _selectedCategory;
+        private ObservableCollection<Task> _newFilteredTasks;
+        private ObservableCollection<Task> _inProgressFilteredTasks;
         private readonly ITaskRepository _repository;
         #endregion
         #region Properties
@@ -113,6 +117,16 @@ namespace TaskManager.ViewModels
             }
 
         }
+        public ObservableCollection<Task> FilteredNewTasks
+        {
+            get { return _newFilteredTasks; }
+            set
+            {
+                _newFilteredTasks = value;
+                NotifyOfPropertyChange(nameof(FilteredNewTasks));
+            }
+
+        }
         public ObservableCollection<Task> InProgressTasks
         {
             get { return _inProgressTasks; }
@@ -122,55 +136,95 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(InProgressTasks));
             }
         }
-        public ObservableCollection<Task> CompletedTasks
+        public ObservableCollection<Task> FilteredInProgressTasks
         {
-            get { return _completedTasks; }
+            get { return _inProgressFilteredTasks; }
             set
             {
-                _completedTasks = value;
+                _inProgressFilteredTasks = value;
+                NotifyOfPropertyChange(nameof(FilteredInProgressTasks));
+            }
+        }
+        public ObservableCollection<Task> CompletedTasks
+        {
+            get { return _completedFilteredTasks; }
+            set
+            {
+                _completedFilteredTasks = value;
                 NotifyOfPropertyChange(nameof(CompletedTasks));
             }
         }
-        public IEnumerable<Status> StatusOptions
+        public ObservableCollection<Task> FilteredCompletedTasks
         {
-            get
+            get { return _completedFilteredTasks; }
+            set
             {
-                return Enum.GetValues(typeof(Status)).Cast<Status>();
+                _completedFilteredTasks = value;
+                NotifyOfPropertyChange(nameof(FilteredCompletedTasks));
+            }
+        }
+        public TaskViewMode SelectedTaskView
+        {
+            get { return _selectedTaskView; }
+            set
+            {
+                _selectedTaskView = value;
+                NotifyOfPropertyChange(nameof(SelectedTaskView));
+                NotifyOfPropertyChange(nameof(CanSwitchToListView));
+                NotifyOfPropertyChange(nameof(CanSwitchToCardView));
             }
         }
         public bool CanCreateOrUpdateTask
         {
             get { return !string.IsNullOrWhiteSpace(Name); }
         }
+        public bool CanSwitchToListView
+        {
+            get { return SelectedTaskView == TaskViewMode.Card; }
+        }
+        public bool CanSwitchToCardView
+        {
+            get { return SelectedTaskView == TaskViewMode.List; }
+        }
         public string SubmitBtnContent
         {
             get { return _submitBtnContent; }
             set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
+        }
+        public string SearchKeyword
+        {
+            get { return _searchKeyword; }
+            set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword));}
         }
 
         #endregion
 
         public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
         {
-            _repository = Application.Current.Properties[MessageStrings.Database].ToString() == MessageStrings.Sqlite ? sqliteRepository : sqlServerRepository;
+            _repository = Application.Current.Properties[Constant.Database].ToString() == Constant.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             Name = string.Empty;
             Description = string.Empty;
             DueDate = DateTime.Now;
             SelectedStatus = Status.New;
-            SubmitBtnContent = MessageStrings.Create;
+            SubmitBtnContent = Constant.Create;
+            SelectedTaskView = TaskViewMode.Card;
+           
         }
 
         private void InitializeTaskLists()
         {
-            NewTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.New));
-            InProgressTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.InProgress));
-            CompletedTasks = new(_repository.GetAllTasks().Where(tsk => tsk.Status == Status.Completed));
+            NewTasks = new(_repository.GetAllTasks(Status.New));
+            InProgressTasks = new(_repository.GetAllTasks(Status.InProgress));
+            CompletedTasks = new(_repository.GetAllTasks(Status.Completed));
+            FilteredNewTasks = new(NewTasks);
+            FilteredInProgressTasks = new(InProgressTasks);
+            FilteredCompletedTasks = new(CompletedTasks);
         }
 
         public void CreateOrUpdateTask()
         {
-            if (SubmitBtnContent.Equals(MessageStrings.Create, StringComparison.OrdinalIgnoreCase))
+            if (SubmitBtnContent.Equals(Constant.Create, StringComparison.OrdinalIgnoreCase))
                 CreateTask();
             else
                 UpdateTask();
@@ -179,33 +233,81 @@ namespace TaskManager.ViewModels
 
         public void CreateTask()
         {
-            Task task = new(Name, Description, SelectedStatus, SelectedPriority, DueDate, SelectedCategory, PercentageComplete);
+            Task task = new(Name)
+            {
+                Description = Description,
+                Status = SelectedStatus,
+                Priority = SelectedPriority,
+                DueDate = DueDate,
+                Category = SelectedCategory,
+                PercentageCompleted = PercentageComplete
+            };
             _repository.CreateTask(task);
+            AddTaskToUI(task);
+
+        }
+
+        private void AddTaskToUI(Task task)
+        {
             switch (task.Status)
             {
                 case Status.New:
                     NewTasks.Add(task);
+                    FilteredNewTasks.Add(task);
                     break;
                 case Status.InProgress:
                     InProgressTasks.Add(task);
+                    FilteredInProgressTasks.Add(task);
                     break;
                 case Status.Completed:
                     CompletedTasks.Add(task);
+                    FilteredCompletedTasks.Add(task);
                     break;
             }
         }
 
         public void UpdateTask()
         {
-            SelectedTask.Name = Name;
-            SelectedTask.Description = Description;
-            SelectedTask.Status = SelectedStatus;
-            SelectedTask.Priority = SelectedPriority;
-            SelectedTask.Category = SelectedCategory;
-            SelectedTask.PercentageCompleted = PercentageComplete;
-            SelectedTask.DueDate = DueDate;
-            _repository.UpdateTask(SelectedTask);
-            InitializeTaskLists();
+            Task task = new()
+            {
+                Id = SelectedTask.Id,
+                Name = Name,
+                Description = Description,
+                Status = SelectedStatus,
+                Priority = SelectedPriority,
+                Category = SelectedCategory,
+                PercentageCompleted = PercentageComplete,
+                DueDate = DueDate
+            };
+            RemoveTaskFromUIById(SelectedTask.Id,SelectedTask.Status);
+            AddTaskToUI(task);
+            _repository.UpdateTask(task);
+        }
+
+        private void RemoveTaskFromUIById(Guid id, Status status)
+        {
+            try
+            {
+                switch (status)
+                {
+                    case Status.New:
+                        NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        FilteredNewTasks.Remove(FilteredNewTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
+                    case Status.InProgress:
+                        InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        FilteredInProgressTasks.Remove(FilteredInProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
+                    case Status.Completed:
+                        CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        FilteredCompletedTasks.Remove(FilteredCompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, Constant.ErrorOccured);
+            }
         }
 
         public void ResetInputControls()
@@ -215,7 +317,7 @@ namespace TaskManager.ViewModels
             SelectedStatus = Status.New;
             SelectedCategory = Category.NewFeature;
             DueDate = DateTime.Now;
-            SubmitBtnContent = MessageStrings.Create;
+            SubmitBtnContent = Constant.Create;
             PercentageComplete = 0;
 
         }
@@ -232,10 +334,11 @@ namespace TaskManager.ViewModels
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.New)
             {
-                RemoveTaskFromDragSource(task);
+                RemoveTaskFromUI(task);
                 task.Status = Status.New;
                 _repository.UpdateTask(task);
                 NewTasks.Add(task);
+                FilteredNewTasks.Add(task);
             }
         }
 
@@ -243,73 +346,67 @@ namespace TaskManager.ViewModels
         {
             if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.InProgress)
             {
-                RemoveTaskFromDragSource(task);
+                RemoveTaskFromUI(task);
                 task.Status = Status.InProgress;
                 _repository.UpdateTask(task);
                 InProgressTasks.Add(task);
+                FilteredInProgressTasks.Add(task);
             }
         }
 
-        public void DropOnCompletedTasks(DragEventArgs e)
+        public async void DropOnCompletedTasks(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
+            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.TaskCompletedWinTitle, Constant.TaskCompletedMsg, MessageDialogStyle.AffirmativeAndNegative) && e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
             {
-                RemoveTaskFromDragSource(task);
+                RemoveTaskFromUI(task);
                 task.Status = Status.Completed;
                 _repository.UpdateTask(task);
                 CompletedTasks.Add(task);
+                FilteredCompletedTasks.Add(task);
             }
         }
 
-        private void RemoveTaskFromDragSource(Task task)
+        private void RemoveTaskFromUI(Task task)
         {
             switch (task.Status)
             {
                 case Status.New:
                     NewTasks.Remove(task);
+                    FilteredNewTasks.Remove(task);
                     break;
                 case Status.InProgress:
                     InProgressTasks.Remove(task);
+                    FilteredInProgressTasks.Remove(task);
                     break;
                 case Status.Completed:
                     CompletedTasks.Remove(task);
+                    FilteredCompletedTasks.Remove(task);
                     break;
             }
         }
 
         public async void DeleteById(Guid id, Status status)
         {
-            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(MessageStrings.ConfirmDeleteWinTitle, MessageStrings.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
             {
                 try
                 {
                     _repository.DeleteTaskById(id);
-                    switch (status)
-                    {
-                        case Status.New:
-                            NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.InProgress:
-                            InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                        case Status.Completed:
-                            CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
-                            break;
-                    }
+                    RemoveTaskFromUIById(id, status);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(MessageStrings.DeleteFailedMsg, MessageStrings.DeleteFailedWinTitle);
+                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
                 }
             }
-
+            ResetInputControls();
         }
-
-        public void ShowSelectedTask()
+        public void DisplayTaskById(Guid id)
         {
+            SelectedTask = _repository.GetTaskById(id);
             if (SelectedTask != null)
             {
-                SubmitBtnContent = MessageStrings.Update;
+                SubmitBtnContent = Constant.Update;
                 Name = SelectedTask.Name;
                 Description = SelectedTask.Description;
                 SelectedStatus = SelectedTask.Status;
@@ -318,9 +415,31 @@ namespace TaskManager.ViewModels
                 DueDate = SelectedTask.DueDate;
                 PercentageComplete = SelectedTask.PercentageCompleted;
             }
-            else
-                ResetInputControls();
         }
 
+        public void SwitchToListView()
+        {
+            SelectedTaskView = TaskViewMode.List;
+        }
+        public void SwitchToCardView()
+        {
+            SelectedTaskView = TaskViewMode.Card;
+        }
+        public void SearchTasks()
+        {
+           if(!string.IsNullOrWhiteSpace(SearchKeyword))
+            {
+                FilteredNewTasks = NewTasks.Count>0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))): new();
+                FilteredInProgressTasks = InProgressTasks.Count>0 ?new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))): new();
+                FilteredCompletedTasks = CompletedTasks.Count>0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+            }
+           else
+            {
+                FilteredNewTasks = new(NewTasks);
+                FilteredInProgressTasks = new(InProgressTasks);
+                FilteredCompletedTasks = new(CompletedTasks);
+            }    
+            
+        }
     }
 }

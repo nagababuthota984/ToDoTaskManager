@@ -9,7 +9,7 @@
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                 xmlns:cal ="http://www.caliburnproject.org"
                 Dialog:DialogParticipation.Register="{Binding}"
-                mc:Ignorable="d" Icon="/Images/AppIcon.png"
+                mc:Ignorable="d" Icon="/Images/app_icon.png"
                 TitleBarHeight="30"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                 WindowState="Maximized"

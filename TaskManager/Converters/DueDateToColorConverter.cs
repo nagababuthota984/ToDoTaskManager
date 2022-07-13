@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace TaskManager.Converters
 {
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class DueDateToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? Visibility.Collapsed : Visibility.Visible;
+            return value is DateTime dueDate && dueDate < DateTime.Now
+                ?new SolidColorBrush(Colors.Red)
+                :new SolidColorBrush(Colors.Green);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

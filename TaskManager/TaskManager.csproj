@@ -9,6 +9,9 @@
 	
 
   <ItemGroup>
+    <None Remove="Images\tasks_completed.png" />
+    <None Remove="Images\tasks_inprogress.png" />
+    <None Remove="Images\tasks_new.png" />
     <None Remove="Styles\AppIcon.png" />
   </ItemGroup>
 
@@ -26,7 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\AppIcon.png" />
+    <Resource Include="Images\app_icon.png" />
+    <Resource Include="Images\tasks_completed.png" />
+    <Resource Include="Images\tasks_inprogress.png" />
+    <Resource Include="Images\tasks_new.png" />
   </ItemGroup>
 
 </Project>

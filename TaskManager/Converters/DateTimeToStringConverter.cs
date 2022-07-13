@@ -12,10 +12,12 @@ namespace TaskManager.Converters
             string result=string.Empty;
             if(value is DateTime dueDate)
             {
-                if (dueDate.Date == DateTime.Today.Date)
-                    result = Constant.Today;
+                if (dueDate.Date < DateTime.Now)
+                    result = Constant.Overdue;
                 else if (dueDate.Date == DateTime.Today.Date.AddDays(1))
                     result += Constant.Tomorrow;
+                else if (dueDate.Date == DateTime.Today.Date)
+                    result += Constant.Today;
                 else
                     result += $"{dueDate.ToShortDateString()}";
                 result += $" | {dueDate.ToShortTimeString()}";

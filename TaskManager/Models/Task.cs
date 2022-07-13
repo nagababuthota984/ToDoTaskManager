@@ -60,19 +60,14 @@ namespace TaskManager.Models
         public Task()
         {
             Id = Guid.NewGuid();
+            CreatedOn = DateTime.Now;
         }
-        public Task(string name, string description, Status status, Priority priority, DateTime dueDate, Category taskCategory, float percentageCompleted)
+        public Task(string name)
         {
             Id = Guid.NewGuid();
             Name = name;
-            Description = description;
-            Status = status;
-            Priority = priority;
-            CreatedOn = DateTime.Now;
-            Category = taskCategory;
-            PercentageCompleted = percentageCompleted;
-            DueDate = dueDate;
             IsDeleted = false;
+            CreatedOn = DateTime.Now;
         }
 
     }

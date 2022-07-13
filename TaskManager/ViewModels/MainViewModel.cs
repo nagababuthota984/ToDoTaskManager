@@ -21,7 +21,7 @@ namespace TaskManager.ViewModels
         #region Properties
         public List<string> DatabaseProvidersList
         {
-            get { return new List<string>() { MessageStrings.Sqlite, MessageStrings.Sqlserver }; }
+            get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
         }
         public string DatabaseProviderName
         {
@@ -34,7 +34,7 @@ namespace TaskManager.ViewModels
         public MainViewModel(SimpleContainer container)
         {
             _container = container;
-            DatabaseProviderName = Application.Current.Properties[MessageStrings.Database].ToString();
+            DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
             DisplayHomeView();
         }
         public async void ChangeDb()
@@ -44,25 +44,25 @@ namespace TaskManager.ViewModels
                 handleSelectionChangedEvent = false;
                 switch (DatabaseProviderName)
                 {
-                    case MessageStrings.Sqlserver:
-                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(MessageStrings.ChangeDbTitleMsg, $"{MessageStrings.DbChangeResultsIn}{MessageStrings.Sqlserver} database. {MessageStrings.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
+                    case Constant.Sqlserver:
+                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg, $"{Constant.DbChangeResultsIn}{Constant.Sqlserver} database. {Constant.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
                         {
-                            Application.Current.Properties[MessageStrings.Database] = MessageStrings.Sqlserver;
+                            Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
                         }
                         else
                         {
-                            DatabaseProviderName = MessageStrings.Sqlite;
+                            DatabaseProviderName = Constant.Sqlite;
                         }
 
                         break;
                     default:
-                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(MessageStrings.ChangeDbTitleMsg, $"{MessageStrings.DbChangeResultsIn}{MessageStrings.Sqlite} database. {MessageStrings.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
+                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg, $"{Constant.DbChangeResultsIn}{Constant.Sqlite} database. {Constant.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
                         {
-                            Application.Current.Properties[MessageStrings.Database] = MessageStrings.Sqlite;
+                            Application.Current.Properties[Constant.Database] = Constant.Sqlite;
                         }
                         else
                         {
-                            DatabaseProviderName = MessageStrings.Sqlserver;
+                            DatabaseProviderName = Constant.Sqlserver;
                         }
 
                         break;
