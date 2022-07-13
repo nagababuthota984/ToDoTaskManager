@@ -24,7 +24,11 @@ namespace TaskManager.Models
             Card,
             List
         }
-        
+        public enum UserRole
+        {
+            Create,
+            Edit
+        }
         public enum Category
         {
             [Description("New Feature")]

@@ -196,6 +196,10 @@ namespace TaskManager.ViewModels
             get { return _searchKeyword; }
             set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword));}
         }
+        public UserRole UserRole
+        {
+            get; set;
+        }
 
         #endregion
 
@@ -207,8 +211,9 @@ namespace TaskManager.ViewModels
             Description = string.Empty;
             DueDate = DateTime.Now;
             SelectedStatus = Status.New;
-            SubmitBtnContent = Constant.Create;
             SelectedTaskView = TaskViewMode.Card;
+            UserRole = UserRole.Create;
+            SubmitBtnContent = Constant.Create;
            
         }
 
@@ -224,7 +229,7 @@ namespace TaskManager.ViewModels
 
         public void CreateOrUpdateTask()
         {
-            if (SubmitBtnContent.Equals(Constant.Create, StringComparison.OrdinalIgnoreCase))
+            if (UserRole == UserRole.Create)
                 CreateTask();
             else
                 UpdateTask();
@@ -317,9 +322,10 @@ namespace TaskManager.ViewModels
             SelectedStatus = Status.New;
             SelectedCategory = Category.NewFeature;
             DueDate = DateTime.Now;
+            UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
             PercentageComplete = 0;
-
+            
         }
 
         public void MouseMoveHandler(MouseEventArgs e)
@@ -406,6 +412,7 @@ namespace TaskManager.ViewModels
             SelectedTask = _repository.GetTaskById(id);
             if (SelectedTask != null)
             {
+                UserRole = UserRole.Edit;
                 SubmitBtnContent = Constant.Update;
                 Name = SelectedTask.Name;
                 Description = SelectedTask.Description;
