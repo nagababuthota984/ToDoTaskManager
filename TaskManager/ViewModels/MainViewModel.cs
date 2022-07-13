@@ -14,7 +14,6 @@ namespace TaskManager.ViewModels
 
         private string _dbProviderName;
 
-        private static bool handleSelectionChangedEvent = true;
 
         #endregion
 
@@ -39,37 +38,18 @@ namespace TaskManager.ViewModels
         }
         public async void ChangeDb()
         {
-            if (handleSelectionChangedEvent)
+            switch (DatabaseProviderName)
             {
-                handleSelectionChangedEvent = false;
-                switch (DatabaseProviderName)
-                {
-                    case Constant.Sqlserver:
-                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg, $"{Constant.DbChangeResultsIn}{Constant.Sqlserver} database. {Constant.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
-                        {
-                            Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
-                        }
-                        else
-                        {
-                            DatabaseProviderName = Constant.Sqlite;
-                        }
-
-                        break;
-                    default:
-                        if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg, $"{Constant.DbChangeResultsIn}{Constant.Sqlite} database. {Constant.ConfirmChangeDb}", MessageDialogStyle.AffirmativeAndNegative))
-                        {
-                            Application.Current.Properties[Constant.Database] = Constant.Sqlite;
-                        }
-                        else
-                        {
-                            DatabaseProviderName = Constant.Sqlserver;
-                        }
-
-                        break;
-                }
-                DisplayHomeView();
-                handleSelectionChangedEvent = true;
+                case Constant.Sqlserver:
+                    Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
+                    break;
+                default:
+                    Application.Current.Properties[Constant.Database] = Constant.Sqlite;
+                    break;
             }
+            await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg,$"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
+
+            DisplayHomeView();
         }
 
         public void DisplayHomeView()

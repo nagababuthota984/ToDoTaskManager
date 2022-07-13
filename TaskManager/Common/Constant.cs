@@ -11,7 +11,7 @@
         public const string Database = "Database";
         public const string Sqlite = "Sqlite";
         public const string Sqlserver = "Sqlserver";
-        public const string ChangeDbTitleMsg = "Change database";
+        public const string ChangeDbTitleMsg = "Database Changed!";
         public const string DbChangeResultsIn = "This action results in switching to ";
         public const string ConfirmChangeDb = "Are you sure you want to change the database?";
         public const string Today = "Today";
@@ -21,8 +21,6 @@
         public const string Overdue = "Overdue";
         public const string ErrorOccured = "Error Occured";
 
-
-
-
+        public static string DbSwitchSuccessMsg = "Successfully switched to ";
     }
 }
