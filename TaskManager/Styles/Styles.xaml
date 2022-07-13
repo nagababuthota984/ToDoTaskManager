@@ -1,22 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:converters="clr-namespace:TaskManager.Converters"
+                   
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                     xmlns:cal ="http://www.caliburnproject.org">
 
 
-    <converters:StatusToColorConverter x:Key="TM.Converters.StatusToColorConverter"/>
-    <converters:EnumToBooleanConverter x:Key="TM.Converters.EnumToBooleanConverter"/>
-    <converters:DateTimeToStringConverter x:Key="TM.Converters.DateTimeToStringConverter"/>
-    <converters:BooleanToVisibilityConverter x:Key="TM.Converters.BooleanToVisibilityConverter"/>
-    <converters:DescriptionToMessageConverter x:Key="TM.Converters.DescriptionToMessageConverter"/>
-    <converters:StatusToVisibilityConverter x:Key="TM.Converters.StatusToVisibilityConverter"/>
-    <converters:DueDateToColorConverter x:Key="TM.Converters.DueDateToColorConverter"/>
-    <converters:ItemsCountToStyleConverter x:Key="TM.Converters.ItemsCountToStyleConverter"/>
-    <converters:EnumToTaskViewConverter x:Key="TM.Converters.EnumToTaskViewConverter"/>
-
+    
 
     <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
     <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="#00A4EF"/>
@@ -92,6 +83,7 @@
         <Setter Property="Margin" Value="0 14 0 0"/>
         <Setter Property="FontSize" Value="14"/>
     </Style>
+    
     <DataTemplate x:Key="TM.ListBox.TaskListViewTemplate">
         <Grid Height="30">
             <Grid.ColumnDefinitions>
@@ -187,7 +179,6 @@
         </Grid>
     </DataTemplate>
 
-
     <Style x:Key="TM.TextBlock.TitleBarDbName" TargetType="TextBlock">
         <Setter Property="TextAlignment" Value="Center"/>
         <Setter Property="FontWeight" Value="DemiBold"/>
@@ -281,7 +272,6 @@
         </Setter>
 
     </Style>
-
 
     <Style x:Key="TM.RadioButton.DefaultStyle" TargetType="RadioButton">
         <Setter Property="Background" Value="Transparent"/>

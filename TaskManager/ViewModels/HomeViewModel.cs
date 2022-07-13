@@ -24,6 +24,7 @@ namespace TaskManager.ViewModels
         private string _description;
         private ObservableCollection<Task> _newTasks;
         private ObservableCollection<Task> _inProgressTasks;
+        private ObservableCollection<Task> _completedTasks;
         private ObservableCollection<Task> _completedFilteredTasks;
         private Priority _selectedPriority;
         private TaskViewMode _selectedTaskView;
@@ -147,10 +148,10 @@ namespace TaskManager.ViewModels
         }
         public ObservableCollection<Task> CompletedTasks
         {
-            get { return _completedFilteredTasks; }
+            get { return _completedTasks; }
             set
             {
-                _completedFilteredTasks = value;
+                _completedTasks = value;
                 NotifyOfPropertyChange(nameof(CompletedTasks));
             }
         }
@@ -161,6 +162,13 @@ namespace TaskManager.ViewModels
             {
                 _completedFilteredTasks = value;
                 NotifyOfPropertyChange(nameof(FilteredCompletedTasks));
+            }
+        }
+        public IEnumerable<Status> StatusOptions
+        {
+            get
+            {
+                return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
         public TaskViewMode SelectedTaskView
@@ -194,7 +202,7 @@ namespace TaskManager.ViewModels
         public string SearchKeyword
         {
             get { return _searchKeyword; }
-            set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword));}
+            set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword)); }
         }
         public UserRole UserRole
         {
@@ -214,7 +222,7 @@ namespace TaskManager.ViewModels
             SelectedTaskView = TaskViewMode.Card;
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
-           
+
         }
 
         private void InitializeTaskLists()
@@ -284,7 +292,7 @@ namespace TaskManager.ViewModels
                 PercentageCompleted = PercentageComplete,
                 DueDate = DueDate
             };
-            RemoveTaskFromUIById(SelectedTask.Id,SelectedTask.Status);
+            RemoveTaskFromUIById(SelectedTask.Id, SelectedTask.Status);
             AddTaskToUI(task);
             _repository.UpdateTask(task);
         }
@@ -325,7 +333,7 @@ namespace TaskManager.ViewModels
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
             PercentageComplete = 0;
-            
+
         }
 
         public void MouseMoveHandler(MouseEventArgs e)
@@ -435,21 +443,34 @@ namespace TaskManager.ViewModels
             SelectedTaskView = TaskViewMode.Card;
         }
 
-        public void SearchTasks()
+        public async void SearchTasks()
         {
-           if(!string.IsNullOrWhiteSpace(SearchKeyword))
+            if (!string.IsNullOrWhiteSpace(SearchKeyword))
             {
-                FilteredNewTasks = NewTasks.Count>0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))): new();
-                FilteredInProgressTasks = InProgressTasks.Count>0 ?new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))): new();
-                FilteredCompletedTasks = CompletedTasks.Count>0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                //await System.Threading.Tasks.Task.Run(() =>
+                //{
+                //    FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                //});
+                //await System.Threading.Tasks.Task.Run(() =>
+                //{
+                //    FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                //});
+                //await System.Threading.Tasks.Task.Run(() =>
+                //{
+                //    FilteredCompletedTasks = CompletedTasks.Count > 0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                //});
+
+                FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                FilteredCompletedTasks = CompletedTasks.Count > 0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
             }
-           else
+            else
             {
                 FilteredNewTasks = new(NewTasks);
                 FilteredInProgressTasks = new(InProgressTasks);
                 FilteredCompletedTasks = new(CompletedTasks);
-            }    
-            
+            }
+
         }
     }
 }
