@@ -31,7 +31,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBox Grid.Column="1" Grid.ColumnSpan="2" x:Name="SearchKeyword"  Margin="4" mah:TextBoxHelper.Watermark="Search tasks by name.." Padding="5" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.SelectAllOnFocus="True" Background="#F7F7F7"
+        <TextBox Grid.Column="1" Grid.ColumnSpan="2" x:Name="SearchKeyword"  Margin="4" mah:TextBoxHelper.Watermark="Search tasks by name.." Padding="5" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.UseFloatingWatermark="False" mah:TextBoxHelper.SelectAllOnFocus="True" Background="#F7F7F7"
                      cal:Message.Attach="[Event TextChanged]=[Action SearchTasks]"/>
         <Grid x:Name="PriorityIndicators" Grid.Column="3" >
             <Grid.ColumnDefinitions>

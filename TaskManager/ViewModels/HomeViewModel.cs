@@ -12,6 +12,7 @@ using static TaskManager.Models.Enums;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
 using TaskManager.Data;
+using System.Diagnostics;
 
 namespace TaskManager.ViewModels
 {
@@ -443,23 +444,10 @@ namespace TaskManager.ViewModels
             SelectedTaskView = TaskViewMode.Card;
         }
 
-        public async void SearchTasks()
+        public void SearchTasks()
         {
             if (!string.IsNullOrWhiteSpace(SearchKeyword))
             {
-                //await System.Threading.Tasks.Task.Run(() =>
-                //{
-                //    FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-                //});
-                //await System.Threading.Tasks.Task.Run(() =>
-                //{
-                //    FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-                //});
-                //await System.Threading.Tasks.Task.Run(() =>
-                //{
-                //    FilteredCompletedTasks = CompletedTasks.Count > 0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-                //});
-
                 FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
                 FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
                 FilteredCompletedTasks = CompletedTasks.Count > 0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
@@ -470,7 +458,6 @@ namespace TaskManager.ViewModels
                 FilteredInProgressTasks = new(InProgressTasks);
                 FilteredCompletedTasks = new(CompletedTasks);
             }
-
         }
     }
 }
