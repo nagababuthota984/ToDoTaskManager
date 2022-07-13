@@ -407,6 +407,7 @@ namespace TaskManager.ViewModels
             }
             ResetInputControls();
         }
+
         public void DisplayTaskById(Guid id)
         {
             SelectedTask = _repository.GetTaskById(id);
@@ -428,10 +429,12 @@ namespace TaskManager.ViewModels
         {
             SelectedTaskView = TaskViewMode.List;
         }
+
         public void SwitchToCardView()
         {
             SelectedTaskView = TaskViewMode.Card;
         }
+
         public void SearchTasks()
         {
            if(!string.IsNullOrWhiteSpace(SearchKeyword))

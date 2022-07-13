@@ -22,7 +22,17 @@
     <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="#00A4EF"/>
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FFB900"/>
     <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#D73A4A"/>
-
+    
+    <Style x:Key="TM.TextBox.NameTextBox" TargetType="TextBox">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="ToolTip" 
+                        Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
+                            Path=(Validation.Errors)/ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="TM.Button.DefaultStyle" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
