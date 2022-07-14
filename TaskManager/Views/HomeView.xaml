@@ -28,8 +28,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBox Grid.Column="1" Grid.ColumnSpan="2" x:Name="SearchKeyword"  Margin="4" mah:TextBoxHelper.Watermark="Search tasks by name.." Padding="5" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.UseFloatingWatermark="False" mah:TextBoxHelper.SelectAllOnFocus="True" Background="#F7F7F7"
                      cal:Message.Attach="[Event TextChanged]=[Action SearchTasks]"/>
@@ -62,81 +61,91 @@
             <Rectangle Style="{StaticResource TM.PriorityIndicator.High}" Grid.Column="9" />
             <TextBlock Grid.Column="10" Text="High" VerticalAlignment="Center" Margin="0 0 10 0"/>
         </Grid>
-
-        <TextBlock Grid.Row="1" Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}"
+        
+        <Grid  Grid.Row="1" Name="CardView"  Grid.ColumnSpan="4" Style="{StaticResource TM.Grid.CardView}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition  />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition  />
+                <ColumnDefinition />
+                <ColumnDefinition  />
+            </Grid.ColumnDefinitions>
+            <TextBlock  Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}"
                    Margin="15 0 0 0" Foreground="Black" Background="White"/>
-        <TextBlock Grid.Row="1"  Grid.Column="1"
+            <TextBlock   Grid.Column="1"
                    Text="New" Style="{StaticResource TM.TextBlock.PrimaryHeading}"  />
-        <TextBlock Grid.Row="1"  Grid.Column="2"
+            <TextBlock   Grid.Column="2"
                    Text="In Progress" Style="{StaticResource TM.TextBlock.PrimaryHeading}"/>
-        <TextBlock Grid.Row="1"  Grid.Column="3"
+            <TextBlock   Grid.Column="3"
                    Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
-
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
-            <Grid x:Name="InputForm" Grid.Row="2" Margin="15" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.FormLabels}" Padding="0 0 4 4"/>
-                <TextBox Grid.Row="1" mah:TextBoxHelper.Watermark="Please enter task name">
-                    <Binding Path="Name">
-                        <Binding.ValidationRules>
-                            <validations:NameValidation/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
-                <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0" Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <TextBox Grid.Row="3" mah:TextBoxHelper.Watermark="Give a brief description about the task"
+            <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
+                <Grid x:Name="InputForm" Grid.Row="2" Margin="15" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.FormLabels}" Padding="0 0 4 4"/>
+                    <TextBox Grid.Row="1" mah:TextBoxHelper.Watermark="Please enter task name">
+                        <Binding Path="Name">
+                            <Binding.ValidationRules>
+                                <validations:NameValidation/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
+                    <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0" Style="{StaticResource TM.TextBlock.FormLabels}"/>
+                    <TextBox Grid.Row="3" mah:TextBoxHelper.Watermark="Give a brief description about the task"
                          x:Name="Description" Height="50"  TextWrapping="Wrap"/>
-                <TextBlock Grid.Row="4" Text="Status"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <ComboBox Grid.Row="5" x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}"/>
-                <TextBlock Grid.Row="6" Text="Due Date"   Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <mah:DateTimePicker Grid.Row="7" SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}"  />
-                <TextBlock Grid.Row="8"  Text="Priority"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <WrapPanel Name="PriorityRadioButtons" Grid.Row="9" >
-                    <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
+                    <TextBlock Grid.Row="4" Text="Status"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
+                    <ComboBox Grid.Row="5" x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}"/>
+                    <TextBlock Grid.Row="6" Text="Due Date"   Style="{StaticResource TM.TextBlock.FormLabels}"/>
+                    <mah:DateTimePicker Grid.Row="7" SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}"  />
+                    <TextBlock Grid.Row="8"  Text="Priority"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
+                    <WrapPanel Name="PriorityRadioButtons" Grid.Row="9" >
+                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
                         IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                         ConverterParameter=0}" Content="Low"/>
-                    <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
+                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
                         IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                         ConverterParameter=1}" Content="Medium"/>
-                    <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
+                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
                         IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                         ConverterParameter=2}" Content="High"/>
-                </WrapPanel>
-                <TextBlock Grid.Row="10" Text="Task Category" Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <WrapPanel Grid.Row="11">
-                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
+                    </WrapPanel>
+                    <TextBlock Grid.Row="10" Text="Task Category" Style="{StaticResource TM.TextBlock.FormLabels}"/>
+                    <WrapPanel Grid.Row="11">
+                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                                    ConverterParameter=0}"/>
-                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Bug Fix"
+                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Bug Fix"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                                    ConverterParameter=1}"/>
-                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Learning task"
+                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Learning task"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                                    ConverterParameter=2}"/>
-                    <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Others"
+                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Others"
                                  IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                                    ConverterParameter=3}"/>
-                </WrapPanel>
-                <TextBlock Text="% Complete" Grid.Row="12" 
+                    </WrapPanel>
+                    <TextBlock Text="% Complete" Grid.Row="12" 
                            Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
                             Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                <Slider Grid.Row="13"  Value="{Binding PercentageComplete}"  
+                    <Slider Grid.Row="13"  Value="{Binding PercentageComplete}"  
                         Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
                         IsSnapToTickEnabled="True"
                         TickPlacement="BottomRight" 
@@ -144,48 +153,99 @@
                         Maximum="100" 
                         Minimum="0"
                         ToolTip="{Binding PercentageComplete}"/>
-                <Grid x:Name="CreateCancelButtons" Grid.Row="14" Margin="0 15 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" x:Name="CreateOrUpdateTask" Content="{Binding SubmitBtnContent}" MinWidth="40"  
+                    <Grid x:Name="CreateCancelButtons" Grid.Row="14" Margin="0 15 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="1" x:Name="CreateOrUpdateTask" Content="{Binding SubmitBtnContent}" MinWidth="40"  
                             Background="#16A05D" Foreground="White" Margin="0 0 5 0" Style="{StaticResource TM.Button.DefaultStyle}"/>
-                    <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" Background="#E0E0E0" 
+                        <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" Background="#E0E0E0" 
                             Style="{StaticResource TM.Button.DefaultStyle}"
                             cal:Message.Attach="[Event Click] = [Action ResetInputControls()]" />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Border>
-        <Border BorderBrush="Black" Grid.Column="1" Grid.Row="2" BorderThickness="0 1 1 1" >
-            <ListBox x:Name="NewList" Grid.Row="2" Grid.Column="1" DataContext="{Binding}" 
+            </Border>
+
+            <Border BorderBrush="Black" Grid.Column="1" Grid.Row="2" BorderThickness="0 1 1 1" >
+                <ListBox x:Name="NewList" Grid.Row="2" Grid.Column="1" DataContext="{Binding}" 
                      ItemsSource="{Binding FilteredNewTasks}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnNewTasks($eventArgs)]"
                      Style="{Binding NewTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=0}"
-                     ItemTemplate="{Binding SelectedTaskView, Converter={StaticResource TM.Converters.EnumToTaskViewConverter}}"
+                     ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
-        </Border>
+            </Border>
 
-        <Border BorderBrush="Black" Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1">
-            <ListBox x:Name="InProgressList" Grid.Row="2" Grid.Column="2" DataContext="{Binding}" 
+            <Border BorderBrush="Black" Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1">
+                <ListBox x:Name="InProgressList" Grid.Row="2" Grid.Column="2" DataContext="{Binding}" 
                      ItemsSource="{Binding FilteredInProgressTasks}" 
                      Style="{Binding InProgressTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=1}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnInProgressTasks($eventArgs)]"
-                      ItemTemplate="{Binding SelectedTaskView, Converter={StaticResource TM.Converters.EnumToTaskViewConverter}}"
+                      ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
-        </Border>
+            </Border>
 
-        <Border BorderBrush="Black" Grid.Row="2" Grid.Column="3" BorderThickness="0 1 1 1">
-            <ListBox x:Name="CompletedList" Grid.Row="2" Grid.Column="3" DataContext="{Binding}"
+            <Border BorderBrush="Black" Grid.Row="2" Grid.Column="3" BorderThickness="0 1 1 1">
+                <ListBox x:Name="CompletedList" Grid.Row="2" Grid.Column="3" DataContext="{Binding}"
                      ItemsSource="{Binding FilteredCompletedTasks}"
                      Style="{Binding CompletedTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=2}"
                      cal:Message.Attach="[Event Drop] = [Action DropOnCompletedTasks($eventArgs)]"
-                     ItemTemplate="{Binding SelectedTaskView, Converter={StaticResource TM.Converters.EnumToTaskViewConverter}}"
+                     ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
-        </Border>
+            </Border>
+        </Grid>
+
+        <ListView Grid.Row="1" Name="ListView" Grid.ColumnSpan="4" ItemsSource="{Binding FilteredTasks}" 
+                  Style="{StaticResource TM.ListView.DefaultStyle}" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="40" />
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="FontWeight" Value="Medium"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border BorderBrush="darkgray" BorderThickness="0 0 0 1">
+                                    <GridViewRowPresenter HorizontalAlignment="Stretch"  Width="Auto" Margin="0" Content="{TemplateBinding Content}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View >
+                <GridView ColumnHeaderContainerStyle="{StaticResource TM.GridView.ColumnHeaderStyle}"  >
+                    <GridViewColumn  Header="Task Name" DisplayMemberBinding="{Binding Name}" Width="200" />
+                    <GridViewColumn  Header="Description" Width="400" DisplayMemberBinding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}"/>
+                    <GridViewColumn Header="Status" Width="200" DisplayMemberBinding="{Binding Status,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
+                    <GridViewColumn Header="Priority" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Priority,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="{Binding Priority,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Category" Width="200" DisplayMemberBinding="{Binding Category,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
+                    <GridViewColumn Header="Due on" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding DueDate,Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" Foreground="{Binding DueDate,Converter={StaticResource TM.Converters.DueDateToColorConverter}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn  Width="110" CellTemplate="{StaticResource TM.ListView.EditDeleteButtonsTemplate}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 

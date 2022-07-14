@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace TaskManager.Models
 {
@@ -19,11 +22,7 @@ namespace TaskManager.Models
             Medium,
             High
         }
-        public enum TaskViewMode
-        {
-            Card,
-            List
-        }
+        
         public enum UserRole
         {
             Create,
@@ -40,5 +39,18 @@ namespace TaskManager.Models
             [Description("Others")]
             Others
         }
+
+        public static string GetDescription<T>(T value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute attribute
+                    = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
+                        as DescriptionAttribute;
+
+            return attribute == null ? value.ToString() : attribute.Description;
+        }
+
+
     }
 }

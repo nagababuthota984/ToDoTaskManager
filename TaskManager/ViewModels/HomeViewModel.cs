@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TaskManager.Common;
+using TaskManager.Data;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
 using MahApps.Metro.Controls.Dialogs;
@@ -28,7 +31,6 @@ namespace TaskManager.ViewModels
         private ObservableCollection<Task> _completedTasks;
         private ObservableCollection<Task> _completedFilteredTasks;
         private Priority _selectedPriority;
-        private TaskViewMode _selectedTaskView;
         private Status _selectedStatus;
         private string _submitBtnContent;
         private float _percentageComplete;
@@ -36,8 +38,13 @@ namespace TaskManager.ViewModels
         private Category _selectedCategory;
         private ObservableCollection<Task> _newFilteredTasks;
         private ObservableCollection<Task> _inProgressFilteredTasks;
+        private bool _isListViewEnabled=false;
+        private bool _isCardViewEnabled;
         private readonly ITaskRepository _repository;
+        private ObservableCollection<Task> _tasks;
+        private ObservableCollection<Task> _filteredTasks;
         #endregion
+
         #region Properties
         public string Name
         {
@@ -100,7 +107,10 @@ namespace TaskManager.ViewModels
             {
                 _percentageComplete = value;
                 if (value == 100)
+                {
                     SelectedStatus = Status.Completed;
+                }
+
                 NotifyOfPropertyChange(nameof(PercentageComplete));
             }
         }
@@ -108,6 +118,24 @@ namespace TaskManager.ViewModels
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
+        }
+        public ObservableCollection<Task> Tasks 
+        {
+            get { return _tasks; }
+            set
+            {
+                _tasks = value;
+                NotifyOfPropertyChange(nameof(Tasks));
+            }
+        }
+        public ObservableCollection<Task> FilteredTasks
+        {
+            get { return _filteredTasks; }
+            set
+            {
+                _filteredTasks = value;
+                NotifyOfPropertyChange(nameof(FilteredTasks));
+            }
         }
         public ObservableCollection<Task> NewTasks
         {
@@ -172,28 +200,18 @@ namespace TaskManager.ViewModels
                 return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
-        public TaskViewMode SelectedTaskView
-        {
-            get { return _selectedTaskView; }
-            set
-            {
-                _selectedTaskView = value;
-                NotifyOfPropertyChange(nameof(SelectedTaskView));
-                NotifyOfPropertyChange(nameof(CanSwitchToListView));
-                NotifyOfPropertyChange(nameof(CanSwitchToCardView));
-            }
-        }
+        
         public bool CanCreateOrUpdateTask
         {
             get { return !string.IsNullOrWhiteSpace(Name); }
         }
         public bool CanSwitchToListView
         {
-            get { return SelectedTaskView == TaskViewMode.Card; }
+            get { return IsCardViewEnabled; }
         }
         public bool CanSwitchToCardView
         {
-            get { return SelectedTaskView == TaskViewMode.List; }
+            get { return IsListViewEnabled; }
         }
         public string SubmitBtnContent
         {
@@ -209,6 +227,29 @@ namespace TaskManager.ViewModels
         {
             get; set;
         }
+        public bool IsListViewEnabled 
+        {
+            get { return _isListViewEnabled; } 
+            set 
+            { 
+                _isListViewEnabled = value; 
+                NotifyOfPropertyChange(nameof(IsListViewEnabled));
+                NotifyOfPropertyChange(nameof(CanSwitchToCardView));
+                NotifyOfPropertyChange(nameof(CanSwitchToListView));
+            }
+        }
+        public bool IsCardViewEnabled
+        {
+            get { return _isCardViewEnabled; }
+            set
+            {
+                _isCardViewEnabled = value;
+                NotifyOfPropertyChange(nameof(IsCardViewEnabled));
+                NotifyOfPropertyChange(nameof(CanSwitchToCardView));
+                NotifyOfPropertyChange(nameof(CanSwitchToListView));
+            }
+        }
+     
 
         #endregion
 
@@ -220,7 +261,7 @@ namespace TaskManager.ViewModels
             Description = string.Empty;
             DueDate = DateTime.Now;
             SelectedStatus = Status.New;
-            SelectedTaskView = TaskViewMode.Card;
+            IsCardViewEnabled = true;
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
 
@@ -239,9 +280,14 @@ namespace TaskManager.ViewModels
         public void CreateOrUpdateTask()
         {
             if (UserRole == UserRole.Create)
+            {
                 CreateTask();
+            }
             else
+            {
                 UpdateTask();
+            }
+
             ResetInputControls();
         }
 
@@ -317,6 +363,8 @@ namespace TaskManager.ViewModels
                         FilteredCompletedTasks.Remove(FilteredCompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
                         break;
                 }
+                FilteredTasks.Remove(FilteredTasks.FirstOrDefault(tsk => tsk.Id == id));
+                Tasks.Remove(Tasks.FirstOrDefault(tsk => tsk.Id == id));
             }
             catch (Exception e)
             {
@@ -436,15 +484,31 @@ namespace TaskManager.ViewModels
 
         public void SwitchToListView()
         {
-            SelectedTaskView = TaskViewMode.List;
+            IsListViewEnabled = true;
+            IsCardViewEnabled = false;
+            if (Tasks == null)
+            {
+                Tasks = new(_repository.GetAllTasks());
+                FilteredTasks = new(Tasks);
+            }
         }
 
         public void SwitchToCardView()
         {
-            SelectedTaskView = TaskViewMode.Card;
+            IsListViewEnabled = false;
+            IsCardViewEnabled = true;
         }
 
         public void SearchTasks()
+        {
+            if(IsCardViewEnabled)
+                SearchTasksInCardView();
+            else
+                SearchTasksInListView();
+            
+        }
+
+        private void SearchTasksInCardView()
         {
             if (!string.IsNullOrWhiteSpace(SearchKeyword))
             {
@@ -459,5 +523,15 @@ namespace TaskManager.ViewModels
                 FilteredCompletedTasks = new(CompletedTasks);
             }
         }
+
+        private void SearchTasksInListView()
+        {
+            if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                FilteredTasks = Tasks.Count > 0 ? new(Tasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+            else
+                FilteredTasks = new(Tasks);
+        }
+
+        
     }
 }

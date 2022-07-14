@@ -4,21 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
+using TaskManager.Models;
 
 namespace TaskManager.Converters
 {
-    public class EnumToTaskViewConverter : IValueConverter
+    public class EnumToDescriptionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch((int)value)
-            {
-                case 0: return Application.Current.FindResource("TM.ListBox.TaskCardViewTemplate");
-                case 1: return Application.Current.FindResource("TM.ListBox.TaskListViewTemplate");
-                default: return Application.Current.FindResource("TM.ListBox.TaskCardViewTemplate");
-            }
+            return Enums.GetDescription(value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
