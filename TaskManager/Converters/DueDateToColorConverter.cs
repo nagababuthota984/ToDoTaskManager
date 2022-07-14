@@ -10,7 +10,7 @@ namespace TaskManager.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value is DateTime dueDate && dueDate < DateTime.Now
-                ?new SolidColorBrush(Colors.Red)
+                ?new SolidColorBrush(Colors.Orange)
                 :new SolidColorBrush(Colors.Green);
         }
 

@@ -40,5 +40,10 @@ namespace TaskManager.Models
             [Description("Others")]
             Others
         }
+        public enum PopupResponse
+        {
+            Yes,
+            No
+        }
     }
 }

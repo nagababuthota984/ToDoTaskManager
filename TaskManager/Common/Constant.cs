@@ -20,7 +20,7 @@
         public const string TaskCompletedMsg = "Once a task moved to Completed stage,it can't be brought back. are you sure that you want to move it to completed stage?";
         public const string Overdue = "Overdue";
         public const string ErrorOccured = "Error Occured";
-
+        public const string NoDescription = "No Description";
         public static string DbSwitchSuccessMsg = "Successfully switched to ";
     }
 }

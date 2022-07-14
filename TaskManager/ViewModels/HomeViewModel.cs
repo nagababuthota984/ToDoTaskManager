@@ -13,10 +13,11 @@ using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
 using TaskManager.Data;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TaskManager.ViewModels
 {
-    public class HomeViewModel : Screen
+    public class HomeViewModel : Screen,IHandle<PopupResponse>
     {
         #region Fields
         private DateTime _dueDate;
@@ -36,6 +37,7 @@ namespace TaskManager.ViewModels
         private Category _selectedCategory;
         private ObservableCollection<Task> _newFilteredTasks;
         private ObservableCollection<Task> _inProgressFilteredTasks;
+        private PopupViewModel _popUpViewModel;
         private readonly ITaskRepository _repository;
         #endregion
         #region Properties
@@ -209,6 +211,11 @@ namespace TaskManager.ViewModels
         {
             get; set;
         }
+        public PopupViewModel PopupWindow
+        {
+            get { return _popUpViewModel; }
+            set { _popUpViewModel = value; NotifyOfPropertyChange(nameof(PopupWindow)); }
+        }
 
         #endregion
 
@@ -223,6 +230,7 @@ namespace TaskManager.ViewModels
             SelectedTaskView = TaskViewMode.Card;
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
+            PopupWindow = new PopupViewModel(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg);
 
         }
 
@@ -419,6 +427,7 @@ namespace TaskManager.ViewModels
 
         public void DisplayTaskById(Guid id)
         {
+            
             SelectedTask = _repository.GetTaskById(id);
             if (SelectedTask != null)
             {
@@ -459,5 +468,7 @@ namespace TaskManager.ViewModels
                 FilteredCompletedTasks = new(CompletedTasks);
             }
         }
+
+       
     }
 }
