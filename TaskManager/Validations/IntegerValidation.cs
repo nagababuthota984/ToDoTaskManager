@@ -13,7 +13,7 @@ namespace TaskManager.Validations
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             if (!int.TryParse(value.ToString(), out int intValue))
-                return new(false, "Please enter a valid integer value");
+                return new(false, "Please enter a valid integer value ");
             return new(true, null);
         }
     }

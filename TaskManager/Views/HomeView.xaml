@@ -199,7 +199,7 @@
         </Grid>
         <Grid Grid.Row="1" Grid.ColumnSpan="4">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="5*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <ListView BorderThickness="0" Name="ListView" Grid.ColumnSpan="4" ItemsSource="{Binding FilteredTasks}"
@@ -233,7 +233,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
+            <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
                 <TextBlock Text="Items shown per page: " Style="{StaticResource TM.TextBlock.BoldLabels}" Margin="3" Padding="5"/>
                 <TextBox  Margin="3 3 20 3" mah:TextBoxHelper.SelectAllOnFocus="True" >
                     <Binding Path="ItemsPerPage" UpdateSourceTrigger="PropertyChanged" >
@@ -258,7 +258,7 @@
                 </TextBox>
                 <TextBlock Text="of" Padding="5" Margin="0 3 0 3"/>
                 <TextBox x:Name="TotalPagesCount"  Text="1" IsEnabled="False" Margin="3"/>
-                <Button x:Name="NavigateNext"  Foreground="White" Padding="5" Width="30" Margin="3" Background="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}">
+             <Button x:Name="NavigateNext"  Foreground="White" Padding="5" Width="30" Margin="3" Background="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}">
                     <Button.Content>
                         <iconPacks:BootstrapIcons Kind="ArrowRight"/>
                     </Button.Content>
