@@ -38,11 +38,14 @@ namespace TaskManager.ViewModels
         private Category _selectedCategory;
         private ObservableCollection<Task> _newFilteredTasks;
         private ObservableCollection<Task> _inProgressFilteredTasks;
-        private bool _isListViewEnabled=false;
+        private bool _isListViewEnabled = false;
         private bool _isCardViewEnabled;
         private readonly ITaskRepository _repository;
         private ObservableCollection<Task> _tasks;
         private ObservableCollection<Task> _filteredTasks;
+        private int _currentPageNumber;
+        private int _totalPagesCount;
+        private int _itemsPerPage = 8;
         #endregion
 
         #region Properties
@@ -119,7 +122,7 @@ namespace TaskManager.ViewModels
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
         }
-        public ObservableCollection<Task> Tasks 
+        public ObservableCollection<Task> Tasks
         {
             get { return _tasks; }
             set
@@ -200,7 +203,49 @@ namespace TaskManager.ViewModels
                 return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
-        
+
+        public int TotalPagesCount
+        {
+            get
+            {
+                return _totalPagesCount;
+            }
+            set
+            {
+                _totalPagesCount = value;
+                NotifyOfPropertyChange(nameof(TotalPagesCount));
+                NotifyOfPropertyChange(nameof(CanNavigateNext));
+                NotifyOfPropertyChange(nameof(CanNavigatePrevious));
+            }
+        }
+        public int ItemsPerPage
+        {
+            get { return _itemsPerPage; }
+            set
+            {
+                if (int.TryParse(value.ToString(), out int intValue))
+                {
+                    _itemsPerPage = intValue;
+                    NotifyOfPropertyChange(nameof(ItemsPerPage));
+                    NotifyOfPropertyChange(nameof(CanNavigateNext));
+                    NotifyOfPropertyChange(nameof(CanNavigatePrevious));
+                    InitializeListView();
+                }
+                else
+                    _itemsPerPage = 0;
+            }
+        }
+        public int CurrentPageNumber
+        {
+            get { return _currentPageNumber; }
+            set
+            {
+                _currentPageNumber = value;
+                NotifyOfPropertyChange(nameof(CurrentPageNumber));
+                NotifyOfPropertyChange(nameof(CanNavigateNext));
+                NotifyOfPropertyChange(nameof(CanNavigatePrevious));
+            }
+        }
         public bool CanCreateOrUpdateTask
         {
             get { return !string.IsNullOrWhiteSpace(Name); }
@@ -227,12 +272,12 @@ namespace TaskManager.ViewModels
         {
             get; set;
         }
-        public bool IsListViewEnabled 
+        public bool IsListViewEnabled
         {
-            get { return _isListViewEnabled; } 
-            set 
-            { 
-                _isListViewEnabled = value; 
+            get { return _isListViewEnabled; }
+            set
+            {
+                _isListViewEnabled = value;
                 NotifyOfPropertyChange(nameof(IsListViewEnabled));
                 NotifyOfPropertyChange(nameof(CanSwitchToCardView));
                 NotifyOfPropertyChange(nameof(CanSwitchToListView));
@@ -249,7 +294,14 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CanSwitchToListView));
             }
         }
-     
+        public bool CanNavigateNext
+        {
+            get { return CurrentPageNumber < TotalPagesCount; }
+        }
+        public bool CanNavigatePrevious
+        {
+            get { return CurrentPageNumber > 1; }
+        }
 
         #endregion
 
@@ -489,10 +541,16 @@ namespace TaskManager.ViewModels
             IsListViewEnabled = true;
             IsCardViewEnabled = false;
             if (Tasks == null)
-            {
-                Tasks = new(_repository.GetAllTasks());
-                FilteredTasks = new(Tasks);
-            }
+                InitializeListView();
+        }
+
+        private void InitializeListView()
+        {
+            Tasks = new(_repository.GetAllTasks());
+            FilteredTasks = new(Tasks.Take(ItemsPerPage));
+            CurrentPageNumber = 1;
+            TotalPagesCount = (Tasks.Count + ItemsPerPage - 1) / ItemsPerPage;
+
         }
 
         public void SwitchToCardView()
@@ -503,16 +561,16 @@ namespace TaskManager.ViewModels
 
         public void SearchTasks()
         {
-            if(IsCardViewEnabled)
+            if (IsCardViewEnabled)
                 SearchTasksInCardView();
             else
                 SearchTasksInListView();
-            
+
         }
 
         private void SearchTasksInCardView()
         {
-            if (!string.IsNullOrWhiteSpace(SearchKeyword))
+            if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
             {
                 FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
                 FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
@@ -528,12 +586,28 @@ namespace TaskManager.ViewModels
 
         private void SearchTasksInListView()
         {
-            if (!string.IsNullOrWhiteSpace(SearchKeyword))
-                FilteredTasks = Tasks.Count > 0 ? new(Tasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+            if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
+                FilteredTasks = FilteredTasks.Count > 0 ? new(FilteredTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
             else
-                FilteredTasks = new(Tasks);
+                LoadCurrentPage();
+
         }
 
-        
+        public void NavigateNext()
+        {
+
+            FilteredTasks = new(Tasks.Skip(CurrentPageNumber * ItemsPerPage).Take(ItemsPerPage));
+            CurrentPageNumber += 1;
+        }
+        public void NavigatePrevious()
+        {
+            FilteredTasks = new(Tasks.Skip((CurrentPageNumber - 2) * ItemsPerPage).Take(ItemsPerPage));
+            CurrentPageNumber -= 1;
+        }
+        public void LoadCurrentPage()
+        {
+            FilteredTasks = new(Tasks.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage));
+        }
+
     }
 }
