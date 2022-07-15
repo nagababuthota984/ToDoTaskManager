@@ -300,8 +300,7 @@
     <Style x:Key="TM.ListView.DefaultStyle" TargetType="ListView">
         <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Margin" Value="0 30 0 0"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="Background" Value="White"/>
         
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
@@ -314,6 +313,7 @@
     <Style x:Key="TM.GridView.ColumnHeaderStyle" TargetType="GridViewColumnHeader">
         <Setter Property="Height" Value="35"/>
         <Setter Property="FontSize" Value="16"/>
+        <Setter Property="BorderBrush" Value="#E5E5E5"/>
         <Setter Property="Background" Value="#41B1E1"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -328,6 +328,21 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
+    
+    <Style x:Key="TM.ListView.ItemContainerStyle" TargetType="ListViewItem">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Template" >
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border BorderBrush="#E5E5E5" BorderThickness="0 0 0 1">
+                        <GridViewRowPresenter HorizontalAlignment="Stretch"  Width="Auto" Margin="0" Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

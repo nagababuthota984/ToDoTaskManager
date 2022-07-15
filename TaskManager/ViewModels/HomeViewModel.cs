@@ -324,6 +324,8 @@ namespace TaskManager.ViewModels
                     FilteredCompletedTasks.Add(task);
                     break;
             }
+            Tasks.Add(task);
+            FilteredTasks.Add(task);
         }
 
         public void UpdateTask()

@@ -199,24 +199,7 @@
         </Grid>
 
         <ListView Grid.Row="1" Name="ListView" Grid.ColumnSpan="4" ItemsSource="{Binding FilteredTasks}" 
-                  Style="{StaticResource TM.ListView.DefaultStyle}" >
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Height" Value="40" />
-                    <Setter Property="FontSize" Value="13"/>
-                    <Setter Property="FontWeight" Value="Medium"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListViewItem">
-                                <Border BorderBrush="darkgray" BorderThickness="0 0 0 1">
-                                    <GridViewRowPresenter HorizontalAlignment="Stretch"  Width="Auto" Margin="0" Content="{TemplateBinding Content}" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
+                  Style="{StaticResource TM.ListView.DefaultStyle}" ItemContainerStyle="{StaticResource TM.ListView.ItemContainerStyle}" >
             <ListView.View >
                 <GridView ColumnHeaderContainerStyle="{StaticResource TM.GridView.ColumnHeaderStyle}"  >
                     <GridViewColumn  Header="Task Name" DisplayMemberBinding="{Binding Name}" Width="200" />
