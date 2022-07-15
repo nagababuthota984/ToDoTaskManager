@@ -17,7 +17,7 @@ using System.Threading;
 
 namespace TaskManager.ViewModels
 {
-    public class HomeViewModel : Screen,IHandle<PopupResponse>
+    public class HomeViewModel : Screen
     {
         #region Fields
         private DateTime _dueDate;
@@ -231,7 +231,6 @@ namespace TaskManager.ViewModels
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
             PopupWindow = new PopupViewModel(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg);
-
         }
 
         private void InitializeTaskLists()

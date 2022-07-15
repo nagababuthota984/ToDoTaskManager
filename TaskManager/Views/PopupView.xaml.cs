@@ -1,11 +1,10 @@
 ﻿using System.Windows.Controls;
+using MahApps.Metro.Controls;
+using MahApps.Metro.SimpleChildWindow;
 
 namespace TaskManager.Views
 {
-    /// <summary>
-    /// Interaction logic for UserControl1.xaml
-    /// </summary>
-    public partial class PopupView : UserControl
+    public partial class PopupView : ChildWindow
     {
         public PopupView()
         {
