@@ -39,6 +39,14 @@ namespace TaskManager.Models
             [Description("Others")]
             Others
         }
+        
+        public enum OperationType
+        {
+            Create,
+            Delete,
+            Update,
+            Display
+        }
 
         public static string GetDescription<T>(T value)
         {

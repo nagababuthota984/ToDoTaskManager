@@ -36,6 +36,7 @@ namespace TaskManager
                 .Singleton<IEventAggregator, EventAggregator>()
                 .PerRequest<SqliteRepository>()
                 .PerRequest<SqlServerRepository>()
+                .PerRequest<CreateTaskViewModel>()
                 .PerRequest<HomeViewModel>()
                 .PerRequest<MainViewModel>();
         }

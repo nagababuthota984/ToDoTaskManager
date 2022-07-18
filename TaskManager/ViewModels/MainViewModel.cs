@@ -7,7 +7,7 @@ using TaskManager.Common;
 
 namespace TaskManager.ViewModels
 {
-    public class MainViewModel : Conductor<Screen>
+    public class MainViewModel : Conductor<object>
     {
         #region Fields
         private readonly SimpleContainer _container;

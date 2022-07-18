@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaskManager.Views"
              xmlns:validations="clr-namespace:TaskManager.Validations"
+             xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -30,8 +31,28 @@
             <RowDefinition Height="auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBox Grid.Column="1" Grid.ColumnSpan="2" x:Name="SearchKeyword"  Margin="4" mah:TextBoxHelper.Watermark="Search tasks by name.." Padding="5" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.UseFloatingWatermark="False" mah:TextBoxHelper.SelectAllOnFocus="True" Background="#F7F7F7"
-                     cal:Message.Attach="[Event TextChanged]=[Action SearchTasks]"/>
+        <WrapPanel Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <TextBox   x:Name="SearchKeyword" Width="180" Margin="4 4 15 3" mah:TextBoxHelper.Watermark="Search tasks by name.." Padding="5" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.SelectAllOnFocus="True" Background="#f5f5f5"
+                     HorizontalAlignment="Left" cal:Message.Attach="[Event TextChanged]=[Action SearchTasks]" >
+                <TextBox.Style>
+                    <Style TargetType="TextBox"  BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+            <Button x:Name="SwitchToCardView" ToolTip="Card view" Height="10" Width="30" Margin="20 2 2 2" HorizontalAlignment="Center" >
+                <iconPacks:BootstrapIcons Kind="CardList" Height="10"/>
+            </Button>
+            <Button  x:Name="SwitchToListView" Height="10" Width="30" ToolTip="List view" Margin="3 2 2 2" HorizontalAlignment="Center">
+                <iconPacks:BootstrapIcons Kind="ListUl" Height="9"/>
+            </Button>
+        </WrapPanel>
+
+
         <Grid x:Name="PriorityIndicators" Grid.Column="3" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -46,14 +67,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
-
-            <Button Grid.Column="2" x:Name="SwitchToListView" Height="10" ToolTip="List view" Margin="2 ">
-                <iconPacks:BootstrapIcons Kind="ListUl" Height="9"/>
-            </Button>
-            <Button Grid.Column="3" x:Name="SwitchToCardView" ToolTip="Card view" Height="10" Margin="2 2 20 2" >
-                <iconPacks:BootstrapIcons Kind="CardList" Height="10"/>
-            </Button>
             <Rectangle Grid.Column="5" Style="{StaticResource TM.PriorityIndicator.Low}"/>
             <TextBlock Grid.Column="6" Text="Low" VerticalAlignment="Center"/>
             <Rectangle  Grid.Column="7" Style="{StaticResource TM.PriorityIndicator.Medium}"/>
@@ -62,7 +75,7 @@
             <TextBlock Grid.Column="10" Text="High" VerticalAlignment="Center" Margin="0 0 10 0"/>
         </Grid>
 
-        <Grid  Grid.Row="1" Name="CardView"  Grid.ColumnSpan="4" Style="{StaticResource TM.Grid.CardView}">
+        <Grid Grid.Row="1" Name="CardView"  Grid.ColumnSpan="4" Style="{StaticResource TM.Grid.CardView}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition  />
@@ -82,95 +95,12 @@
             <TextBlock   Grid.Column="3"
                    Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
             <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2">
-                <Grid x:Name="InputForm" Grid.Row="2" Margin="15" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.FormLabels}" Padding="0 0 4 4"/>
-                    <TextBox Grid.Row="1" mah:TextBoxHelper.Watermark="Please enter task name">
-                        <Binding Path="Name">
-                            <Binding.ValidationRules>
-                                <validations:NameValidation/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox>
-                    <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0" Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <TextBox Grid.Row="3" mah:TextBoxHelper.Watermark="Give a brief description about the task"
-                         x:Name="Description" Height="50"  TextWrapping="Wrap"/>
-                    <TextBlock Grid.Row="4" Text="Status"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <ComboBox Grid.Row="5" x:Name="StatusOptions" SelectedItem="{Binding SelectedStatus}"/>
-                    <TextBlock Grid.Row="6" Text="Due Date"   Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <mah:DateTimePicker Grid.Row="7" SelectedDateTime="{Binding DueDate,UpdateSourceTrigger=PropertyChanged}"  />
-                    <TextBlock Grid.Row="8"  Text="Priority"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <WrapPanel Name="PriorityRadioButtons" Grid.Row="9" >
-                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
-                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                        ConverterParameter=0}" Content="Low"/>
-                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
-                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                        ConverterParameter=1}" Content="Medium"/>
-                        <RadioButton Style="{StaticResource TM.RadioButton.DefaultStyle}"
-                        IsChecked="{Binding SelectedPriority, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                        ConverterParameter=2}" Content="High"/>
-                    </WrapPanel>
-                    <TextBlock Grid.Row="10" Text="Task Category" Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <WrapPanel Grid.Row="11">
-                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
-                                 IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                                   ConverterParameter=0}"/>
-                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Bug Fix"
-                                 IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                                   ConverterParameter=1}"/>
-                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Learning task"
-                                 IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                                   ConverterParameter=2}"/>
-                        <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="Others"
-                                 IsChecked="{Binding SelectedCategory, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
-                                   ConverterParameter=3}"/>
-                    </WrapPanel>
-                    <TextBlock Text="% Complete" Grid.Row="12" 
-                           Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
-                            Style="{StaticResource TM.TextBlock.FormLabels}"/>
-                    <Slider Grid.Row="13"  Value="{Binding PercentageComplete}"  
-                        Visibility="{Binding SelectedStatus, Converter={StaticResource TM.Converters.StatusToVisibilityConverter}}"
-                        IsSnapToTickEnabled="True"
-                        TickPlacement="BottomRight" 
-                        TickFrequency="20" 
-                        Maximum="100" 
-                        Minimum="0"
-                        ToolTip="{Binding PercentageComplete}"/>
-                    <Grid x:Name="CreateCancelButtons" Grid.Row="14" Margin="0 15 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="1" x:Name="CreateOrUpdateTask" Content="{Binding SubmitBtnContent}" MinWidth="40"  
-                            Background="#16A05D" Foreground="White" Margin="0 0 5 0" Style="{StaticResource TM.Button.DefaultStyle}"/>
-                        <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" Background="#E0E0E0" 
-                            Style="{StaticResource TM.Button.DefaultStyle}"
-                            cal:Message.Attach="[Event Click] = [Action ResetInputControls()]" />
-                    </Grid>
-                </Grid>
+                <ContentControl cal:View.Model="{Binding CreateTaskView}" Grid.Row="2" Margin="15" Visibility="Visible"/>
             </Border>
 
             <Border BorderBrush="Black" Grid.Column="1" Grid.Row="2" BorderThickness="0 1 1 1" >
                 <ListBox x:Name="NewList" Grid.Row="2" Grid.Column="1" DataContext="{Binding}" 
-                     ItemsSource="{Binding FilteredNewTasks}"
+                     ItemsSource="{Binding NewTasks}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnNewTasks($eventArgs)]"
                      Style="{Binding NewTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=0}"
@@ -180,7 +110,7 @@
 
             <Border BorderBrush="Black" Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1">
                 <ListBox x:Name="InProgressList" Grid.Row="2" Grid.Column="2" DataContext="{Binding}" 
-                     ItemsSource="{Binding FilteredInProgressTasks}" 
+                     ItemsSource="{Binding InProgressTasks}" 
                      Style="{Binding InProgressTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=1}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnInProgressTasks($eventArgs)]"
@@ -190,58 +120,66 @@
 
             <Border BorderBrush="Black" Grid.Row="2" Grid.Column="3" BorderThickness="0 1 1 1">
                 <ListBox x:Name="CompletedList" Grid.Row="2" Grid.Column="3" DataContext="{Binding}"
-                     ItemsSource="{Binding FilteredCompletedTasks}"
+                     ItemsSource="{Binding CompletedTasks}"
                      Style="{Binding CompletedTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=2}"
                      cal:Message.Attach="[Event Drop] = [Action DropOnCompletedTasks($eventArgs)]"
                      ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
             </Border>
         </Grid>
-        <Grid Grid.Row="1" Grid.ColumnSpan="4">
+        <Grid Name="ListView" Grid.Row="1" Grid.ColumnSpan="4">
+            <Grid.Resources>
+                <CollectionViewSource x:Key="GroupedTasks" Source="{Binding FilteredTasks}">
+                    <CollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="Priority" />
+                    </CollectionViewSource.GroupDescriptions>
+                </CollectionViewSource>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="5*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <ListView BorderThickness="0" Name="ListView" Grid.ColumnSpan="4" ItemsSource="{Binding FilteredTasks}"
-                  Style="{StaticResource TM.ListView.DefaultStyle}" ItemContainerStyle="{StaticResource TM.ListView.ItemContainerStyle}" >
-                <ListView.View >
-                    <GridView  ColumnHeaderContainerStyle="{StaticResource TM.GridView.ColumnHeaderStyle}"  >
-                        <GridViewColumn  Header="Task Name" DisplayMemberBinding="{Binding Name}" Width="200" />
-                        <GridViewColumn  Header="Description" Width="400" DisplayMemberBinding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}"/>
-                        <GridViewColumn Header="Status" Width="200" DisplayMemberBinding="{Binding Status,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
-                        <GridViewColumn Header="Priority" Width="200">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <TextBlock Text="{Binding Priority,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="{Binding Priority,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Category" Width="200" DisplayMemberBinding="{Binding Category,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
-                        <GridViewColumn Header="Due on" Width="200">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <TextBlock Text="{Binding DueDate,Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" Foreground="{Binding DueDate,Converter={StaticResource TM.Converters.DueDateToColorConverter}}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <GridViewColumn  Width="110" CellTemplate="{StaticResource TM.ListView.EditDeleteButtonsTemplate}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+            <DataGrid  ItemsSource="{Binding Source={StaticResource GroupedTasks}}" Grid.ColumnSpan="4"  CellStyle="{StaticResource TM.DataGrid.CellStyle}" Style="{StaticResource TM.DataGrid.DefaultStyle}">
+                <DataGrid.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource TM.DataGrid.GroupHeaderStyle}">
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <DataGridRowsPresenter/>
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="200" Header="Task Name" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Width="400" Header="Description" Binding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}"/>
+                    <DataGridTextColumn Width="200" Header="Status" Binding="{Binding Status,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
+                    <DataGridTemplateColumn Width="200" Header="Priority">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                    <TextBlock Text="{Binding Priority,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="{Binding Priority,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Width="200" Header="Category" Binding="{Binding Category,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
+                    <DataGridTemplateColumn Width="200" Header="Due on">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding DueDate,Converter={StaticResource TM.Converters.DateTimeToStringConverter}}" Foreground="{Binding DueDate,Converter={StaticResource TM.Converters.DueDateToColorConverter}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="110" CellTemplate="{StaticResource TM.ListView.EditDeleteButtonsTemplate}"/>
+                </DataGrid.Columns>
+            </DataGrid>
             <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
                 <TextBlock Text="Items shown per page: " Style="{StaticResource TM.TextBlock.BoldLabels}" Margin="3" Padding="5"/>
-                <TextBox  Margin="3 3 20 3" mah:TextBoxHelper.SelectAllOnFocus="True" >
-                    <Binding Path="ItemsPerPage" UpdateSourceTrigger="PropertyChanged" >
-                        <Binding.ValidationRules>
-                            <validations:IntegerValidation/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
+                <ComboBox  Margin="3 3 20 3"  SelectedValue="{Binding ItemsPerPage}" SelectedValuePath="Content">
+                    <ComboBoxItem Content="5"  IsSelected="True"/>
+                    <ComboBoxItem Content="10"/>
+                    <ComboBoxItem Content="15"/>
+                </ComboBox>
                 <Button x:Name="NavigatePrevious"  Foreground="White" Padding="5" Width="30" Margin="3" Background="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}">
                     <Button.Content>
                         <iconPacks:BootstrapIcons Kind="ArrowLeft"/>
@@ -258,7 +196,7 @@
                 </TextBox>
                 <TextBlock Text="of" Padding="5" Margin="0 3 0 3"/>
                 <TextBox x:Name="TotalPagesCount"  Text="1" IsEnabled="False" Margin="3"/>
-             <Button x:Name="NavigateNext"  Foreground="White" Padding="5" Width="30" Margin="3" Background="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}">
+                <Button x:Name="NavigateNext"  Foreground="White" Padding="5" Width="30" Margin="3" Background="{StaticResource TM.Colors.PrimaryColor}" Style="{StaticResource TM.Button.DefaultStyle}">
                     <Button.Content>
                         <iconPacks:BootstrapIcons Kind="ArrowRight"/>
                     </Button.Content>
@@ -274,7 +212,18 @@
                     </Style>
                 </WrapPanel.Style>
             </WrapPanel>
+            <Grid Style="{StaticResource TM.ListView.FormGrid}" Height="auto" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Task Details" FontSize="17" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+                <Button x:Name="CloseTaskForm" Style="{StaticResource TM.Button.DefaultStyle}" HorizontalAlignment="Right" Foreground="Red" Width="20" >
+                    <iconPacks:BootstrapIcons Kind="X"/>
+                </Button>
+                <ContentControl Grid.Row="1" x:Name="ListViewForm"  cal:View.Model="{Binding CreateTaskView}"    HorizontalAlignment="Center"  />
 
+            </Grid>
         </Grid>
 
     </Grid>

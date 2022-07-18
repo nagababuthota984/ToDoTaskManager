@@ -46,7 +46,16 @@ namespace TaskManager.Models
         public float PercentageCompleted
         {
             get { return _percentageCompleted; }
-            set { _percentageCompleted = value; NotifyOfPropertyChange(nameof(PercentageCompleted)); }
+            set
+            {
+                _percentageCompleted = value;
+                if (value == 100)
+                {
+                    Status = Status.Completed;
+                }
+
+                NotifyOfPropertyChange(nameof(PercentageCompleted));
+            }
         }
         public DateTime CreatedOn { get; set; }
         public DateTime DueDate
@@ -69,6 +78,18 @@ namespace TaskManager.Models
             IsDeleted = false;
             CreatedOn = DateTime.Now;
         }
-
+        public Task(Task task)
+        {
+            Id = task.Id;
+            Name = task.Name;
+            Description = task.Description;
+            IsDeleted = task.IsDeleted;
+            CreatedOn = task.CreatedOn;
+            Status = task.Status;
+            Priority = task.Priority;
+            Category = task.Category;
+            PercentageCompleted = task.PercentageCompleted;
+            DueDate = task.DueDate;
+        }
     }
 }

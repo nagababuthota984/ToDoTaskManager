@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:cal ="http://www.caliburnproject.org">
+                    xmlns:cal ="http://www.caliburnproject.org"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
 
 
@@ -91,7 +92,17 @@
             </Grid.ColumnDefinitions>
             <Button  BorderThickness="0" Background="Transparent"
                     Foreground="{StaticResource TM.Colors.PrimaryColor}" 
-                    ToolTip="Edit task" Style="{StaticResource TM.Button.DefaultStyle}" Margin="0 0 10 0">
+                    ToolTip="Edit task" Margin="0 0 10 0">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
                 <iconPacks:BoxIcons Kind="SolidPencil"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
@@ -103,7 +114,17 @@
             </Button>
             <Button  Grid.Column="1" ToolTip="Delete task"
                     BorderThickness="0" Background="Transparent" Foreground="#E65B65"
-                     Margin="5 0 0 0" Style="{StaticResource TM.Button.DefaultStyle}">
+                     Margin="5 0 0 0" >
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
                 <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
@@ -293,15 +314,66 @@
     <Style x:Key="TM.RadioButton.DefaultStyle" TargetType="RadioButton">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Margin" Value="5"/>
-        
+    </Style>
 
+    <Style x:Key="TM.DataGrid.CellStyle" TargetType="DataGridCell">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+        <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="Foreground" Value="Black" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="BorderThickness" Value="0 0 0 1"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TM.DataGrid.ColumnsHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="DemiBold"></Setter>
+    </Style>
+
+    <Style x:Key="TM.DataGrid.DefaultStyle" TargetType="DataGrid">
+        <Setter Property="RowHeight" Value="35"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="ColumnWidth" Value="*"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="ColumnHeaderStyle" Value="{StaticResource TM.DataGrid.ColumnsHeaderStyle}"/>
+        <Setter Property="CellStyle" Value="{StaticResource TM.DataGrid.CellStyle}"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="TM.ListView.DefaultStyle" TargetType="ListView">
         <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Margin" Value="0 30 0 0"/>
         <Setter Property="Background" Value="White"/>
-        
+
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
                 <Setter Property="Visibility" Value="Visible"/>
@@ -317,32 +389,65 @@
         <Setter Property="Background" Value="#41B1E1"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="FontWeight" Value="DemiBold"></Setter>
+        <Setter Property="FontWeight" Value="DemiBold"/>
     </Style>
 
     <Style x:Key="TM.Grid.CardView" TargetType="Grid">
         <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Opacity" Value="1"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
+                <Setter Property="Opacity" Value="0.3"/>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
-    
-    <Style x:Key="TM.ListView.ItemContainerStyle" TargetType="ListViewItem">
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="Template" >
+
+    <Style x:Key="TM.Slider.DefaultStyle" TargetType="Slider" >
+        <Setter Property="Visibility" Value="Hidden"/>
+        <Setter Property="IsSnapToTickEnabled" Value="True"/>
+        <Setter Property="TickPlacement" Value="BottomRight"/>
+        <Setter Property="TickFrequency" Value="20"/>
+        <Setter Property="Maximum" Value="100"/>
+        <Setter Property="Minimum" Value="0"/>
+    </Style>
+
+    <Style x:Key="TM.ListView.FormGrid" TargetType="Grid">
+        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+        <Setter Property="Height" Value="610"/>
+        <Setter Property="Width" Value="410"/>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsListViewEnabled}" Value="True"/>
+                    <Condition Binding="{Binding IsTaskFormEnabled}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="TM.DataGrid.GroupHeaderStyle" TargetType="GroupItem">
+        <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ListViewItem">
-                    <Border BorderBrush="#E5E5E5" BorderThickness="0 0 0 1">
-                        <GridViewRowPresenter HorizontalAlignment="Stretch"  Width="Auto" Margin="0" Content="{TemplateBinding Content}" />
-                    </Border>
+                <ControlTemplate TargetType="GroupItem">
+                    <Expander IsExpanded="True">
+                        <Expander.Style>
+                            <Style TargetType="Expander">
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                            </Style>
+                        </Expander.Style>
+                        <WrapPanel >
+                            <TextBlock FontSize="14" Text="{Binding Path=Priority.Name}" Foreground="DarkBlue" FontWeight="DemiBold"/>
+                            <ItemsPresenter/>
+                        </WrapPanel>
+                    </Expander>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

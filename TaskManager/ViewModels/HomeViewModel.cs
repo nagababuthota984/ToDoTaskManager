@@ -16,113 +16,41 @@ using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
 using TaskManager.Data;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TaskManager.ViewModels
 {
-    public class HomeViewModel : Screen
+    public class HomeViewModel : Conductor<Screen>, IHandle<Tuple<OperationType, Models.Task>>
     {
         #region Fields
-        private DateTime _dueDate;
-        private string _name;
+        
         private Task _selectedTask;
-        private string _description;
-        private ObservableCollection<Task> _newTasks;
-        private ObservableCollection<Task> _inProgressTasks;
-        private ObservableCollection<Task> _completedTasks;
-        private ObservableCollection<Task> _completedFilteredTasks;
-        private Priority _selectedPriority;
-        private Status _selectedStatus;
-        private string _submitBtnContent;
-        private float _percentageComplete;
+        private BindableCollection<Task> _newTasks;
+        private BindableCollection<Task> _inProgressTasks;
+        private bool _isTaskFormEnabled;
+        private BindableCollection<Task> _completedTasks;
         private string _searchKeyword;
-        private Category _selectedCategory;
-        private ObservableCollection<Task> _newFilteredTasks;
-        private ObservableCollection<Task> _inProgressFilteredTasks;
         private bool _isListViewEnabled = false;
+        private CreateTaskViewModel _createTaskView;
         private bool _isCardViewEnabled;
         private readonly ITaskRepository _repository;
-        private ObservableCollection<Task> _tasks;
-        private ObservableCollection<Task> _filteredTasks;
+        private readonly IEventAggregator _eventAggregator;
+        private BindableCollection<Task> _tasks;
+        private BindableCollection<Task> _filteredTasks;
         private int _currentPageNumber;
         private int _totalPagesCount;
-        private int _itemsPerPage = 8;
+        private int _itemsPerPage=10;
         #endregion
 
         #region Properties
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                NotifyOfPropertyChange(nameof(Name));
-                NotifyOfPropertyChange(nameof(CanCreateOrUpdateTask));
-            }
-        }
-        public string Description
-        {
-            get { return _description; }
-            set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
-        }
-        public Status SelectedStatus
-        {
-            get { return _selectedStatus; }
-            set
-            {
-                _selectedStatus = value;
-                NotifyOfPropertyChange(nameof(SelectedStatus));
-            }
-        }
-        public Priority SelectedPriority
-        {
-            get { return _selectedPriority; }
-            set
-            {
-                _selectedPriority = value;
-                NotifyOfPropertyChange(nameof(SelectedPriority));
-            }
-        }
-        public Category SelectedCategory
-        {
-            get { return _selectedCategory; }
-            set
-            {
-                _selectedCategory = value;
-                NotifyOfPropertyChange(nameof(SelectedCategory));
-            }
-        }
-        public DateTime DueDate
-        {
-            get
-            {
-                return _dueDate;
-            }
-            set
-            {
-                _dueDate = value;
-                NotifyOfPropertyChange(nameof(DueDate));
-            }
-        }
-        public float PercentageComplete
-        {
-            get { return _percentageComplete; }
-            set
-            {
-                _percentageComplete = value;
-                if (value == 100)
-                {
-                    SelectedStatus = Status.Completed;
-                }
-
-                NotifyOfPropertyChange(nameof(PercentageComplete));
-            }
-        }
+        
         public Task SelectedTask
         {
             get { return _selectedTask; }
             set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
         }
-        public ObservableCollection<Task> Tasks
+
+        public BindableCollection<Task> Tasks
         {
             get { return _tasks; }
             set
@@ -131,7 +59,8 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(Tasks));
             }
         }
-        public ObservableCollection<Task> FilteredTasks
+
+        public BindableCollection<Task> FilteredTasks
         {
             get { return _filteredTasks; }
             set
@@ -140,7 +69,8 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(FilteredTasks));
             }
         }
-        public ObservableCollection<Task> NewTasks
+
+        public BindableCollection<Task> NewTasks
         {
             get { return _newTasks; }
             set
@@ -150,17 +80,8 @@ namespace TaskManager.ViewModels
             }
 
         }
-        public ObservableCollection<Task> FilteredNewTasks
-        {
-            get { return _newFilteredTasks; }
-            set
-            {
-                _newFilteredTasks = value;
-                NotifyOfPropertyChange(nameof(FilteredNewTasks));
-            }
-
-        }
-        public ObservableCollection<Task> InProgressTasks
+       
+        public BindableCollection<Task> InProgressTasks
         {
             get { return _inProgressTasks; }
             set
@@ -169,38 +90,14 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(InProgressTasks));
             }
         }
-        public ObservableCollection<Task> FilteredInProgressTasks
-        {
-            get { return _inProgressFilteredTasks; }
-            set
-            {
-                _inProgressFilteredTasks = value;
-                NotifyOfPropertyChange(nameof(FilteredInProgressTasks));
-            }
-        }
-        public ObservableCollection<Task> CompletedTasks
+
+        public BindableCollection<Task> CompletedTasks
         {
             get { return _completedTasks; }
             set
             {
                 _completedTasks = value;
                 NotifyOfPropertyChange(nameof(CompletedTasks));
-            }
-        }
-        public ObservableCollection<Task> FilteredCompletedTasks
-        {
-            get { return _completedFilteredTasks; }
-            set
-            {
-                _completedFilteredTasks = value;
-                NotifyOfPropertyChange(nameof(FilteredCompletedTasks));
-            }
-        }
-        public IEnumerable<Status> StatusOptions
-        {
-            get
-            {
-                return Enum.GetValues(typeof(Status)).Cast<Status>();
             }
         }
 
@@ -218,6 +115,7 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CanNavigatePrevious));
             }
         }
+
         public int ItemsPerPage
         {
             get { return _itemsPerPage; }
@@ -235,6 +133,7 @@ namespace TaskManager.ViewModels
                     _itemsPerPage = 0;
             }
         }
+
         public int CurrentPageNumber
         {
             get { return _currentPageNumber; }
@@ -246,32 +145,24 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CanNavigatePrevious));
             }
         }
-        public bool CanCreateOrUpdateTask
-        {
-            get { return !string.IsNullOrWhiteSpace(Name); }
-        }
+
         public bool CanSwitchToListView
         {
             get { return IsCardViewEnabled; }
         }
+
         public bool CanSwitchToCardView
         {
             get { return IsListViewEnabled; }
         }
-        public string SubmitBtnContent
-        {
-            get { return _submitBtnContent; }
-            set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
-        }
+
         public string SearchKeyword
         {
             get { return _searchKeyword; }
             set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword)); }
         }
-        public UserRole UserRole
-        {
-            get; set;
-        }
+
+
         public bool IsListViewEnabled
         {
             get { return _isListViewEnabled; }
@@ -283,6 +174,7 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CanSwitchToListView));
             }
         }
+
         public bool IsCardViewEnabled
         {
             get { return _isCardViewEnabled; }
@@ -294,29 +186,40 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(CanSwitchToListView));
             }
         }
+
         public bool CanNavigateNext
         {
             get { return CurrentPageNumber < TotalPagesCount; }
         }
+
         public bool CanNavigatePrevious
         {
             get { return CurrentPageNumber > 1; }
         }
 
+        public CreateTaskViewModel CreateTaskView
+        {
+            get { return _createTaskView; }
+            set { _createTaskView = value; NotifyOfPropertyChange(nameof(CreateTaskView)); }
+        }
+
+
+        public bool IsTaskFormEnabled
+        {
+            get { return _isTaskFormEnabled; }
+            set { _isTaskFormEnabled = value; NotifyOfPropertyChange(nameof(IsTaskFormEnabled)); }
+        }
+
+
         #endregion
 
-        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository)
+        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository, IEventAggregator eventAggregator,CreateTaskViewModel createTaskViewModel)
         {
             _repository = Application.Current.Properties[Constant.Database].ToString() == Constant.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
-            Name = string.Empty;
-            Description = string.Empty;
-            DueDate = DateTime.Now;
-            SelectedStatus = Status.New;
             IsCardViewEnabled = true;
-            UserRole = UserRole.Create;
-            SubmitBtnContent = Constant.Create;
-
+            CreateTaskView = createTaskViewModel;
+            _eventAggregator = eventAggregator;
         }
 
         private void InitializeTaskLists()
@@ -324,38 +227,14 @@ namespace TaskManager.ViewModels
             NewTasks = new(_repository.GetAllTasks(Status.New));
             InProgressTasks = new(_repository.GetAllTasks(Status.InProgress));
             CompletedTasks = new(_repository.GetAllTasks(Status.Completed));
-            FilteredNewTasks = new(NewTasks);
-            FilteredInProgressTasks = new(InProgressTasks);
-            FilteredCompletedTasks = new(CompletedTasks);
         }
 
-        public void CreateOrUpdateTask()
+        
+        public void CreateTask(Task inputTask)
         {
-            if (UserRole == UserRole.Create)
-            {
-                CreateTask();
-            }
-            else
-            {
-                UpdateTask();
-            }
-
-            ResetInputControls();
-        }
-
-        public void CreateTask()
-        {
-            Task task = new(Name)
-            {
-                Description = Description,
-                Status = SelectedStatus,
-                Priority = SelectedPriority,
-                DueDate = DueDate,
-                Category = SelectedCategory,
-                PercentageCompleted = PercentageComplete
-            };
-            _repository.CreateTask(task);
-            AddTaskToUI(task);
+            
+            _repository.CreateTask(inputTask);
+            AddTaskToUI(inputTask);
 
         }
 
@@ -365,37 +244,24 @@ namespace TaskManager.ViewModels
             {
                 case Status.New:
                     NewTasks.Add(task);
-                    FilteredNewTasks.Add(task);
                     break;
                 case Status.InProgress:
                     InProgressTasks.Add(task);
-                    FilteredInProgressTasks.Add(task);
                     break;
                 case Status.Completed:
                     CompletedTasks.Add(task);
-                    FilteredCompletedTasks.Add(task);
                     break;
             }
             Tasks.Add(task);
             FilteredTasks.Add(task);
         }
 
-        public void UpdateTask()
+        public void UpdateTask(Task inputTask)
         {
-            Task task = new()
-            {
-                Id = SelectedTask.Id,
-                Name = Name,
-                Description = Description,
-                Status = SelectedStatus,
-                Priority = SelectedPriority,
-                Category = SelectedCategory,
-                PercentageCompleted = PercentageComplete,
-                DueDate = DueDate
-            };
+            Task SelectedTask = _repository.GetTaskById(inputTask.Id);
             RemoveTaskFromUIById(SelectedTask.Id, SelectedTask.Status);
-            AddTaskToUI(task);
-            _repository.UpdateTask(task);
+            AddTaskToUI(inputTask);
+            _repository.UpdateTask(inputTask);
         }
 
         private void RemoveTaskFromUIById(Guid id, Status status)
@@ -406,15 +272,12 @@ namespace TaskManager.ViewModels
                 {
                     case Status.New:
                         NewTasks.Remove(NewTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        FilteredNewTasks.Remove(FilteredNewTasks.FirstOrDefault(tsk => tsk.Id == id));
                         break;
                     case Status.InProgress:
                         InProgressTasks.Remove(InProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        FilteredInProgressTasks.Remove(FilteredInProgressTasks.FirstOrDefault(tsk => tsk.Id == id));
                         break;
                     case Status.Completed:
                         CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
-                        FilteredCompletedTasks.Remove(FilteredCompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
                         break;
                 }
                 FilteredTasks.Remove(FilteredTasks.FirstOrDefault(tsk => tsk.Id == id));
@@ -424,19 +287,6 @@ namespace TaskManager.ViewModels
             {
                 MessageBox.Show(e.Message, Constant.ErrorOccured);
             }
-        }
-
-        public void ResetInputControls()
-        {
-            Description = Name = string.Empty;
-            SelectedPriority = Priority.Low;
-            SelectedStatus = Status.New;
-            SelectedCategory = Category.NewFeature;
-            DueDate = DateTime.Now;
-            UserRole = UserRole.Create;
-            SubmitBtnContent = Constant.Create;
-            PercentageComplete = 0;
-
         }
 
         public void MouseMoveHandler(MouseEventArgs e)
@@ -455,7 +305,6 @@ namespace TaskManager.ViewModels
                 task.Status = Status.New;
                 _repository.UpdateTask(task);
                 NewTasks.Add(task);
-                FilteredNewTasks.Add(task);
             }
         }
 
@@ -467,7 +316,6 @@ namespace TaskManager.ViewModels
                 task.Status = Status.InProgress;
                 _repository.UpdateTask(task);
                 InProgressTasks.Add(task);
-                FilteredInProgressTasks.Add(task);
             }
         }
 
@@ -479,7 +327,6 @@ namespace TaskManager.ViewModels
                 task.Status = Status.Completed;
                 _repository.UpdateTask(task);
                 CompletedTasks.Add(task);
-                FilteredCompletedTasks.Add(task);
             }
         }
 
@@ -489,15 +336,12 @@ namespace TaskManager.ViewModels
             {
                 case Status.New:
                     NewTasks.Remove(task);
-                    FilteredNewTasks.Remove(task);
                     break;
                 case Status.InProgress:
                     InProgressTasks.Remove(task);
-                    FilteredInProgressTasks.Remove(task);
                     break;
                 case Status.Completed:
                     CompletedTasks.Remove(task);
-                    FilteredCompletedTasks.Remove(task);
                     break;
             }
         }
@@ -516,24 +360,13 @@ namespace TaskManager.ViewModels
                     MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
                 }
             }
-            ResetInputControls();
         }
 
         public void DisplayTaskById(Guid id)
         {
-            SelectedTask = _repository.GetTaskById(id);
-            if (SelectedTask != null)
-            {
-                UserRole = UserRole.Edit;
-                SubmitBtnContent = Constant.Update;
-                Name = SelectedTask.Name;
-                Description = SelectedTask.Description;
-                SelectedStatus = SelectedTask.Status;
-                SelectedPriority = SelectedTask.Priority;
-                SelectedCategory = SelectedTask.Category;
-                DueDate = SelectedTask.DueDate;
-                PercentageComplete = SelectedTask.PercentageCompleted;
-            }
+            Task selectedTask = _repository.GetTaskById(id);
+            IsTaskFormEnabled = true;
+            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Display,selectedTask));
         }
 
         public void SwitchToListView()
@@ -550,7 +383,6 @@ namespace TaskManager.ViewModels
             FilteredTasks = new(Tasks.Take(ItemsPerPage));
             CurrentPageNumber = 1;
             TotalPagesCount = (Tasks.Count + ItemsPerPage - 1) / ItemsPerPage;
-
         }
 
         public void SwitchToCardView()
@@ -561,36 +393,10 @@ namespace TaskManager.ViewModels
 
         public void SearchTasks()
         {
-            if (IsCardViewEnabled)
-                SearchTasksInCardView();
-            else
-                SearchTasksInListView();
-
-        }
-
-        private void SearchTasksInCardView()
-        {
-            if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
-            {
-                FilteredNewTasks = NewTasks.Count > 0 ? new(NewTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-                FilteredInProgressTasks = InProgressTasks.Count > 0 ? new(InProgressTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-                FilteredCompletedTasks = CompletedTasks.Count > 0 ? new(CompletedTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-            }
-            else
-            {
-                FilteredNewTasks = new(NewTasks);
-                FilteredInProgressTasks = new(InProgressTasks);
-                FilteredCompletedTasks = new(CompletedTasks);
-            }
-        }
-
-        private void SearchTasksInListView()
-        {
             if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
                 FilteredTasks = FilteredTasks.Count > 0 ? new(FilteredTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
             else
                 LoadCurrentPage();
-
         }
 
         public void NavigateNext()
@@ -599,15 +405,30 @@ namespace TaskManager.ViewModels
             FilteredTasks = new(Tasks.Skip(CurrentPageNumber * ItemsPerPage).Take(ItemsPerPage));
             CurrentPageNumber += 1;
         }
+
         public void NavigatePrevious()
         {
             FilteredTasks = new(Tasks.Skip((CurrentPageNumber - 2) * ItemsPerPage).Take(ItemsPerPage));
             CurrentPageNumber -= 1;
         }
+
         public void LoadCurrentPage()
         {
             FilteredTasks = new(Tasks.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage));
         }
 
+        public void CloseTaskForm()
+        {
+            IsTaskFormEnabled = false;
+        }
+
+        public System.Threading.Tasks.Task HandleAsync(Tuple<OperationType, Task> message, CancellationToken cancellationToken)
+        {
+            if (message.Item1 == OperationType.Create)
+                CreateTask(new(message.Item2));
+            else if (message.Item1 == OperationType.Update)
+                UpdateTask(new(message.Item2));
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
     }
 }
