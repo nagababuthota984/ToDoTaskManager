@@ -210,6 +210,15 @@ namespace TaskManager.ViewModels
             set { _isTaskFormEnabled = value; NotifyOfPropertyChange(nameof(IsTaskFormEnabled)); }
         }
 
+        private bool _isGroupingEnabled;
+
+        public bool IsGroupingEnabled
+        {
+            get { return _isGroupingEnabled; }
+            set { _isGroupingEnabled = value; NotifyOfPropertyChange(nameof(IsGroupingEnabled)); }
+        }
+
+
 
         #endregion
 
@@ -220,6 +229,7 @@ namespace TaskManager.ViewModels
             IsCardViewEnabled = true;
             CreateTaskView = createTaskViewModel;
             _eventAggregator = eventAggregator;
+            _eventAggregator.SubscribeOnPublishedThread(this);
         }
 
         private void InitializeTaskLists()
@@ -428,6 +438,7 @@ namespace TaskManager.ViewModels
                 CreateTask(new(message.Item2));
             else if (message.Item1 == OperationType.Update)
                 UpdateTask(new(message.Item2));
+            IsTaskFormEnabled = false;
             return System.Threading.Tasks.Task.CompletedTask;
         }
     }

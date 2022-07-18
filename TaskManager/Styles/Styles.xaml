@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:cal ="http://www.caliburnproject.org"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
@@ -350,8 +351,35 @@
         <Setter Property="FontWeight" Value="DemiBold"></Setter>
     </Style>
 
+    <Style x:Key="TM.ToggleSwitch.DefaultStyle" TargetType="mah:ToggleSwitch">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Margin" Value="10 0 2 0"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="50"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TM.Panel.Pagination" TargetType="WrapPanel" >
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
+                <Setter Property="Opacity" Value="0.3"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="TM.DataGrid.DefaultStyle" TargetType="DataGrid">
         <Setter Property="RowHeight" Value="35"/>
+        <Setter Property="ItemsSource" Value="{Binding Tasks}"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Background" Value="White"/>
@@ -362,24 +390,15 @@
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource TM.DataGrid.ColumnsHeaderStyle}"/>
         <Setter Property="CellStyle" Value="{StaticResource TM.DataGrid.CellStyle}"/>
         <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Opacity" Value="1"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.ListView.DefaultStyle" TargetType="ListView">
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Setter Property="Margin" Value="0 30 0 0"/>
-        <Setter Property="Background" Value="White"/>
-
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
+            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
+                <Setter Property="Opacity" Value="0.3"/>
             </DataTrigger>
         </Style.Triggers>
-
     </Style>
 
     <Style x:Key="TM.GridView.ColumnHeaderStyle" TargetType="GridViewColumnHeader">
@@ -399,9 +418,7 @@
             <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
-                <Setter Property="Opacity" Value="0.3"/>
-            </DataTrigger>
+
         </Style.Triggers>
     </Style>
 
@@ -427,27 +444,27 @@
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Opacity" Value="1"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
         </Style.Triggers>
     </Style>
+
     <Style x:Key="TM.DataGrid.GroupHeaderStyle" TargetType="GroupItem">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GroupItem">
-                    <Expander IsExpanded="True">
+                    <Expander IsExpanded="True" >
                         <Expander.Style>
                             <Style TargetType="Expander">
                                 <Setter Property="Background" Value="#F5F5F5"/>
                             </Style>
                         </Expander.Style>
-                        <WrapPanel >
-                            <TextBlock FontSize="14" Text="{Binding Path=Priority.Name}" Foreground="DarkBlue" FontWeight="DemiBold"/>
                             <ItemsPresenter/>
-                        </WrapPanel>
                     </Expander>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+    
 </ResourceDictionary>

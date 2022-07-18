@@ -44,7 +44,10 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            <Button x:Name="SwitchToCardView" ToolTip="Card view" Height="10" Width="30" Margin="20 2 2 2" HorizontalAlignment="Center" >
+            <mah:ToggleSwitch IsOn="{Binding IsGroupingEnabled}" 
+                              Style="{StaticResource TM.ToggleSwitch.DefaultStyle}" Content="Group by priority" >
+            </mah:ToggleSwitch>
+            <Button x:Name="SwitchToCardView" ToolTip="Card view" Height="10" Width="30" Margin="2 2 2 2" HorizontalAlignment="Center" >
                 <iconPacks:BootstrapIcons Kind="CardList" Height="10"/>
             </Button>
             <Button  x:Name="SwitchToListView" Height="10" Width="30" ToolTip="List view" Margin="3 2 2 2" HorizontalAlignment="Center">
@@ -127,7 +130,11 @@
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
             </Border>
         </Grid>
-        <Grid Name="ListView" Grid.Row="1" Grid.ColumnSpan="4">
+        <Grid Name="ListView" Grid.Row="1" Grid.ColumnSpan="4" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
             <Grid.Resources>
                 <CollectionViewSource x:Key="GroupedTasks" Source="{Binding FilteredTasks}">
                     <CollectionViewSource.GroupDescriptions>
@@ -135,11 +142,7 @@
                     </CollectionViewSource.GroupDescriptions>
                 </CollectionViewSource>
             </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="2*"/>
-            </Grid.RowDefinitions>
-            <DataGrid  ItemsSource="{Binding Source={StaticResource GroupedTasks}}" Grid.ColumnSpan="4"  CellStyle="{StaticResource TM.DataGrid.CellStyle}" Style="{StaticResource TM.DataGrid.DefaultStyle}">
+            <DataGrid   Grid.ColumnSpan="4"  CellStyle="{StaticResource TM.DataGrid.CellStyle}">
                 <DataGrid.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource TM.DataGrid.GroupHeaderStyle}">
                         <GroupStyle.Panel>
@@ -149,6 +152,15 @@
                         </GroupStyle.Panel>
                     </GroupStyle>
                 </DataGrid.GroupStyle>
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid" BasedOn="{StaticResource TM.DataGrid.DefaultStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsGroupingEnabled}" Value="True">
+                                <Setter Property="ItemsSource" Value="{Binding Source={StaticResource GroupedTasks}}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="200" Header="Task Name" Binding="{Binding Name}"/>
                     <DataGridTextColumn Width="400" Header="Description" Binding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}"/>
@@ -156,7 +168,7 @@
                     <DataGridTemplateColumn Width="200" Header="Priority">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                    <TextBlock Text="{Binding Priority,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="{Binding Priority,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"/>
+                                <TextBlock Text="{Binding Priority,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="{Binding Priority,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -173,7 +185,7 @@
                     <DataGridTemplateColumn Width="110" CellTemplate="{StaticResource TM.ListView.EditDeleteButtonsTemplate}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
+            <WrapPanel Grid.Row="1" HorizontalAlignment="Center" Style="{StaticResource TM.Panel.Pagination}">
                 <TextBlock Text="Items shown per page: " Style="{StaticResource TM.TextBlock.BoldLabels}" Margin="3" Padding="5"/>
                 <ComboBox  Margin="3 3 20 3"  SelectedValue="{Binding ItemsPerPage}" SelectedValuePath="Content">
                     <ComboBoxItem Content="5"  IsSelected="True"/>
@@ -201,16 +213,6 @@
                         <iconPacks:BootstrapIcons Kind="ArrowRight"/>
                     </Button.Content>
                 </Button>
-                <WrapPanel.Style>
-                    <Style TargetType="WrapPanel">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </WrapPanel.Style>
             </WrapPanel>
             <Grid Style="{StaticResource TM.ListView.FormGrid}" Height="auto" >
                 <Grid.RowDefinitions>

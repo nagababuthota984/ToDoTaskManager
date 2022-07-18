@@ -70,6 +70,7 @@ namespace TaskManager.Models
         {
             Id = Guid.NewGuid();
             CreatedOn = DateTime.Now;
+            DueDate = DateTime.Now;
         }
         public Task(string name)
         {

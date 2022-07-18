@@ -93,7 +93,7 @@ namespace TaskManager.ViewModels
         }
         public void UpdateTask()
         {
-            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Create, InputTask));
+            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Update, InputTask));
             ResetInputControls();
         }
         public void ResetInputControls()
