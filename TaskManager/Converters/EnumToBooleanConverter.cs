@@ -9,7 +9,7 @@ using static TaskManager.Models.Enums;
 
 namespace TaskManager.Converters
 {
-    public class CategoryToBooleanConverter : IValueConverter
+    public class EnumToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -22,21 +22,7 @@ namespace TaskManager.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value && int.TryParse(parameter.ToString(), out int category))
-            {
-                switch(category)
-                {
-                    case 0:
-                        return Category.NewFeature;
-                    case 1:
-                        return Category.BugFix;
-                    case 2:
-                        return Category.LearningTask;
-                    default:
-                        return Category.Others;
-                }
-            }
-            return Binding.DoNothing;
+            return ((bool)value) ? parameter : Binding.DoNothing;
         }
     }
 }

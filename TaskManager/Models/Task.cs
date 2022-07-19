@@ -38,15 +38,24 @@ namespace TaskManager.Models
             get { return _priority; }
             set { _priority = value; NotifyOfPropertyChange(nameof(Priority)); }
         }
-        public Category Category 
+        public Category Category
         {
             get { return _category; }
             set { _category = value; NotifyOfPropertyChange(nameof(Category)); }
         }
-        public float PercentageCompleted 
-        { 
+        public float PercentageCompleted
+        {
             get { return _percentageCompleted; }
-            set { _percentageCompleted = value; NotifyOfPropertyChange(nameof(PercentageCompleted)); }
+            set
+            {
+                _percentageCompleted = value;
+                if (value == 100)
+                {
+                    Status = Status.Completed;
+                }
+
+                NotifyOfPropertyChange(nameof(PercentageCompleted));
+            }
         }
         public DateTime CreatedOn { get; set; }
         public DateTime DueDate
@@ -60,20 +69,28 @@ namespace TaskManager.Models
         public Task()
         {
             Id = Guid.NewGuid();
+            CreatedOn = DateTime.Now;
+            DueDate = DateTime.Now;
         }
-        public Task(string name, string description, Status status, Priority priority, DateTime dueDate,Category taskCategory, float percentageCompleted)
+        public Task(string name)
         {
             Id = Guid.NewGuid();
             Name = name;
-            Description = description;
-            Status = status;
-            Priority = priority;
-            CreatedOn = DateTime.Now;
-            Category = taskCategory;
-            PercentageCompleted = percentageCompleted;
-            DueDate = dueDate;
             IsDeleted = false;
+            CreatedOn = DateTime.Now;
         }
-
+        public Task(Task task)
+        {
+            Id = task.Id;
+            Name = task.Name;
+            Description = task.Description;
+            IsDeleted = task.IsDeleted;
+            CreatedOn = task.CreatedOn;
+            Status = task.Status;
+            Priority = task.Priority;
+            Category = task.Category;
+            PercentageCompleted = task.PercentageCompleted;
+            DueDate = task.DueDate;
+        }
     }
 }

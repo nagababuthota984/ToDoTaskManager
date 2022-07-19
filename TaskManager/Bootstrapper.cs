@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using TaskManager.Data;
-using TaskManager.Data.SQLite;
-using TaskManager.Data.SqlServer;
-using TaskManager.Models;
 using TaskManager.ViewModels;
 
 namespace TaskManager
@@ -26,7 +21,7 @@ namespace TaskManager
         protected override void Configure()
         {
             _container.Instance(_container);
-            
+
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Data.SqlServer.Task, Models.Task>();
@@ -41,6 +36,7 @@ namespace TaskManager
                 .Singleton<IEventAggregator, EventAggregator>()
                 .PerRequest<SqliteRepository>()
                 .PerRequest<SqlServerRepository>()
+                .PerRequest<CreateTaskViewModel>()
                 .PerRequest<HomeViewModel>()
                 .PerRequest<MainViewModel>();
         }

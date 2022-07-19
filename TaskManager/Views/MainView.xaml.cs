@@ -12,6 +12,13 @@ namespace TaskManager.Views
         public MainView()
         {
             InitializeComponent();
+            this.Closing += MainView_Closing;
+        }
+
+        private void MainView_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
 
         private void SwitchTheme(object sender, RoutedEventArgs e)
@@ -26,7 +33,15 @@ namespace TaskManager.Views
                     break;
             }
         }
+
+        private void Open(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+        }
         
-        
+        private void Quit(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }
