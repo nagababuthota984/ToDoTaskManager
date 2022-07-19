@@ -28,6 +28,7 @@ namespace TaskManager.Data
                 MessageBox.Show(e.Message, Constant.ErrorOccured);
             }
         }
+
         public Models.Task GetTaskById(Guid id)
         {
             return _context.Tasks.FirstOrDefault(tsk => tsk.Id == id);

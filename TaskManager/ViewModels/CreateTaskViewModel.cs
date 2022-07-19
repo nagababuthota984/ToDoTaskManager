@@ -15,7 +15,6 @@ namespace TaskManager.ViewModels
         private IEventAggregator _eventAggregator;
         private Models.Task _task;
         private string _submitBtnContent;
-
         private UserRole _userRole;
 
         public UserRole UserRole
@@ -28,7 +27,6 @@ namespace TaskManager.ViewModels
                 else SubmitBtnContent = Constant.Update;
             }
         }
-
 
         public Models.Task InputTask
         {
@@ -50,10 +48,10 @@ namespace TaskManager.ViewModels
             set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
         }
 
-        //public bool CanCreateOrUpdateTask
-        //{
-        //    get { return !string.IsNullOrWhiteSpace(Task.Name); }
-        //}
+        public bool CanCreateOrUpdateTask
+        {
+            get { return !string.IsNullOrWhiteSpace(InputTask.Name); }
+        }
 
         public CreateTaskViewModel(IEventAggregator eventAggregator)
         {
@@ -88,14 +86,16 @@ namespace TaskManager.ViewModels
 
         public void CreateTask()
         {
-            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Create, InputTask));
+            _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Create, InputTask));
             ResetInputControls();
         }
+
         public void UpdateTask()
         {
-            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Update, InputTask));
+            _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Update, InputTask));
             ResetInputControls();
         }
+
         public void ResetInputControls()
         {
             InputTask = new();
@@ -112,10 +112,12 @@ namespace TaskManager.ViewModels
             }
             return System.Threading.Tasks.Task.CompletedTask;
         }
+
         public void Cancel()
         {
             ResetInputControls();
         }
+
         public override object GetView(object context = null)
         {
             return null;

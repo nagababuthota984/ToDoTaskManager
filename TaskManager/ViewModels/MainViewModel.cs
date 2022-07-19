@@ -48,7 +48,6 @@ namespace TaskManager.ViewModels
                     break;
             }
             await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg,$"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
-
             DisplayHomeView();
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using TaskManager.Common;
 
 namespace TaskManager
@@ -8,9 +10,17 @@ namespace TaskManager
     /// </summary>
     public partial class App : Application
     {
+        public TaskbarIcon taskbarIcon { get; set; }
         public App()
         {
             Properties.Add(Constant.Database, Constant.Sqlite);
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Popup p = new Popup();
+            p.Child = taskbarIcon;
         }
     }
 }

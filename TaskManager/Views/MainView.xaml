@@ -13,8 +13,10 @@
                 TitleBarHeight="30"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                 WindowState="Maximized"
-                Title="Task Manager" MinHeight="450" MinWidth="800">
+                Title="Task Manager" MinHeight="450" MinWidth="800"
+                 xmlns:tb="http://www.hardcodet.net/taskbar">
 
+   
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <TextBlock Text="Db Provider" Style="{StaticResource TM.TextBlock.TitleBarDbName}"/>
@@ -25,7 +27,16 @@
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
-
-    <ContentControl x:Name="ActiveItem"/>
+    <Grid>
+        <tb:TaskbarIcon IconSource="/Images/app_icon.ico" ToolTipText="Task manager">
+            <tb:TaskbarIcon.TrayPopup>
+                <StackPanel Width="100" Background="White">
+                    <Button Content="Open" Click="Open" Background="White" Padding="3" Height="15" BorderThickness="0"/>
+                    <Button Content="Quit"  Click="Quit" Background="White" Padding="3" Height="15" BorderThickness="0"/>
+                </StackPanel>
+            </tb:TaskbarIcon.TrayPopup>
+        </tb:TaskbarIcon>
+        <ContentControl x:Name="ActiveItem"/>
+    </Grid>
 
 </mah:MetroWindow>

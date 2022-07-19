@@ -104,7 +104,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <iconPacks:BoxIcons Kind="SolidPencil"/>
+                <iconPacks:BoxIcons Kind="SolidPencil" Height="15" Width="15"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <cal:ActionMessage MethodName="DisplayTaskById">
@@ -126,7 +126,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
+                <iconPacks:BoxIcons Kind="SolidTrashAlt"  Height="15" Width="15"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <cal:ActionMessage MethodName="DeleteById">
@@ -182,9 +182,9 @@
                     </Style>
                 </Button.Style>
 
-                <iconPacks:BoxIcons Kind="SolidPencil"/>
+                <iconPacks:BoxIcons Kind="SolidPencil"  Height="15" Width="15"/>
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
+                    <i:EventTrigger EventName="Click" >
                         <cal:ActionMessage MethodName="DisplayTaskById">
                             <cal:Parameter Value="{Binding Id}"/>
                         </cal:ActionMessage>
@@ -205,7 +205,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <iconPacks:BoxIcons Kind="SolidTrashAlt"/>
+                <iconPacks:BoxIcons Kind="SolidTrashAlt"  Height="15" Width="15"/>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <cal:ActionMessage MethodName="DeleteById">
@@ -334,6 +334,7 @@
     </Style>
 
     <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="BorderBrush" Value="#F1F1F1"/>
         <Setter Property="BorderThickness" Value="0 0 0 1"/>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
@@ -349,6 +350,11 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="DemiBold"></Setter>
+    </Style>
+
+    <Style x:Key="TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn" TargetType="DataGridColumnHeader" BasedOn="{StaticResource TM.DataGrid.ColumnsHeaderStyle}">
+        <Setter Property="Margin" Value="10 0 0 0"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
     <Style x:Key="TM.ToggleSwitch.DefaultStyle" TargetType="mah:ToggleSwitch">
@@ -376,15 +382,18 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
     <Style x:Key="TM.DataGrid.DefaultStyle" TargetType="DataGrid">
         <Setter Property="RowHeight" Value="35"/>
-        <Setter Property="ItemsSource" Value="{Binding Tasks}"/>
+        <Setter Property="ItemsSource" Value="{Binding FilteredTasks}"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
         <Setter Property="Margin" Value="5"/>
+        <Setter Property="AreRowDetailsFrozen" Value="True"/>
+        <Setter Property="FrozenColumnCount" Value="2"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="ColumnWidth" Value="*"/>
+        <Setter Property="ColumnWidth" Value="auto"/>
+        <!--<Setter Property="AlternatingRowBackground" Value="#F5F5F5"/>-->
         <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource TM.DataGrid.ColumnsHeaderStyle}"/>
@@ -418,7 +427,6 @@
             <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
-
         </Style.Triggers>
     </Style>
 
@@ -432,9 +440,8 @@
     </Style>
 
     <Style x:Key="TM.ListView.FormGrid" TargetType="Grid">
-        <Setter Property="Background" Value="#F5F5F5"/>
-        <Setter Property="Visibility" Value="Hidden"/>
-        <Setter Property="Height" Value="610"/>
+        <Setter Property="Background" Value="#F1F1F1"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Width" Value="410"/>
         <Style.Triggers>
             <MultiDataTrigger>
@@ -444,7 +451,6 @@
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Visibility" Value="Visible"/>
-                    <Setter Property="Opacity" Value="1"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
         </Style.Triggers>
@@ -457,14 +463,38 @@
                     <Expander IsExpanded="True" >
                         <Expander.Style>
                             <Style TargetType="Expander">
-                                <Setter Property="Background" Value="#F5F5F5"/>
+                                <Setter Property="Background" Value="#F1F1F1"/>
                             </Style>
                         </Expander.Style>
+                        <Expander.Header>
+                            <WrapPanel Width="Auto">
+                                <TextBlock Text="{Binding Path=Name}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"  Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                <TextBlock Text=" (" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                <TextBlock Text="{Binding Path=ItemCount}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                <TextBlock Text=")" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                            </WrapPanel>
+                        </Expander.Header>
+                        <Expander.Content>
                             <ItemsPresenter/>
+                        </Expander.Content>
                     </Expander>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style x:Key="TM.DataGrid.CellStyle.LeftAligned" TargetType="DataGridCell" BasedOn="{StaticResource TM.DataGrid.CellStyle}">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="10 0 0 0"/>
+    </Style>
+
+    <Style x:Key="TM.DataGrid.GroupingStyle" TargetType="DataGrid"  BasedOn="{StaticResource TM.DataGrid.DefaultStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsGroupingEnabled}" Value="True">
+                <Setter Property="ItemsSource" Value="{Binding Source={StaticResource GroupedTasks}}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
 </ResourceDictionary>

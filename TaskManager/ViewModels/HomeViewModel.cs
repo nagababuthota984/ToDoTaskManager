@@ -1,54 +1,46 @@
 ﻿using Caliburn.Micro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using TaskManager.Common;
 using TaskManager.Data;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.Controls;
-using TaskManager.Data;
-using System.Diagnostics;
-using System.Threading;
 
 namespace TaskManager.ViewModels
 {
     public class HomeViewModel : Conductor<Screen>, IHandle<Tuple<OperationType, Models.Task>>
     {
         #region Fields
-        
-        private Task _selectedTask;
-        private BindableCollection<Task> _newTasks;
-        private BindableCollection<Task> _inProgressTasks;
+
         private bool _isTaskFormEnabled;
-        private BindableCollection<Task> _completedTasks;
-        private string _searchKeyword;
-        private bool _isListViewEnabled = false;
-        private CreateTaskViewModel _createTaskView;
+        private bool _isListViewEnabled;
+        private bool _isGroupingEnabled;
         private bool _isCardViewEnabled;
-        private readonly ITaskRepository _repository;
-        private readonly IEventAggregator _eventAggregator;
-        private BindableCollection<Task> _tasks;
-        private BindableCollection<Task> _filteredTasks;
         private int _currentPageNumber;
         private int _totalPagesCount;
-        private int _itemsPerPage=10;
+        private int _itemsPerPage = 10;
+        private string _searchKeyword;
+        private readonly ITaskRepository _repository;
+        private readonly IEventAggregator _eventAggregator;
+        private CreateTaskViewModel _createTaskView;
+        private BindableCollection<Task> _newTasks;
+        private BindableCollection<Task> _inProgressTasks;
+        private BindableCollection<Task> _completedTasks;
+        private BindableCollection<Task> _tasks;
+        private BindableCollection<Task> _filteredTasks;
+
         #endregion
 
         #region Properties
-        
-        public Task SelectedTask
-        {
-            get { return _selectedTask; }
-            set { _selectedTask = value; NotifyOfPropertyChange(nameof(SelectedTask)); }
-        }
 
         public BindableCollection<Task> Tasks
         {
@@ -80,7 +72,7 @@ namespace TaskManager.ViewModels
             }
 
         }
-       
+
         public BindableCollection<Task> InProgressTasks
         {
             get { return _inProgressTasks; }
@@ -130,7 +122,9 @@ namespace TaskManager.ViewModels
                     InitializeListView();
                 }
                 else
-                    _itemsPerPage = 0;
+                {
+                    _itemsPerPage = 10;
+                }
             }
         }
 
@@ -161,7 +155,6 @@ namespace TaskManager.ViewModels
             get { return _searchKeyword; }
             set { _searchKeyword = value; NotifyOfPropertyChange(nameof(SearchKeyword)); }
         }
-
 
         public bool IsListViewEnabled
         {
@@ -203,14 +196,11 @@ namespace TaskManager.ViewModels
             set { _createTaskView = value; NotifyOfPropertyChange(nameof(CreateTaskView)); }
         }
 
-
         public bool IsTaskFormEnabled
         {
             get { return _isTaskFormEnabled; }
             set { _isTaskFormEnabled = value; NotifyOfPropertyChange(nameof(IsTaskFormEnabled)); }
         }
-
-        private bool _isGroupingEnabled;
 
         public bool IsGroupingEnabled
         {
@@ -222,14 +212,41 @@ namespace TaskManager.ViewModels
 
         #endregion
 
-        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository, IEventAggregator eventAggregator,CreateTaskViewModel createTaskViewModel)
+        public HomeViewModel(SqliteRepository sqliteRepository, SqlServerRepository sqlServerRepository, IEventAggregator eventAggregator, CreateTaskViewModel createTaskViewModel)
         {
             _repository = Application.Current.Properties[Constant.Database].ToString() == Constant.Sqlite ? sqliteRepository : sqlServerRepository;
             InitializeTaskLists();
             IsCardViewEnabled = true;
             CreateTaskView = createTaskViewModel;
             _eventAggregator = eventAggregator;
-            _eventAggregator.SubscribeOnPublishedThread(this);
+            _eventAggregator.SubscribeOnUIThread(this);
+            SetUpTimer();
+        }
+
+        private void SetUpTimer()
+        {
+            DispatcherTimer timer = new();
+            timer.Tick += Timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Start();
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            List<Task> tasks = Tasks.Where((tsk => (tsk.Status == Status.New || tsk.Status == Status.InProgress) && tsk.DueDate <= DateTime.Now.AddHours(1) && tsk.DueDate >= DateTime.Now.Subtract(TimeSpan.FromHours(1)))).ToList();
+            string message;
+            switch (tasks.Count)
+            {
+                case 0: break;
+                case 1:
+                    message = $"{tasks[0].Name} is nearing due time";
+                    RaiseToastNotification(Constant.TaskDue, message);
+                    break;
+                default:
+                    message = $"You have {tasks.Count} tasks nearing due time";
+                    RaiseToastNotification(Constant.TaskDue, message);
+                    break;
+            }
         }
 
         private void InitializeTaskLists()
@@ -237,15 +254,14 @@ namespace TaskManager.ViewModels
             NewTasks = new(_repository.GetAllTasks(Status.New));
             InProgressTasks = new(_repository.GetAllTasks(Status.InProgress));
             CompletedTasks = new(_repository.GetAllTasks(Status.Completed));
+            Tasks = new(_repository.GetAllTasks());
+            FilteredTasks = new(Tasks.Take(ItemsPerPage));
         }
 
-        
         public void CreateTask(Task inputTask)
         {
-            
             _repository.CreateTask(inputTask);
             AddTaskToUI(inputTask);
-
         }
 
         private void AddTaskToUI(Task task)
@@ -268,10 +284,15 @@ namespace TaskManager.ViewModels
 
         public void UpdateTask(Task inputTask)
         {
-            Task SelectedTask = _repository.GetTaskById(inputTask.Id);
-            RemoveTaskFromUIById(SelectedTask.Id, SelectedTask.Status);
-            AddTaskToUI(inputTask);
-            _repository.UpdateTask(inputTask);
+            Task oldTask = _repository.GetTaskById(inputTask.Id);
+            if (oldTask != null)
+            {
+                RemoveTaskFromUIById(oldTask.Id, oldTask.Status);
+                AddTaskToUI(inputTask);
+                _repository.UpdateTask(inputTask);
+            }
+            else
+                MessageBox.Show(Constant.UpdateFailed, Constant.ErrorOccured);
         }
 
         private void RemoveTaskFromUIById(Guid id, Status status)
@@ -375,24 +396,34 @@ namespace TaskManager.ViewModels
         public void DisplayTaskById(Guid id)
         {
             Task selectedTask = _repository.GetTaskById(id);
-            IsTaskFormEnabled = true;
-            _eventAggregator.PublishOnCurrentThreadAsync(Tuple.Create(OperationType.Display,selectedTask));
+            if (selectedTask != null)
+            {
+                _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Display, selectedTask));
+                if (IsListViewEnabled)
+                    IsTaskFormEnabled = true;
+            }
         }
 
-        public void SwitchToListView()
+        private void RaiseToastNotification(string title, string message, ToastScenario toastScenario = ToastScenario.Reminder, ToastDuration toastDuration = ToastDuration.Long)
         {
-            IsListViewEnabled = true;
-            IsCardViewEnabled = false;
-            if (Tasks == null)
-                InitializeListView();
+            new ToastContentBuilder()
+                .AddAppLogoOverride(Constant.IconPath)
+                .SetToastScenario(toastScenario)
+                .SetToastDuration(toastDuration)
+                .AddText(title)
+                .AddText(message)
+                .Show();
         }
 
         private void InitializeListView()
         {
-            Tasks = new(_repository.GetAllTasks());
-            FilteredTasks = new(Tasks.Take(ItemsPerPage));
             CurrentPageNumber = 1;
             TotalPagesCount = (Tasks.Count + ItemsPerPage - 1) / ItemsPerPage;
+            if (Tasks == null)
+            {
+                Tasks = new(_repository.GetAllTasks());
+                FilteredTasks = new(Tasks.Take(ItemsPerPage));
+            }
         }
 
         public void SwitchToCardView()
@@ -401,12 +432,23 @@ namespace TaskManager.ViewModels
             IsCardViewEnabled = true;
         }
 
+        public void SwitchToListView()
+        {
+            IsListViewEnabled = true;
+            IsCardViewEnabled = false;
+            InitializeListView();
+        }
+
         public void SearchTasks()
         {
             if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
+            {
                 FilteredTasks = FilteredTasks.Count > 0 ? new(FilteredTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+            }
             else
+            {
                 LoadCurrentPage();
+            }
         }
 
         public void NavigateNext()
@@ -434,12 +476,24 @@ namespace TaskManager.ViewModels
 
         public System.Threading.Tasks.Task HandleAsync(Tuple<OperationType, Task> message, CancellationToken cancellationToken)
         {
-            if (message.Item1 == OperationType.Create)
+            if (message.Item1 == OperationType.Display)
+                return System.Threading.Tasks.Task.CompletedTask;
+            else if (message.Item1 == OperationType.Create)
+            {
                 CreateTask(new(message.Item2));
+            }
             else if (message.Item1 == OperationType.Update)
+            {
                 UpdateTask(new(message.Item2));
+            }
             IsTaskFormEnabled = false;
             return System.Threading.Tasks.Task.CompletedTask;
+        }
+
+        protected override System.Threading.Tasks.Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            _eventAggregator.Unsubscribe(this);
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
     }
 }

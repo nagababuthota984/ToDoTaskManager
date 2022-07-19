@@ -12,7 +12,7 @@ namespace TaskManager.Converters
             string result=string.Empty;
             if(value is DateTime dueDate)
             {
-                if (dueDate.Date < DateTime.Now)
+                if (dueDate < DateTime.Now)
                     result = Constant.Overdue;
                 else if (dueDate.Date == DateTime.Today.Date.AddDays(1))
                     result += Constant.Tomorrow;
