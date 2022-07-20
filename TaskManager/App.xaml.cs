@@ -19,8 +19,10 @@ namespace TaskManager
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Popup p = new Popup();
-            p.Child = taskbarIcon;
+            Popup p = new()
+            {
+                Child = taskbarIcon
+            };
         }
     }
 }

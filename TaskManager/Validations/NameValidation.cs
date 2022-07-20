@@ -12,7 +12,7 @@ namespace TaskManager.Validations
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (string.IsNullOrWhiteSpace(value.ToString()))
+            if (value==null || string.IsNullOrWhiteSpace(value.ToString()))
                 return new(false, "Task name is mandatory");
             return new(true, null);
         }

@@ -10,20 +10,25 @@ using static TaskManager.Models.Enums;
 
 namespace TaskManager.ViewModels
 {
-    public class CreateTaskViewModel : Screen,IHandle<Tuple<OperationType,Models.Task>>
+    public class CreateTaskViewModel : Screen, IHandle<Tuple<OperationType, Models.Task>>
     {
+        #region Fields
         private IEventAggregator _eventAggregator;
         private Models.Task _task;
         private string _submitBtnContent;
         private UserRole _userRole;
+        private string _name;
+        #endregion
+
+        #region Properties
 
         public UserRole UserRole
         {
             get { return _userRole; }
-            set 
-            { 
-                _userRole = value; 
-                if (value == UserRole.Create) SubmitBtnContent = Constant.Create; 
+            set
+            {
+                _userRole = value;
+                if (value == UserRole.Create) SubmitBtnContent = Constant.Create;
                 else SubmitBtnContent = Constant.Update;
             }
         }
@@ -48,10 +53,9 @@ namespace TaskManager.ViewModels
             set { _submitBtnContent = value; NotifyOfPropertyChange(nameof(SubmitBtnContent)); }
         }
 
-        public bool CanCreateOrUpdateTask
-        {
-            get { return !string.IsNullOrWhiteSpace(InputTask.Name); }
-        }
+        #endregion
+
+        #region Constructors
 
         public CreateTaskViewModel(IEventAggregator eventAggregator)
         {
@@ -70,6 +74,11 @@ namespace TaskManager.ViewModels
             _eventAggregator.SubscribeOnUIThread(this);
 
         }
+
+        #endregion
+
+        #region Methods
+
         public void CreateOrUpdateTask()
         {
             if (UserRole == UserRole.Create)
@@ -86,14 +95,19 @@ namespace TaskManager.ViewModels
 
         public void CreateTask()
         {
-            _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Create, InputTask));
-            ResetInputControls();
+            if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
+            {
+                _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Create, InputTask));
+            }
+            
         }
 
         public void UpdateTask()
         {
-            _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Update, InputTask));
-            ResetInputControls();
+            if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
+            {
+                _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Update, InputTask));
+            }
         }
 
         public void ResetInputControls()
@@ -102,6 +116,15 @@ namespace TaskManager.ViewModels
             UserRole = UserRole.Create;
             SubmitBtnContent = Constant.Create;
         }
+
+        public void Cancel()
+        {
+            ResetInputControls();
+        }
+
+        #endregion
+
+        #region EventHandlers
 
         public Task HandleAsync(Tuple<OperationType, Models.Task> message, CancellationToken cancellationToken)
         {
@@ -113,14 +136,15 @@ namespace TaskManager.ViewModels
             return System.Threading.Tasks.Task.CompletedTask;
         }
 
-        public void Cancel()
-        {
-            ResetInputControls();
-        }
+        #endregion
+
+        #region Overrides
 
         public override object GetView(object context = null)
         {
             return null;
         }
+
+        #endregion
     }
 }

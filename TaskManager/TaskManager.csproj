@@ -8,6 +8,7 @@
     <ApplicationIcon>Images\app_icon.ico</ApplicationIcon>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <PackageIcon>app_icon.png</PackageIcon>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 	
 
@@ -17,11 +18,6 @@
     <None Remove="Images\tasks_inprogress.png" />
     <None Remove="Images\tasks_new.png" />
     <None Remove="Styles\AppIcon.png" />
-  </ItemGroup>
-	
-
-  <ItemGroup>
-    <Content Include="Images\app_icon.ico" />
   </ItemGroup>
 	
 
