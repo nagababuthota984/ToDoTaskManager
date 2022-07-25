@@ -1,5 +1,8 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.IO;
+using System.Windows;
 
 namespace TaskManager.Common
 {
@@ -26,7 +29,15 @@ namespace TaskManager.Common
         public const string DbSwitchSuccessMsg = "Successfully switched to ";
         public const string TaskDue = "Task due";
         public static Uri IconPath = new(Path.GetFullPath(@"Images/app_icon.ico"));
-
         public const string UpdateFailed = "Task can't be updated";
+
+
+
+        public static async System.Threading.Tasks.Task<bool> ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
+        {
+            if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(title, message, style))
+                return true;
+            return false;
+        }
     }
 }

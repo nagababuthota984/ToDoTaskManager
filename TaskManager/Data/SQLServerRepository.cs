@@ -47,7 +47,7 @@ namespace TaskManager.Data
                 MessageBox.Show(e.Message, Constant.ErrorOccured);
             }
         }
-        public List<Models.Task> GetAllTasks(Status? status = null)
+        public List<Models.Task> GetTasks(Status? status = null)
         {
             return _mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted==false) : _context.Tasks.Where(tsk=>tsk.IsDeleted==false));
 

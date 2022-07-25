@@ -47,7 +47,7 @@ namespace TaskManager.Data
             }
         }
 
-        public List<Models.Task> GetAllTasks(Status? status = null)
+        public List<Models.Task> GetTasks(Status? status = null)
         {
             return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && tsk.IsDeleted == false).ToList() : _context.Tasks.Where(tsk => tsk.IsDeleted == false).ToList();
         }

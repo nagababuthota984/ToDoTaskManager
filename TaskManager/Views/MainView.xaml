@@ -16,17 +16,17 @@
                 Title="Task Manager" MinHeight="450" MinWidth="800"
                  xmlns:tb="http://www.hardcodet.net/taskbar">
 
-   
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <TextBlock Text="Db Provider" Style="{StaticResource TM.TextBlock.TitleBarDbName}"/>
-            <ComboBox ItemsSource="{Binding DatabaseProvidersList}" SelectedItem="{Binding DatabaseProviderName}" 
+            <ComboBox ItemsSource="{Binding DatabaseProviders}" SelectedItem="{Binding DatabaseProviderName}" 
                       cal:Message.Attach="[Event SelectionChanged] = [Action ChangeDb()]" Width="160" Margin="3" FontWeight="DemiBold" Background="#F6F5F9"/>
             <Button Click="SwitchTheme" ToolTip="Switch Theme">
                 <iconPacks:PackIconModern Kind="Moon" Width="20" Height="15"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
+
     <Grid>
         <tb:TaskbarIcon IconSource="/Images/app_icon.ico" ToolTipText="Task manager">
             <tb:TaskbarIcon.TrayPopup>

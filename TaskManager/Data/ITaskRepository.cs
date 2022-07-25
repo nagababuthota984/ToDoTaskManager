@@ -10,7 +10,7 @@ namespace TaskManager.Data
         void CreateTask(Task task);
         Models.Task GetTaskById(Guid id);
         void UpdateTask(Task taskChanges);
-        List<Task> GetAllTasks(Status? status=null);
+        List<Task> GetTasks(Status? status=null);
         void DeleteTaskById(Guid id);
     }
 }

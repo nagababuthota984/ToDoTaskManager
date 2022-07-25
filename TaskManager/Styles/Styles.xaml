@@ -2,17 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:cal ="http://www.caliburnproject.org"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-
-
-
+    <!--#region ColorBrushes -->
     <SolidColorBrush x:Key="TM.Colors.PrimaryColor" Color="#41B1E1"/>
     <SolidColorBrush x:Key="TM.Colors.LowPriority" Color="#00A4EF"/>
     <SolidColorBrush x:Key="TM.Colors.MediumPriority" Color="#FFB900"/>
     <SolidColorBrush x:Key="TM.Colors.HighPriority" Color="#D73A4A"/>
+    <!--#endregion-->
+
+    <!--#region TextBox Styles -->
 
     <Style x:Key="TM.TextBox.NameTextBox" TargetType="TextBox">
         <Style.Triggers>
@@ -23,6 +24,46 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="TM.TextBox.IsDigitOnlyError" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="MinWidth" Value="20"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="ToolTip" Value="Please enter a valid integer"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBoxBase}">
+                    <Border Name="Border" Background="#FFFFFF" BorderBrush="#888888" BorderThickness="1" >
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger  Property="IsFocused" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Red"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TM.TextBox.Default" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="MinWidth" Value="20"/>
+        <Setter Property="Height" Value="25"/>
+
+    </Style>
+    <!--#endregion-->
+
+    <!--#region Button Styles -->
 
     <Style x:Key="TM.Button.DefaultStyle" TargetType="Button">
         <Setter Property="Template">
@@ -46,26 +87,12 @@
 
     </Style>
 
+    <!--#endregion-->
+
+    <!--#region TextBlock Styles -->
+
     <Style x:Key="TM.TextBlock.BoldLabels" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="DemiBold"/>
-    </Style>
-
-    <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
-        <Setter Property="Width" Value="13"/>
-        <Setter Property="Height" Value="13"/>
-        <Setter Property="Margin" Value="4"/>
-    </Style>
-
-    <Style x:Key="TM.PriorityIndicator.Low" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
-        <Setter Property="Fill" Value="{StaticResource TM.Colors.LowPriority}"/>
-    </Style>
-
-    <Style x:Key="TM.PriorityIndicator.Medium" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
-        <Setter Property="Fill" Value="{StaticResource TM.Colors.MediumPriority}"/>
-    </Style>
-
-    <Style x:Key="TM.PriorityIndicator.High" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
-        <Setter Property="Fill" Value="{StaticResource TM.Colors.HighPriority}"/>
     </Style>
 
     <Style x:Key="TM.TextBlock.PrimaryHeading" TargetType="TextBlock">
@@ -84,62 +111,40 @@
         <Setter Property="FontSize" Value="14"/>
     </Style>
 
-    <DataTemplate x:Key="TM.ListView.EditDeleteButtonsTemplate">
+    <Style x:Key="TM.TextBlock.TitleBarDbName" TargetType="TextBlock">
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Margin" Value="4 4 0 4"/>
+        <Setter Property="Padding" Value="2 2 0 2"/>
+        <Setter Property="ToolBar.ToolTip" Value="Connected"/>
 
-        <Grid HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button  BorderThickness="0" Background="Transparent"
-                    Foreground="{StaticResource TM.Colors.PrimaryColor}" 
-                    ToolTip="Edit task" Margin="0 0 10 0">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=IsMouseOver}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <iconPacks:BoxIcons Kind="SolidPencil" Height="15" Width="15"/>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <cal:ActionMessage MethodName="DisplayTaskById">
-                            <cal:Parameter Value="{Binding Id}"/>
-                        </cal:ActionMessage>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button  Grid.Column="1" ToolTip="Delete task"
-                    BorderThickness="0" Background="Transparent" Foreground="#E65B65"
-                     Margin="5 0 0 0" >
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=IsMouseOver}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <iconPacks:BoxIcons Kind="SolidTrashAlt"  Height="15" Width="15"/>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <cal:ActionMessage MethodName="DeleteById">
-                            <cal:Parameter Value="{Binding Id}" />
-                            <cal:Parameter Value="{Binding Status}" />
-                        </cal:ActionMessage>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-        </Grid>
+    </Style>
 
+    <!--#endregion-->
 
-    </DataTemplate>
+    <!--#region Rectangle styles -->
+    <Style x:Key="TM.PriorityIndicator" TargetType="Rectangle">
+        <Setter Property="Width" Value="13"/>
+        <Setter Property="Height" Value="13"/>
+        <Setter Property="Margin" Value="4"/>
+    </Style>
+
+    <Style x:Key="TM.PriorityIndicator.Low" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.LowPriority}"/>
+    </Style>
+
+    <Style x:Key="TM.PriorityIndicator.Medium" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.MediumPriority}"/>
+    </Style>
+
+    <Style x:Key="TM.PriorityIndicator.High" TargetType="Rectangle" BasedOn="{StaticResource TM.PriorityIndicator}">
+        <Setter Property="Fill" Value="{StaticResource TM.Colors.HighPriority}"/>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region DataTemplates -->
+
 
     <DataTemplate x:Key="TM.ListBox.TaskCardViewTemplate">
         <Grid Height="65">
@@ -218,23 +223,9 @@
         </Grid>
     </DataTemplate>
 
-    <Style x:Key="TM.TextBlock.TitleBarDbName" TargetType="TextBlock">
-        <Setter Property="TextAlignment" Value="Center"/>
-        <Setter Property="FontWeight" Value="DemiBold"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="Margin" Value="4 4 0 4"/>
-        <Setter Property="Padding" Value="2 2 0 2"/>
-        <Setter Property="ToolBar.ToolTip" Value="Connected"/>
+    <!--#endregion-->
 
-    </Style>
-
-    <Style x:Key="TM.ListBox.DefaultListBoxStyle" TargetType="ListBox">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="AllowDrop" Value="True"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
-        <Setter Property="SelectedItem" Value="{Binding SelectedTask}"/>
-    </Style>
-
+    <!--#region ListBox Styles -->
     <Style x:Key="TM.ListBox.ListBoxItemStyle" TargetType="ListBoxItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Visibility" Value="{Binding IsDeleted, Converter={StaticResource TM.Converters.BooleanToVisibilityConverter}}"/>
@@ -253,6 +244,12 @@
 
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="TM.ListBox.DefaultListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="AllowDrop" Value="True"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
     </Style>
 
     <Style x:Key="TM.ListBox.NoNewTasksListBoxStyle" TargetType="ListBox" BasedOn="{StaticResource TM.ListBox.DefaultListBoxStyle}">
@@ -311,11 +308,70 @@
         </Setter>
 
     </Style>
+    <!--#endregion-->
+
+    <!--#region RadioButton Styles -->
 
     <Style x:Key="TM.RadioButton.DefaultStyle" TargetType="RadioButton">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Margin" Value="5"/>
     </Style>
+
+    <!--#endregion-->
+
+    <!--#region ToggleSwitch Styles-->
+    <Style x:Key="TM.ToggleSwitch.DefaultStyle" TargetType="mah:ToggleSwitch">
+        <Setter Property="Margin" Value="10 0 2 0"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="50"/>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region Grid Styles -->
+
+    <Style x:Key="TM.ListView.FormGrid" TargetType="Grid">
+        <Setter Property="Background" Value="#F1F1F1"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Width" Value="410"/>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsTaskFormEnabled}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TM.Grid.CardView" TargetType="Grid">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Opacity" Value="1"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Slider Styles-->
+
+    <Style x:Key="TM.Slider.DefaultStyle" TargetType="Slider" >
+        <Setter Property="IsSnapToTickEnabled" Value="True"/>
+        <Setter Property="TickPlacement" Value="BottomRight"/>
+        <Setter Property="TickFrequency" Value="20"/>
+        <Setter Property="Maximum" Value="100"/>
+        <Setter Property="Minimum" Value="0"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Datagrid Styles -->
+
 
     <Style x:Key="TM.DataGrid.CellStyle" TargetType="DataGridCell">
         <Setter Property="FontSize" Value="13"/>
@@ -340,119 +396,6 @@
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="White" />
             </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.DataGrid.ColumnsHeaderStyle" TargetType="DataGridColumnHeader">
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontWeight" Value="DemiBold"></Setter>
-    </Style>
-
-    <Style x:Key="TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn" TargetType="DataGridColumnHeader" BasedOn="{StaticResource TM.DataGrid.ColumnsHeaderStyle}">
-        <Setter Property="Margin" Value="10 0 0 0"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-    </Style>
-
-    <Style x:Key="TM.ToggleSwitch.DefaultStyle" TargetType="mah:ToggleSwitch">
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Setter Property="Margin" Value="10 0 2 0"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="Width" Value="50"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.Panel.Pagination" TargetType="WrapPanel" >
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
-                <Setter Property="Opacity" Value="0.3"/>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.DataGrid.DefaultStyle" TargetType="DataGrid">
-        <Setter Property="RowHeight" Value="35"/>
-        <Setter Property="ItemsSource" Value="{Binding FilteredTasks}"/>
-        <Setter Property="GridLinesVisibility" Value="None"/>
-        <Setter Property="Margin" Value="5"/>
-        <Setter Property="AreRowDetailsFrozen" Value="True"/>
-        <Setter Property="FrozenColumnCount" Value="2"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="ColumnWidth" Value="auto"/>
-        <!--<Setter Property="AlternatingRowBackground" Value="#F5F5F5"/>-->
-        <Setter Property="AutoGenerateColumns" Value="False"/>
-        <Setter Property="HeadersVisibility" Value="Column"/>
-        <Setter Property="ColumnHeaderStyle" Value="{StaticResource TM.DataGrid.ColumnsHeaderStyle}"/>
-        <Setter Property="CellStyle" Value="{StaticResource TM.DataGrid.CellStyle}"/>
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Setter Property="Opacity" Value="1"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsListViewEnabled}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
-                <Setter Property="Opacity" Value="0.3"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.GridView.ColumnHeaderStyle" TargetType="GridViewColumnHeader">
-        <Setter Property="Height" Value="35"/>
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="BorderBrush" Value="#E5E5E5"/>
-        <Setter Property="Background" Value="#41B1E1"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="FontWeight" Value="DemiBold"/>
-    </Style>
-
-    <Style x:Key="TM.Grid.CardView" TargetType="Grid">
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Setter Property="Opacity" Value="1"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsCardViewEnabled}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="TM.Slider.DefaultStyle" TargetType="Slider" >
-        <Setter Property="Visibility" Value="Hidden"/>
-        <Setter Property="IsSnapToTickEnabled" Value="True"/>
-        <Setter Property="TickPlacement" Value="BottomRight"/>
-        <Setter Property="TickFrequency" Value="20"/>
-        <Setter Property="Maximum" Value="100"/>
-        <Setter Property="Minimum" Value="0"/>
-    </Style>
-
-    <Style x:Key="TM.ListView.FormGrid" TargetType="Grid">
-        <Setter Property="Background" Value="#F1F1F1"/>
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Setter Property="Width" Value="410"/>
-        <Style.Triggers>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding IsListViewEnabled}" Value="True"/>
-                    <Condition Binding="{Binding IsTaskFormEnabled}" Value="True"/>
-                </MultiDataTrigger.Conditions>
-                <MultiDataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Visible"/>
-                </MultiDataTrigger.Setters>
-            </MultiDataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -488,13 +431,71 @@
         <Setter Property="Margin" Value="10 0 0 0"/>
     </Style>
 
-    <Style x:Key="TM.DataGrid.GroupingStyle" TargetType="DataGrid"  BasedOn="{StaticResource TM.DataGrid.DefaultStyle}">
+
+    <Style x:Key="TM.DataGrid.ColumnsHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="{StaticResource TM.Colors.PrimaryColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="DemiBold"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="BackgroundBorder" BorderThickness="0,0,0,2"
+                        Background="{StaticResource TM.Colors.PrimaryColor}"
+                        BorderBrush="White"
+                        Grid.ColumnSpan="2"/>
+                        <ContentPresenter  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <iconPacks:PackIconBootstrapIcons Name="SortAscIcon" Grid.Column="1" HorizontalAlignment="Right" Margin="7" Kind="SortDownAlt" Visibility="Collapsed"/>
+                        <iconPacks:PackIconBootstrapIcons Name="SortDescIcon" Grid.Column="1" HorizontalAlignment="Right" Margin="7" Kind="SortDown" Visibility="Collapsed"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="SortAscIcon" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="SortDescIcon" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TM.DataGrid.DefaultStyle" TargetType="DataGrid">
+        <Setter Property="RowHeight" Value="35"/>
+        <Setter Property="ItemsSource" Value="{Binding FilteredTasks}"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="AreRowDetailsFrozen" Value="True"/>
+        <Setter Property="FrozenColumnCount" Value="2"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="ColumnWidth" Value="auto"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="ColumnHeaderStyle" Value="{StaticResource TM.DataGrid.ColumnsHeaderStyle}"/>
+        <Setter Property="CellStyle" Value="{StaticResource TM.DataGrid.CellStyle}"/>
+        <Setter Property="Opacity" Value="1"/>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsGroupingEnabled}" Value="True">
-                <Setter Property="ItemsSource" Value="{Binding Source={StaticResource GroupedTasks}}"/>
+            <DataTrigger Binding="{Binding IsTaskFormEnabled}" Value="True">
+                <Setter Property="Opacity" Value="0.3"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn" TargetType="DataGridColumnHeader" BasedOn="{StaticResource TM.DataGrid.ColumnsHeaderStyle}">
+        <Setter Property="Margin" Value="10 0 0 0"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <!--#endregion-->
 
 </ResourceDictionary>

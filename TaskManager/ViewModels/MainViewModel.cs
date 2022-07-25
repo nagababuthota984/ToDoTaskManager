@@ -4,31 +4,38 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
 using System.Windows;
 using TaskManager.Common;
+using TaskManager.Data;
 
 namespace TaskManager.ViewModels
 {
     public class MainViewModel : Conductor<object>
     {
         #region Fields
+
         private readonly SimpleContainer _container;
 
         private string _dbProviderName;
 
-
         #endregion
 
         #region Properties
-        public List<string> DatabaseProvidersList
+
+        public List<string> DatabaseProviders
         {
             get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
         }
+
         public string DatabaseProviderName
         {
             get { return _dbProviderName; }
-            set { _dbProviderName = value; NotifyOfPropertyChange(nameof(DatabaseProviderName)); }
+            set
+            {
+                _dbProviderName = value;
+                NotifyOfPropertyChange(nameof(DatabaseProviderName));
+            }
         }
-        #endregion
 
+        #endregion
 
         public MainViewModel(SimpleContainer container)
         {
@@ -36,6 +43,7 @@ namespace TaskManager.ViewModels
             DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
             DisplayHomeView();
         }
+
         public async void ChangeDb()
         {
             switch (DatabaseProviderName)
@@ -47,12 +55,13 @@ namespace TaskManager.ViewModels
                     Application.Current.Properties[Constant.Database] = Constant.Sqlite;
                     break;
             }
-            await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(Constant.ChangeDbTitleMsg,$"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
+            await Constant.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
             DisplayHomeView();
         }
 
         public void DisplayHomeView()
         {
+            //TODO: change Itaskrepostory reference in container to suitable db 
             ActivateItemAsync(_container.GetInstance<HomeViewModel>());
         }
     }

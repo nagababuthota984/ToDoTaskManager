@@ -34,9 +34,10 @@ namespace TaskManager
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .PerRequest<SqliteRepository>()
-                .PerRequest<SqlServerRepository>()
+                .PerRequest<ITaskRepository,SqliteRepository>(nameof(SqliteRepository))
+                .PerRequest<ITaskRepository,SqlServerRepository>(nameof(SqlServerRepository))
                 .PerRequest<CreateTaskViewModel>()
+                .PerRequest<ListViewModel>()
                 .PerRequest<HomeViewModel>()
                 .PerRequest<MainViewModel>();
         }

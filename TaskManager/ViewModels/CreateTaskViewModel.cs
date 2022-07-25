@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TaskManager.Common;
+using TaskManager.Models;
 using static TaskManager.Models.Enums;
 
 namespace TaskManager.ViewModels
 {
-    public class CreateTaskViewModel : Screen, IHandle<Tuple<OperationType, Models.Task>>
+    public class CreateTaskViewModel : Screen, IHandle<TaskEventMessage>
     {
         #region Fields
         private IEventAggregator _eventAggregator;
@@ -97,7 +98,7 @@ namespace TaskManager.ViewModels
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
             {
-                _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Create, InputTask));
+                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() {Sender = this, Task = InputTask, OperationType = OperationType.Create });
             }
             
         }
@@ -106,7 +107,7 @@ namespace TaskManager.ViewModels
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
             {
-                _eventAggregator.PublishOnUIThreadAsync(Tuple.Create(OperationType.Update, InputTask));
+                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() {Sender = this, Task=InputTask,OperationType=OperationType.Update});
             }
         }
 
@@ -126,12 +127,12 @@ namespace TaskManager.ViewModels
 
         #region EventHandlers
 
-        public Task HandleAsync(Tuple<OperationType, Models.Task> message, CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task HandleAsync(TaskEventMessage message, CancellationToken cancellationToken)
         {
-            if (message.Item1 == OperationType.Display)
+            if (message.Sender !=this && message.OperationType == OperationType.Display)
             {
                 UserRole = UserRole.Edit;
-                InputTask = new(message.Item2);
+                InputTask = new(message.Task);
             }
             return System.Threading.Tasks.Task.CompletedTask;
         }
