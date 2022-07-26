@@ -228,7 +228,7 @@ namespace TaskManager.ViewModels
         /// <param name="isForcedDelete"></param>
         public async void DeleteById(Guid id, Status status, bool isForcedDelete = false)
         {
-            if (!isForcedDelete && await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            if (!isForcedDelete && !await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
                 return;
             else
             {
@@ -236,6 +236,7 @@ namespace TaskManager.ViewModels
                 {
                     _repository.DeleteTaskById(id);
                     RemoveTaskFromUI(id, status, true);
+                    await _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new() { Id = id } });
                 }
                 catch (Exception)
                 {
@@ -247,7 +248,6 @@ namespace TaskManager.ViewModels
 
         private void RemoveTaskFromUI(Task task)
         {
-            _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = task });
             switch (task.Status)
             {
                 case Status.New:

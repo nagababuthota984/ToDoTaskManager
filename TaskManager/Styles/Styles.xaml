@@ -216,6 +216,7 @@
                         <cal:ActionMessage MethodName="DeleteById">
                             <cal:Parameter Value="{Binding Id}" />
                             <cal:Parameter Value="{Binding Status}" />
+                            <cal:Parameter Value="false" />
                         </cal:ActionMessage>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>

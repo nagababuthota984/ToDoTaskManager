@@ -59,9 +59,10 @@ namespace TaskManager.ViewModels
             DisplayHomeView();
         }
 
+
+
         public void DisplayHomeView()
         {
-            //TODO: change Itaskrepostory reference in container to suitable db 
             ActivateItemAsync(_container.GetInstance<HomeViewModel>());
         }
     }
