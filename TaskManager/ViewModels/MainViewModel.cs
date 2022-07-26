@@ -59,7 +59,15 @@ namespace TaskManager.ViewModels
             DisplayHomeView();
         }
 
+        public void Open()
+        {
+            (Application.Current.MainWindow as MetroWindow)?.Show();
+        }
 
+        public void Quit()
+        {
+            Application.Current.Shutdown();
+        }
 
         public void DisplayHomeView()
         {

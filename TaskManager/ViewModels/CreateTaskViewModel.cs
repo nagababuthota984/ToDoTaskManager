@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TaskManager.Common;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
@@ -18,7 +16,6 @@ namespace TaskManager.ViewModels
         private Models.Task _task;
         private string _submitBtnContent;
         private UserRole _userRole;
-        private string _name;
         #endregion
 
         #region Properties
@@ -29,8 +26,10 @@ namespace TaskManager.ViewModels
             set
             {
                 _userRole = value;
-                if (value == UserRole.Create) SubmitBtnContent = Constant.Create;
-                else SubmitBtnContent = Constant.Update;
+                if (value == UserRole.Create)
+                    SubmitBtnContent = Constant.Create;
+                else
+                    SubmitBtnContent = Constant.Update;
             }
         }
 
@@ -98,16 +97,16 @@ namespace TaskManager.ViewModels
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
             {
-                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() {Sender = this, Task = InputTask, OperationType = OperationType.Create });
+                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = InputTask, OperationType = OperationType.Create });
             }
-            
+
         }
 
         public void UpdateTask()
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
             {
-                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() {Sender = this, Task=InputTask,OperationType=OperationType.Update});
+                _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = InputTask, OperationType = OperationType.Update });
             }
         }
 
@@ -129,7 +128,7 @@ namespace TaskManager.ViewModels
 
         public System.Threading.Tasks.Task HandleAsync(TaskEventMessage message, CancellationToken cancellationToken)
         {
-            if (message.Sender !=this && message.OperationType == OperationType.Display)
+            if (message.Sender != this && message.OperationType == OperationType.Display)
             {
                 UserRole = UserRole.Edit;
                 InputTask = new(message.Task);

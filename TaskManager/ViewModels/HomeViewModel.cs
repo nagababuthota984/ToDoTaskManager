@@ -1,5 +1,4 @@
 ﻿using Caliburn.Micro;
-using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
@@ -192,7 +191,9 @@ namespace TaskManager.ViewModels
                 _repository.UpdateTask(inputTask);
             }
             else
+            {
                 MessageBox.Show(Constant.UpdateFailed, Constant.ErrorOccured);
+            }
         }
 
         private void AddTaskToUI(Task task)
@@ -229,7 +230,9 @@ namespace TaskManager.ViewModels
         public async void DeleteById(Guid id, Status status, bool isForcedDelete = false)
         {
             if (!isForcedDelete && !await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            {
                 return;
+            }
             else
             {
                 try
@@ -285,7 +288,9 @@ namespace TaskManager.ViewModels
                         break;
                 }
                 if (!isForcedDelete)
+                {
                     _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new Task() { Id = id, Status = status } });
+                }
             }
             catch (Exception e)
             {
@@ -293,7 +298,7 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public async void SwitchToListView()
+        public  void SwitchToListView()
         {
             IsListViewEnabled = true;
             IsCardViewEnabled = false;
@@ -303,7 +308,6 @@ namespace TaskManager.ViewModels
         {
             IsListViewEnabled = false;
             IsCardViewEnabled = true;
-            ActivateItemAsync(_container.GetInstance<ListViewModel>());
         }
 
         #endregion
@@ -403,13 +407,21 @@ namespace TaskManager.ViewModels
             if (message.Sender.GetHashCode() != this.GetHashCode())
             {
                 if (message.OperationType == OperationType.Display)
+                {
                     return System.Threading.Tasks.Task.CompletedTask;
+                }
                 else if (message.OperationType == OperationType.Create)
+                {
                     CreateTask(new(message.Task));
+                }
                 else if (message.OperationType == OperationType.Update)
+                {
                     UpdateTask(new(message.Task));
+                }
                 else if (message.OperationType == OperationType.Delete)
+                {
                     DeleteById(message.Task.Id, message.Task.Status, true);
+                }
             }
             return System.Threading.Tasks.Task.CompletedTask;
         }
