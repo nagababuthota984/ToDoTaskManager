@@ -105,9 +105,7 @@ namespace TaskManager.ViewModels
         public void UpdateTask()
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
-            {
                 _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = InputTask, OperationType = OperationType.Update });
-            }
         }
 
         public void ResetInputControls()

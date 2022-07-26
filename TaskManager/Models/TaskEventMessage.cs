@@ -9,6 +9,7 @@ namespace TaskManager.Models
 {
     public class TaskEventMessage
     {
+      
         public Task Task { get; set; }
 
         public OperationType OperationType { get; set; }

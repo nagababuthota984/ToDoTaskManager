@@ -17,7 +17,7 @@ namespace TaskManager.ViewModels
         #region Fields
         private bool _isGroupingEnabled;
         private int _currentPageNumber;
-        private readonly ITaskRepository _repository;
+        private  ITaskRepository _repository;
         private readonly SimpleContainer _container;
         private readonly IEventAggregator _eventAggregator;
         private string _searchKeyword;
@@ -178,7 +178,7 @@ namespace TaskManager.ViewModels
             CreateTaskView = createTaskViewModel;
             _eventAggregator = eventAggregator;
             _eventAggregator.SubscribeOnUIThread(this);
-            _repository = Application.Current.Properties[Constant.Database] == Constant.Sqlite ? _container.GetInstance<ITaskRepository>(nameof(SqliteRepository)) : _container.GetInstance<ITaskRepository>(nameof(SqlServerRepository));
+            _repository = DbContextFactory.TaskRepository;
             InitializeTaskLists();
         }
 
@@ -302,6 +302,12 @@ namespace TaskManager.ViewModels
         {
             _eventAggregator.Unsubscribe(this);
             return base.OnDeactivateAsync(close, cancellationToken);
+        }
+
+        protected override System.Threading.Tasks.Task OnInitializeAsync(CancellationToken cancellationToken)
+        {
+            _repository = DbContextFactory.TaskRepository;
+            return base.OnInitializeAsync(cancellationToken);
         }
         #endregion
     }

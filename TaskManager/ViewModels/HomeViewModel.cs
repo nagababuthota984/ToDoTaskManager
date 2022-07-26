@@ -154,7 +154,7 @@ namespace TaskManager.ViewModels
         public HomeViewModel(IEventAggregator eventAggregator, CreateTaskViewModel createTaskViewModel, ListViewModel listViewModel, SimpleContainer container)
         {
             _container = container;
-            _repository = Application.Current.Properties[Constant.Database] == Constant.Sqlite ? _container.GetInstance<ITaskRepository>(nameof(SqliteRepository)) : _container.GetInstance<ITaskRepository>(nameof(SqlServerRepository));
+            _repository = DbContextFactory.TaskRepository;
             InitializeTaskLists();
             CreateTaskView = createTaskViewModel;
             ListViewModel = listViewModel;
@@ -433,9 +433,15 @@ namespace TaskManager.ViewModels
         protected override System.Threading.Tasks.Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
         {
             _eventAggregator.Unsubscribe(this);
+            DeactivateItemAsync(ListViewModel,close,cancellationToken);
             return base.OnDeactivateAsync(close, cancellationToken);
         }
 
+        protected override System.Threading.Tasks.Task OnActivateAsync(CancellationToken cancellationToken)
+        {
+            ActivateItemAsync(_container.GetInstance<ListViewModel>());
+            return base.OnActivateAsync(cancellationToken);
+        }
 
         #endregion
 

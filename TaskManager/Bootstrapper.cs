@@ -34,12 +34,12 @@ namespace TaskManager
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .PerRequest<ITaskRepository,SqliteRepository>(nameof(SqliteRepository))
-                .PerRequest<ITaskRepository,SqlServerRepository>(nameof(SqlServerRepository))
+                .PerRequest<SqliteRepository>()
+                .PerRequest<SqlServerRepository>()
+                .PerRequest<MainViewModel>()
                 .PerRequest<CreateTaskViewModel>()
                 .PerRequest<ListViewModel>()
-                .PerRequest<HomeViewModel>()
-                .PerRequest<MainViewModel>();
+                .PerRequest<HomeViewModel>();
         }
         protected override object GetInstance(Type service, string key)
         {

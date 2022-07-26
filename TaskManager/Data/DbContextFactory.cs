@@ -8,6 +8,9 @@ namespace TaskManager.Data
     {
         public const string sqliteConnectionString = @"Data Source=E:\Technovert Projects\TaskManager\TaskManager\Data\SQLite\TaskManager.db";
         public const string sqlServerConnectionString = @"Data Source=NAG-HP\SQLEXPRESS;Initial Catalog=TaskManagerDb;Integrated Security=True";
+
+        public static ITaskRepository TaskRepository { get; set; }
+
         public static SQLiteDbContext GetSQLiteDbContext()
         {
             var options = new DbContextOptionsBuilder<SQLiteDbContext>()

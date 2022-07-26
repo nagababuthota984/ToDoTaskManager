@@ -41,6 +41,7 @@ namespace TaskManager.ViewModels
         {
             _container = container;
             DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
+            DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
 
@@ -50,9 +51,11 @@ namespace TaskManager.ViewModels
             {
                 case Constant.Sqlserver:
                     Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
+                    DbContextFactory.TaskRepository = _container.GetInstance<SqlServerRepository>();
                     break;
                 default:
                     Application.Current.Properties[Constant.Database] = Constant.Sqlite;
+                    DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
                     break;
             }
             await Constant.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
