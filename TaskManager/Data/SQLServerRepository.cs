@@ -12,18 +12,16 @@ namespace TaskManager.Data
     public class SqlServerRepository : ITaskRepository
     {
         private readonly TaskManagerDbContext _context;
-        private readonly IMapper _mapper;
 
-        public SqlServerRepository(IMapper mapper)
+        public SqlServerRepository()
         {
             _context = DbContextFactory.GetSqlServerDbContext();
-            _mapper = mapper;
         }
         public void CreateTask(Models.Task task)
         {
             try
             {
-                _context.Tasks.Add(_mapper.Map<SqlServer.Task>(task));
+                _context.Tasks.Add(MapperHelper.Mapper.Map<SqlServer.Task>(task));
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -33,7 +31,7 @@ namespace TaskManager.Data
         }
         public Models.Task GetTaskById(Guid id)
         {
-            return _mapper.Map<Models.Task>(_context.Tasks.FirstOrDefault(tsk => tsk.Id == id));
+            return MapperHelper.Mapper.Map<Models.Task>(_context.Tasks.FirstOrDefault(tsk => tsk.Id == id));
         }
         public void DeleteTaskById(Guid id)
         {
@@ -49,7 +47,7 @@ namespace TaskManager.Data
         }
         public List<Models.Task> GetTasks(Status? status = null)
         {
-            return _mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted==false) : _context.Tasks.Where(tsk=>tsk.IsDeleted==false));
+            return MapperHelper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted==false) : _context.Tasks.Where(tsk=>tsk.IsDeleted==false));
 
         }
 
@@ -57,7 +55,7 @@ namespace TaskManager.Data
         {
             try
             {
-                var task = _mapper.Map<SqlServer.Task>(taskChanges);
+                var task = MapperHelper.Mapper.Map<SqlServer.Task>(taskChanges);
                 _context.Tasks.Remove(_context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id));
                 _context.Tasks.Add(task);
                 _context.SaveChanges();

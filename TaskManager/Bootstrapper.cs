@@ -21,25 +21,16 @@ namespace TaskManager
         protected override void Configure()
         {
             _container.Instance(_container);
-
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Data.SqlServer.Task, Models.Task>();
-                cfg.CreateMap<Models.Task, Data.SqlServer.Task>();
-
-            });
-            var mapper = mapperConfig.CreateMapper();
-            _container.Instance(mapper);
-
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .PerRequest<SqliteRepository>()
-                .PerRequest<SqlServerRepository>()
+                .Singleton<SqliteRepository>()
+                .Singleton<SqlServerRepository>()
                 .PerRequest<MainViewModel>()
                 .PerRequest<CreateTaskViewModel>()
                 .PerRequest<ListViewModel>()
                 .PerRequest<HomeViewModel>();
+            MapperHelper.CreateMapper();
         }
         protected override object GetInstance(Type service, string key)
         {

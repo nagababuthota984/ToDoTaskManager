@@ -30,6 +30,7 @@ namespace TaskManager.ViewModels
         private BindableCollection<Task> _newTasks;
         private BindableCollection<Task> _inProgressTasks;
         private BindableCollection<Task> _completedTasks;
+        private static int _activeHomeViewModelId;
 
         #endregion
 
@@ -147,6 +148,13 @@ namespace TaskManager.ViewModels
             }
         }
 
+
+        public static int ActiveHomeViewModelId
+        {
+            get { return _activeHomeViewModelId; }
+            set { _activeHomeViewModelId = value; }
+        }
+
         #endregion
 
         #region Constructors
@@ -184,10 +192,11 @@ namespace TaskManager.ViewModels
 
         public void UpdateTask(Task inputTask)
         {
-            Task oldTask = _repository.GetTaskById(inputTask.Id);
+            Task? oldTask = GetTaskFromUI(inputTask.Id);
             if (oldTask != null)
             {
-                oldTask = new(inputTask);
+                AddTaskToUI(inputTask);
+                RemoveTaskFromUI(oldTask.Id, oldTask.Status);
                 _repository.UpdateTask(inputTask);
             }
             else
@@ -196,6 +205,10 @@ namespace TaskManager.ViewModels
             }
         }
 
+        private Task? GetTaskFromUI(Guid id)
+        {
+            return new[] { NewTasks, InProgressTasks, CompletedTasks }.SelectMany(tsk => tsk).FirstOrDefault(tsk => tsk.Id == id);
+        }
         private void AddTaskToUI(Task task)
         {
             switch (task.Status)
@@ -222,30 +235,25 @@ namespace TaskManager.ViewModels
         }
 
         /// <summary>
-        /// IsForcedDelete is true when the delete is raised through an event.
+        /// isUiUpdate is true when the delete is raised through an event from listview.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="status"></param>
-        /// <param name="isForcedDelete"></param>
-        public async void DeleteById(Guid id, Status status, bool isForcedDelete = false)
+        /// <param name="isUiUpdate"></param>
+        public async void DeleteById(Guid id, Status status, bool isUiUpdate = false)
         {
-            if (!isForcedDelete && !await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+
+            if (!isUiUpdate)
             {
-                return;
-            }
-            else
-            {
-                try
+                if (await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
                 {
-                    _repository.DeleteTaskById(id);
-                    RemoveTaskFromUI(id, status, true);
                     await _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new() { Id = id } });
+                    _repository.DeleteTaskById(id);
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
-                }
+                else
+                    return;
             }
+            RemoveTaskFromUI(id, status);
 
         }
 
@@ -265,13 +273,7 @@ namespace TaskManager.ViewModels
             }
         }
 
-        /// <summary>
-        /// isForcedDelete is true when the delete action is raised through events
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="status"></param>
-        /// <param name="isForcedDelete"></param>
-        private void RemoveTaskFromUI(Guid id, Status status, bool isForcedDelete = false)
+        private void RemoveTaskFromUI(Guid id, Status status)
         {
             try
             {
@@ -287,10 +289,6 @@ namespace TaskManager.ViewModels
                         CompletedTasks.Remove(CompletedTasks.FirstOrDefault(tsk => tsk.Id == id));
                         break;
                 }
-                if (!isForcedDelete)
-                {
-                    _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new Task() { Id = id, Status = status } });
-                }
             }
             catch (Exception e)
             {
@@ -298,7 +296,7 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public  void SwitchToListView()
+        public void SwitchToListView()
         {
             IsListViewEnabled = true;
             IsCardViewEnabled = false;
@@ -403,8 +401,8 @@ namespace TaskManager.ViewModels
 
         public System.Threading.Tasks.Task HandleAsync(TaskEventMessage message, CancellationToken cancellationToken)
         {
-
-            if (message.Sender.GetHashCode() != this.GetHashCode())
+            //publisher shouldn't handle itself the event it published && handling instance should be the currently activatedVM instance
+            if (message.Sender.GetHashCode() != this.GetHashCode() && this.GetHashCode() == ActiveHomeViewModelId)
             {
                 if (message.OperationType == OperationType.Display)
                 {
@@ -433,13 +431,15 @@ namespace TaskManager.ViewModels
         protected override System.Threading.Tasks.Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
         {
             _eventAggregator.Unsubscribe(this);
-            DeactivateItemAsync(ListViewModel,close,cancellationToken);
+            DeactivateItemAsync(ListViewModel, close, cancellationToken);
             return base.OnDeactivateAsync(close, cancellationToken);
         }
 
         protected override System.Threading.Tasks.Task OnActivateAsync(CancellationToken cancellationToken)
         {
-            ActivateItemAsync(_container.GetInstance<ListViewModel>());
+            ListViewModel = _container.GetInstance<ListViewModel>();
+            ActivateItemAsync(ListViewModel);
+            ListViewModel._activeListViewModelId = ListViewModel.GetHashCode();
             return base.OnActivateAsync(cancellationToken);
         }
 

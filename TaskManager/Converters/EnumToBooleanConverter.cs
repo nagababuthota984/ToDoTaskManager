@@ -14,9 +14,7 @@ namespace TaskManager.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (int.TryParse(parameter.ToString(), out int category))
-            {
                 return (int)value == category;
-            }
             return false;
         }
 

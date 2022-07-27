@@ -74,7 +74,9 @@ namespace TaskManager.ViewModels
 
         public void DisplayHomeView()
         {
-            ActivateItemAsync(_container.GetInstance<HomeViewModel>());
+            HomeViewModel homeViewModel = _container.GetInstance<HomeViewModel>();
+            HomeViewModel.ActiveHomeViewModelId = homeViewModel.GetHashCode();
+            ActivateItemAsync(homeViewModel);
         }
     }
 }

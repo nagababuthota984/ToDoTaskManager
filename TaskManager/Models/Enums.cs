@@ -50,9 +50,9 @@ namespace TaskManager.Models
 
         public static string GetDescription<T>(T value)
         {
-            FieldInfo field = value.GetType().GetField(value.ToString());
+            FieldInfo? field = value.GetType().GetField(value.ToString());
 
-            DescriptionAttribute attribute
+            DescriptionAttribute? attribute
                     = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
                         as DescriptionAttribute;
 

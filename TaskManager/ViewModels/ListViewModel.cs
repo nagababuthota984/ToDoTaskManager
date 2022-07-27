@@ -26,6 +26,7 @@ namespace TaskManager.ViewModels
         private CreateTaskViewModel _createTaskView;
         private bool _isTaskFormEnabled;
         private BindableCollection<Task> _tasks;
+        public static int _activeListViewModelId;
         private BindableCollection<Task> _filteredTasks;
         #endregion
 
@@ -170,6 +171,18 @@ namespace TaskManager.ViewModels
                 NotifyOfPropertyChange(nameof(IsGroupingEnabled));
             }
         }
+
+        public static int ActiveListViewModelId
+        {
+            get
+            {
+                return _activeListViewModelId;
+            }
+            set
+            {
+                _activeListViewModelId = value;
+            }
+        }
         #endregion
 
         public ListViewModel(SimpleContainer container, IEventAggregator eventAggregator, CreateTaskViewModel createTaskViewModel)
@@ -283,7 +296,7 @@ namespace TaskManager.ViewModels
         #region EventHandlers
         public System.Threading.Tasks.Task HandleAsync(TaskEventMessage message, CancellationToken cancellationToken)
         {
-            if (message.Sender.GetHashCode() != this.GetHashCode())
+            if (message.Sender.GetHashCode() != this.GetHashCode() && this.GetHashCode() == ActiveListViewModelId)
             {
                 if (message != null && message.OperationType == OperationType.Delete)
                     RemoveTaskFromUI(message.Task.Id);
@@ -304,11 +317,6 @@ namespace TaskManager.ViewModels
             return base.OnDeactivateAsync(close, cancellationToken);
         }
 
-        protected override System.Threading.Tasks.Task OnInitializeAsync(CancellationToken cancellationToken)
-        {
-            _repository = DbContextFactory.TaskRepository;
-            return base.OnInitializeAsync(cancellationToken);
-        }
         #endregion
     }
 }

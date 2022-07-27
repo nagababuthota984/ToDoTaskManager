@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\app_icon.ico</ApplicationIcon>
-    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageIcon>app_icon.png</PackageIcon>
     <Platforms>AnyCPU;x86</Platforms>
     <StartupObject>TaskManager.App</StartupObject>
-    <DocumentationFile>E:\Technovert Projects\ToDoManager\Documentation\docs.xml</DocumentationFile>
+    <DocumentationFile>E:\Technovert Projects\ToDoManager\Documentation</DocumentationFile>
   </PropertyGroup>
 	
 

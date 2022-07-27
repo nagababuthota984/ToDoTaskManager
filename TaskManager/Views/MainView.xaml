@@ -13,7 +13,7 @@
                 TitleBarHeight="30"
                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                 WindowState="Maximized"
-                Title="Task Manager" MinHeight="450" MinWidth="800"
+                Title="Task Manager" MinHeight="800" MinWidth="800"
                  xmlns:tb="http://www.hardcodet.net/taskbar">
 
     <mah:MetroWindow.RightWindowCommands>

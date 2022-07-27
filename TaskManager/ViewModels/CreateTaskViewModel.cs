@@ -27,9 +27,13 @@ namespace TaskManager.ViewModels
             {
                 _userRole = value;
                 if (value == UserRole.Create)
+                {
                     SubmitBtnContent = Constant.Create;
+                }
                 else
+                {
                     SubmitBtnContent = Constant.Update;
+                }
             }
         }
 
@@ -105,7 +109,9 @@ namespace TaskManager.ViewModels
         public void UpdateTask()
         {
             if (InputTask != null && !string.IsNullOrWhiteSpace(InputTask.Name))
+            {
                 _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = InputTask, OperationType = OperationType.Update });
+            }
         }
 
         public void ResetInputControls()

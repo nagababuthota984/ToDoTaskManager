@@ -18,31 +18,37 @@ namespace TaskManager.Models
         #endregion
         #region Properties
         public Guid Id { get; set; }
+
         public string Name
         {
             get { return _name; }
             set { _name = value; NotifyOfPropertyChange(nameof(Name)); }
         }
+
         public string Description
         {
             get { return _description; }
             set { _description = value; NotifyOfPropertyChange(nameof(Description)); }
         }
+
         public Status Status
         {
             get { return _status; }
             set { _status = value; NotifyOfPropertyChange(nameof(Status)); }
         }
+
         public Priority Priority
         {
             get { return _priority; }
             set { _priority = value; NotifyOfPropertyChange(nameof(Priority)); }
         }
+
         public Category Category
         {
             get { return _category; }
             set { _category = value; NotifyOfPropertyChange(nameof(Category)); }
         }
+
         public float PercentageCompleted
         {
             get { return _percentageCompleted; }
@@ -57,12 +63,15 @@ namespace TaskManager.Models
                 NotifyOfPropertyChange(nameof(PercentageCompleted));
             }
         }
+
         public DateTime CreatedOn { get; set; }
+
         public DateTime DueDate
         {
             get { return _dueDate; }
             set { _dueDate = value; NotifyOfPropertyChange(nameof(DueDate)); }
         }
+
         public bool IsDeleted { get; set; }
         #endregion
 
