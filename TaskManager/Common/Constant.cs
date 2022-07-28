@@ -30,8 +30,10 @@ namespace TaskManager.Common
         public const string TaskDue = "Task due";
         public static Uri IconPath = new(Path.GetFullPath(@"Images/app_icon.ico"));
         public const string UpdateFailed = "Task can't be updated";
-
-
+        public const string DefaultBrowserRegistryKeyName= @"HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice";
+        public const string GitHubRepoUrl = "https://github.com/nagababuthota984/ToDoTaskManager";
+        public const string ProgId = "ProgId";
+        public const string IEBrowserRegistryKeyName = @"HKEY_CLASSES_ROOT\https\shell\open\command";
 
         public static async System.Threading.Tasks.Task<bool> ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
