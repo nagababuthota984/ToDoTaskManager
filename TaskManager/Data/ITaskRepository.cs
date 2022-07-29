@@ -8,9 +8,13 @@ namespace TaskManager.Data
     public interface ITaskRepository
     {
         void CreateTask(Task task);
-        Models.Task GetTaskById(Guid id);
+
+        Models.Task GetTask(Guid id);
+
         void UpdateTask(Task taskChanges);
-        List<Task> GetTasks(Status? status=null);
-        void DeleteTaskById(Guid id);
+
+        List<Task> GetTasks(Status? status = null);
+
+        void DeleteTask(Guid id);
     }
 }

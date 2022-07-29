@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -16,18 +15,20 @@ namespace TaskManager.Models
             [Description("Completed")]
             Completed
         }
+
         public enum Priority
         {
             Low,
             Medium,
             High
         }
-        
+
         public enum UserRole
         {
             Create,
             Edit
         }
+
         public enum Category
         {
             [Description("New Feature")]
@@ -39,7 +40,7 @@ namespace TaskManager.Models
             [Description("Others")]
             Others
         }
-        
+
         public enum OperationType
         {
             Create,

@@ -16,6 +16,7 @@ namespace TaskManager.Data
         {
             _context = DbContextFactory.GetSQLiteDbContext();
         }
+
         public void CreateTask(Models.Task task)
         {
             try
@@ -25,16 +26,16 @@ namespace TaskManager.Data
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
 
-        public Models.Task GetTaskById(Guid id)
+        public Models.Task GetTask(Guid id)
         {
             return _context.Tasks.FirstOrDefault(tsk => tsk.Id == id);
         }
 
-        public void DeleteTaskById(Guid id)
+        public void DeleteTask(Guid id)
         {
             try
             {
@@ -43,7 +44,7 @@ namespace TaskManager.Data
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
 
@@ -52,23 +53,17 @@ namespace TaskManager.Data
             return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && tsk.IsDeleted == false).ToList() : _context.Tasks.Where(tsk => tsk.IsDeleted == false).ToList();
         }
 
-        public void UpdateTask(Models.Task taskChanges)
+        public void UpdateTask(Models.Task task)
         {
             try
             {
-                var task = _context.Tasks.FirstOrDefault(tsk => tsk.Id == taskChanges.Id);
-                task.Name = taskChanges.Name;
-                task.Description = taskChanges.Description;
-                task.Status = taskChanges.Status;
-                task.Priority = taskChanges.Priority;
-                task.PercentageCompleted = taskChanges.PercentageCompleted;
-                task.Category = taskChanges.Category;
-                task.DueDate = taskChanges.DueDate;
+                var taskToUpdate = _context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id);
+                taskToUpdate = MapperHelper.Mapper.Map<Models.Task>(task);
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
     }

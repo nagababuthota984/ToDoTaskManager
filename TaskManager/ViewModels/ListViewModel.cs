@@ -1,5 +1,4 @@
 ﻿using Caliburn.Micro;
-using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace TaskManager.ViewModels
         #region Fields
         private bool _isGroupingEnabled;
         private int _currentPageNumber;
-        private  ITaskRepository _repository;
+        private ITaskRepository _repository;
         private readonly SimpleContainer _container;
         private readonly IEventAggregator _eventAggregator;
         private string _searchKeyword;
@@ -224,6 +223,7 @@ namespace TaskManager.ViewModels
                     Task task = Tasks.FirstOrDefault(tsk => tsk.Id == id);
                     _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = task });
                     RemoveTaskFromUI(id);
+                    _repository.DeleteTask(id);
                 }
                 catch (Exception)
                 {
@@ -241,13 +241,20 @@ namespace TaskManager.ViewModels
 
         public void RemoveTaskFromUI(Guid id)
         {
-            FilteredTasks.Remove(Tasks.FirstOrDefault(tsk => tsk.Id == id));
-            Tasks.Remove(Tasks.FirstOrDefault(tsk => tsk.Id == id));
+            try
+            {
+                FilteredTasks.Remove(Tasks.FirstOrDefault(tsk => tsk.Id == id));
+                Tasks.Remove(Tasks.FirstOrDefault(tsk => tsk.Id == id));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void DisplayTaskById(Guid id)
         {
-            Task selectedTask = _repository.GetTaskById(id);
+            Task selectedTask = _repository.GetTask(id);
             if (selectedTask != null)
             {
                 _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = selectedTask, OperationType = OperationType.Display });
@@ -289,7 +296,7 @@ namespace TaskManager.ViewModels
             FilteredTasks = new(Tasks.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage));
         }
 
-        
+
 
         #endregion
 
@@ -299,11 +306,18 @@ namespace TaskManager.ViewModels
             if (message.Sender.GetHashCode() != this.GetHashCode() && this.GetHashCode() == ActiveListViewModelId)
             {
                 if (message != null && message.OperationType == OperationType.Delete)
+                {
                     RemoveTaskFromUI(message.Task.Id);
+                }
                 else if (message != null && message.OperationType == OperationType.Create)
+                {
                     AddTaskToUI(message.Task);
+                }
                 else if (message != null && message.OperationType == OperationType.Update)
+                {
                     UpdateTask(message.Task);
+                }
+
                 CloseTaskForm();
             }
             return System.Threading.Tasks.Task.CompletedTask;

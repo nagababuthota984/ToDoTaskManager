@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Models;
 
 namespace TaskManager.Data.SQLite
 {
-    public  class SQLiteDbContext : DbContext
+    public class SQLiteDbContext : DbContext
     {
         public SQLiteDbContext()
         {
@@ -18,16 +15,15 @@ namespace TaskManager.Data.SQLite
         {
         }
 
-        public  DbSet<Task> Tasks { get; set; } 
+        public DbSet<Task> Tasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-            {
                 optionsBuilder.UseSqlite(DbContextFactory.sqliteConnectionString);
-            }
+            
         }
 
-        
+
     }
 }

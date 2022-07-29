@@ -3,13 +3,88 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:cal ="http://www.caliburnproject.org"
-             xmlns:behaviors="clr-namespace:TaskManager.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+
+        <Style x:Key="TM.ListBox.NewTasksStyleSelector" TargetType="ListBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding NewTasks.Count}" Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBox">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Image Source="/Images/tasks_new.png" Opacity="0.7"/>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource TM.TextBlock.BoldLabels}" Text="The tasks you create will show up here!" FontSize="15" HorizontalAlignment="Center" Foreground="Gray"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TM.ListBox.InProgressTasksStyleSelector" TargetType="ListBox" >
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding InProgressTasks.Count}" Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBox">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Image Source="/Images/tasks_inprogress.png"
+                                Opacity="0.7"/>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource TM.TextBlock.BoldLabels}" Text="The tasks which are in progress will show up here!" FontSize="15" HorizontalAlignment="Center" Foreground="Gray"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TM.ListBox.CompletedTasksStyleSelector" TargetType="ListBox" >
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CompletedTasks.Count}" Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBox">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Image Source="/Images/tasks_completed.png"
+                                Opacity="0.7"/>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource TM.TextBlock.BoldLabels}" Text="Completed tasks will show up here!" FontSize="15" HorizontalAlignment="Center" Foreground="Gray"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -17,7 +92,7 @@
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Name="CreateTaskForm" Margin="0 30 0 0" Visibility="{Binding IsCardViewEnabled,Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Name="CreateTaskForm" Margin="0 30 0 0" Visibility="{Binding IsCardViewEnabled,Converter={StaticResource TM.Converters.BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
@@ -44,24 +119,20 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel  Grid.Column="1" Orientation="Horizontal">
-
                     <Button  x:Name="SwitchToCardView" ToolTip="Card view" Height="10" Width="30" Margin="2 2 2 2" HorizontalAlignment="Center" >
                         <iconPacks:BootstrapIcons Kind="CardList" Height="10"/>
                     </Button>
                     <Button  x:Name="SwitchToListView" Height="10" Width="30" ToolTip="List view" Margin="3 2 15 2" HorizontalAlignment="Center">
                         <iconPacks:BootstrapIcons Kind="ListUl" Height="9"/>
                     </Button>
-
                 </StackPanel>
                 <StackPanel Name="PriorityIndicators" Grid.Column="2" Orientation="Horizontal">
-
                     <Rectangle  Style="{StaticResource TM.PriorityIndicator.Low}"/>
                     <TextBlock  Text="Low" VerticalAlignment="Center"/>
                     <Rectangle   Style="{StaticResource TM.PriorityIndicator.Medium}"/>
                     <TextBlock  Text="Medium" VerticalAlignment="Center"/>
                     <Rectangle Style="{StaticResource TM.PriorityIndicator.High}" />
                     <TextBlock  Text="High" VerticalAlignment="Center" Margin="0 0 10 0"/>
-
                 </StackPanel>
 
             </Grid>
@@ -83,12 +154,12 @@
                 <TextBlock   Grid.Column="2"
                    Text="Completed" Style="{StaticResource TM.TextBlock.PrimaryHeading}" />
 
-                <Border BorderBrush="Black" Grid.Row="1" BorderThickness="1 1 1 1" >
+                <Border BorderBrush="Black" Grid.Row="1" BorderThickness="1" >
                     <ListBox x:Name="NewList" 
                      ItemsSource="{Binding NewTasks}"
+                     Style="{StaticResource TM.ListBox.NewTasksStyleSelector}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnNewTasks($eventArgs)]"
-                     Style="{Binding NewTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=0}"
                      ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
                 </Border>
@@ -96,7 +167,7 @@
                 <Border BorderBrush="Black" Grid.Row="1" Grid.Column="1" BorderThickness="0 1 1 1">
                     <ListBox x:Name="InProgressList"  
                      ItemsSource="{Binding InProgressTasks}" 
-                     Style="{Binding InProgressTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=1}"
+                     Style="{StaticResource TM.ListBox.InProgressTasksStyleSelector}"
                      cal:Message.Attach="[Event MouseMove] = [Action MouseMoveHandler($eventArgs)];
                      [Event Drop] = [Action DropOnInProgressTasks($eventArgs)]"
                       ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
@@ -106,7 +177,7 @@
                 <Border BorderBrush="Black" Grid.Row="1" Grid.Column="2" BorderThickness="0 1 1 1">
                     <ListBox x:Name="CompletedList" 
                      ItemsSource="{Binding CompletedTasks}"
-                     Style="{Binding CompletedTasks.Count,Converter={StaticResource TM.Converters.ItemsCountToStyleConverter},ConverterParameter=2}"
+                     Style="{StaticResource TM.ListBox.CompletedTasksStyleSelector}"
                      cal:Message.Attach="[Event Drop] = [Action DropOnCompletedTasks($eventArgs)]"
                      ItemTemplate="{StaticResource TM.ListBox.TaskCardViewTemplate}"
                      ItemContainerStyle="{StaticResource TM.ListBox.ListBoxItemStyle}"/>
@@ -115,11 +186,8 @@
             </Grid>
 
         </Grid>
-        
-        <ContentControl Grid.ColumnSpan="2" cal:View.Model="{Binding ListViewModel}" Visibility="{Binding IsListViewEnabled,Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-
-
+        <ContentControl Grid.ColumnSpan="2" cal:View.Model="{Binding ListViewModel}" Visibility="{Binding IsListViewEnabled,Converter={StaticResource TM.Converters.BooleanToVisibilityConverter}}"/>
 
     </Grid>
 

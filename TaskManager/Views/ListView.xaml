@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -12,6 +11,12 @@
              xmlns:local="clr-namespace:TaskManager.Views"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <CollectionViewSource x:Key="GroupedTasks" Source="{Binding FilteredTasks}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Priority" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+        
         <Style x:Key="TM.Panel.Pagination" TargetType="StackPanel" >
             <Setter Property="Opacity" Value="1"/>
             <Style.Triggers>
@@ -20,11 +25,42 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <CollectionViewSource x:Key="GroupedTasks" Source="{Binding FilteredTasks}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Priority" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
+        
+        <Style x:Key="TM.DataGrid.GroupingEnabled" TargetType="DataGrid"  BasedOn="{StaticResource TM.DataGrid.DefaultStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsGroupingEnabled}" Value="True">
+                    <Setter Property="ItemsSource" Value="{Binding Source={StaticResource GroupedTasks}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="TM.DataGrid.GroupItem"  TargetType="GroupItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupItem">
+                        <Expander IsExpanded="True" >
+                            <Expander.Style>
+                                <Style TargetType="Expander">
+                                    <Setter Property="Background" Value="#F1F1F1"/>
+                                </Style>
+                            </Expander.Style>
+                            <Expander.Header>
+                                <WrapPanel Width="Auto">
+                                    <TextBlock Text="{Binding Path=Name}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"  Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                    <TextBlock Text=" (" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                    <TextBlock Text="{Binding Path=ItemCount}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                    <TextBlock Text=")" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
+                                </WrapPanel>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <ItemsPresenter/>
+                            </Expander.Content>
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -44,48 +80,9 @@
 
         </Grid>
 
-        <DataGrid Grid.Row="1">
-            <DataGrid.Style>
-                <Style TargetType="DataGrid"  BasedOn="{StaticResource TM.DataGrid.DefaultStyle}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsGroupingEnabled}" Value="True">
-                            <Setter Property="ItemsSource" Value="{Binding Source={StaticResource GroupedTasks}}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Style>
-            
+        <DataGrid Grid.Row="1" Style="{StaticResource TM.DataGrid.GroupingEnabled}">
             <DataGrid.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style  TargetType="GroupItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="GroupItem">
-                                        <Expander IsExpanded="True" >
-                                            <Expander.Style>
-                                                <Style TargetType="Expander">
-                                                    <Setter Property="Background" Value="#F1F1F1"/>
-                                                </Style>
-                                            </Expander.Style>
-                                            <Expander.Header>
-                                                <WrapPanel Width="Auto">
-                                                    <TextBlock Text="{Binding Path=Name}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}"  Style="{StaticResource TM.TextBlock.BoldLabels}"/>
-                                                    <TextBlock Text=" (" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
-                                                    <TextBlock Text="{Binding Path=ItemCount}" FontSize="15" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
-                                                    <TextBlock Text=")" Foreground="{Binding Path=Name,Converter={StaticResource TM.Converters.PriorityToColorConverter}}" FontSize="15" Style="{StaticResource TM.TextBlock.BoldLabels}"/>
-                                                </WrapPanel>
-                                            </Expander.Header>
-                                            <Expander.Content>
-                                                <ItemsPresenter/>
-                                            </Expander.Content>
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-
-                    </GroupStyle.ContainerStyle>
+                <GroupStyle ContainerStyle="{StaticResource TM.DataGrid.GroupItem}">
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
                             <DataGridRowsPresenter/>
@@ -93,13 +90,11 @@
                     </GroupStyle.Panel>
                 </GroupStyle>
             </DataGrid.GroupStyle>
-            
-            
             <DataGrid.Columns>
 
-                <DataGridTextColumn Width="250" Header="Task Name" Binding="{Binding Name}" CellStyle="{StaticResource TM.DataGrid.CellStyle.LeftAligned}" HeaderStyle="{StaticResource TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn}" />
+                <DataGridTextColumn Width="250" Header="Task Name" Binding="{Binding Name}" CellStyle="{StaticResource TM.DataGrid.CellStyle.LeftAligned}" HeaderStyle="{StaticResource TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn}" ElementStyle="{StaticResource TM.TextBlock.Trim}"/>
 
-                <DataGridTextColumn Width="300" Header="Description" Binding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}" CellStyle="{StaticResource TM.DataGrid.CellStyle.LeftAligned}" HeaderStyle="{StaticResource TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn}" CanUserSort="False"/>
+                <DataGridTextColumn Width="300" Header="Description" Binding="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}" CellStyle="{StaticResource TM.DataGrid.CellStyle.LeftAligned}" HeaderStyle="{StaticResource TM.DataGrid.ColumnHeaderStyle.LeftAlignedColumn}" ElementStyle="{StaticResource TM.TextBlock.Trim}" CanUserSort="False"/>
 
                 <DataGridTextColumn Width="250" Header="Status" CanUserSort="False" Binding="{Binding Status,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}"/>
 
@@ -130,9 +125,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Button  BorderThickness="0" Background="Transparent"
-                    Foreground="{StaticResource TM.Colors.PrimaryColor}" 
-                    ToolTip="Edit task" Margin="0 0 10 0" >
+                                <Button  BorderThickness="0" Background="Transparent" Foreground="{StaticResource TM.Colors.PrimaryColor}"  ToolTip="Edit task" Margin="0 0 10 0" >
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
                                             <Setter Property="Visibility" Value="Collapsed"/>

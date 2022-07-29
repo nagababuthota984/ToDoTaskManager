@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using TaskManager.Common;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace TaskManager.Data.SqlServer
 {

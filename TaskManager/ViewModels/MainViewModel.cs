@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -78,7 +79,22 @@ namespace TaskManager.ViewModels
         public void GotoSource()
         {
             if (!TryOpenDefaultBrowser(Constant.GitHubRepoUrl))
+            {
                 TryOpenIE(Constant.GitHubRepoUrl);
+            }
+        }
+
+        public void SwitchTheme(object sender, RoutedEventArgs e)
+        {
+            switch (ThemeManager.Current.DetectTheme(Application.Current).Name)
+            {
+                case "Dark.Blue":
+                    ThemeManager.Current.ChangeTheme(Application.Current, "Light.Blue");
+                    break;
+                case "Light.Blue":
+                    ThemeManager.Current.ChangeTheme(Application.Current, "Dark.Blue");
+                    break;
+            }
         }
 
         private void TryOpenIE(string url)
@@ -86,10 +102,10 @@ namespace TaskManager.ViewModels
             try
             {
                 string keyValue = Registry.GetValue(Constant.IEBrowserRegistryKeyName, "", null).ToString();
-                string ieBrowserPath = keyValue.Replace("%1","");
-                Process.Start(new ProcessStartInfo(ieBrowserPath,url));
+                string ieBrowserPath = keyValue.Replace("%1", "");
+                Process.Start(new ProcessStartInfo(ieBrowserPath, url));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
             }

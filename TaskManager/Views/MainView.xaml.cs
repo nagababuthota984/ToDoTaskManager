@@ -1,6 +1,4 @@
-﻿using ControlzEx.Theming;
-using MahApps.Metro.Controls;
-using System.Windows;
+﻿using MahApps.Metro.Controls;
 
 namespace TaskManager.Views
 {
@@ -19,29 +17,6 @@ namespace TaskManager.Views
         {
             e.Cancel = true;
             this.Hide();
-        }
-
-        private void SwitchTheme(object sender, RoutedEventArgs e)
-        {
-            switch (ThemeManager.Current.DetectTheme(Application.Current).Name)
-            {
-                case "Dark.Blue":
-                    ThemeManager.Current.ChangeTheme(Application.Current, "Light.Blue");
-                    break;
-                case "Light.Blue":
-                    ThemeManager.Current.ChangeTheme(Application.Current, "Dark.Blue");
-                    break;
-            }
-        }
-
-        private void Open(object sender, RoutedEventArgs e)
-        {
-            this.Show();
-        }
-        
-        private void Quit(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TaskManager
 {
@@ -14,7 +9,7 @@ namespace TaskManager
 
         public static void CreateMapper()
         {
-            Mapper =  SetupConfig().CreateMapper();
+            Mapper = SetupConfig().CreateMapper();
         }
 
         public static MapperConfiguration SetupConfig()

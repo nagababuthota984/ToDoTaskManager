@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -17,6 +16,7 @@ namespace TaskManager.Data
         {
             _context = DbContextFactory.GetSqlServerDbContext();
         }
+
         public void CreateTask(Models.Task task)
         {
             try
@@ -26,14 +26,16 @@ namespace TaskManager.Data
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
-        public Models.Task GetTaskById(Guid id)
+
+        public Models.Task GetTask(Guid id)
         {
             return MapperHelper.Mapper.Map<Models.Task>(_context.Tasks.FirstOrDefault(tsk => tsk.Id == id));
         }
-        public void DeleteTaskById(Guid id)
+
+        public void DeleteTask(Guid id)
         {
             try
             {
@@ -42,30 +44,27 @@ namespace TaskManager.Data
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
+
         public List<Models.Task> GetTasks(Status? status = null)
         {
-            return MapperHelper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted==false) : _context.Tasks.Where(tsk=>tsk.IsDeleted==false));
+            return MapperHelper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted == false) : _context.Tasks.Where(tsk => tsk.IsDeleted == false));
 
         }
 
-        public void UpdateTask(Models.Task taskChanges)
+        public void UpdateTask(Models.Task task)
         {
             try
             {
-                var task = MapperHelper.Mapper.Map<SqlServer.Task>(taskChanges);
-                _context.Tasks.Remove(_context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id));
-                _context.Tasks.Add(task);
+                var taskToUpdate = MapperHelper.Mapper.Map<SqlServer.Task>(task);
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                throw;
             }
         }
     }
-
-
 }

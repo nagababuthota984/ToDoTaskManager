@@ -18,6 +18,7 @@ namespace TaskManager.ViewModels
 {
     public class HomeViewModel : Conductor<Screen>, IHandle<TaskEventMessage>
     {
+        
         #region Fields
 
         private bool _isListViewEnabled;
@@ -148,7 +149,6 @@ namespace TaskManager.ViewModels
             }
         }
 
-
         public static int ActiveHomeViewModelId
         {
             get { return _activeHomeViewModelId; }
@@ -227,7 +227,7 @@ namespace TaskManager.ViewModels
 
         public void DisplayTaskById(Guid id)
         {
-            Task selectedTask = _repository.GetTaskById(id);
+            Task selectedTask = _repository.GetTask(id);
             if (selectedTask != null)
             {
                 _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, Task = selectedTask, OperationType = OperationType.Display });
@@ -248,10 +248,12 @@ namespace TaskManager.ViewModels
                 if (await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
                 {
                     await _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new() { Id = id } });
-                    _repository.DeleteTaskById(id);
+                    _repository.DeleteTask(id);
                 }
                 else
+                {
                     return;
+                }
             }
             RemoveTaskFromUI(id, status);
 
@@ -439,12 +441,13 @@ namespace TaskManager.ViewModels
         {
             ListViewModel = _container.GetInstance<ListViewModel>();
             ActivateItemAsync(ListViewModel);
-            ListViewModel._activeListViewModelId = ListViewModel.GetHashCode();
+            ListViewModel.ActiveListViewModelId = ListViewModel.GetHashCode();
             return base.OnActivateAsync(cancellationToken);
         }
 
         #endregion
 
+        
 
     }
 }

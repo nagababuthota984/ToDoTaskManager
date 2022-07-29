@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Data.SQLite;
 using TaskManager.Data.SqlServer;
+using System.Configuration;
 
 namespace TaskManager.Data
 {
@@ -11,6 +12,7 @@ namespace TaskManager.Data
 
         public static ITaskRepository TaskRepository { get; set; }
 
+
         public static SQLiteDbContext GetSQLiteDbContext()
         {
             var options = new DbContextOptionsBuilder<SQLiteDbContext>()
@@ -18,6 +20,7 @@ namespace TaskManager.Data
                 .Options;
             return new SQLiteDbContext(options);
         }
+
         public static TaskManagerDbContext GetSqlServerDbContext()
         {
             var options = new DbContextOptionsBuilder<TaskManagerDbContext>()

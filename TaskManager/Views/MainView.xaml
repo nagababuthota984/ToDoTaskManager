@@ -34,8 +34,8 @@
         <tb:TaskbarIcon IconSource="/Images/app_icon.ico" ToolTipText="Task manager">
             <tb:TaskbarIcon.TrayPopup>
                 <StackPanel Width="100">
-                    <Button Content="Open" cal:Message.Attach="[Event SelectionChanged] = [Action Open]" Style="{StaticResource TM.Button.TrayButton}"/>
-                    <Button Content="Quit" cal:Message.Attach="[Event SelectionChanged] = [Action Quit]" Style="{StaticResource TM.Button.TrayButton}"/>
+                    <Button Content="Open" cal:Message.Attach="[Event Click] = [Action Open]" Style="{StaticResource TM.Button.TrayButton}"/>
+                    <Button Content="Quit" cal:Message.Attach="[Event Click] = [Action Quit]" Style="{StaticResource TM.Button.TrayButton}"/>
                 </StackPanel>
             </tb:TaskbarIcon.TrayPopup>
         </tb:TaskbarIcon>

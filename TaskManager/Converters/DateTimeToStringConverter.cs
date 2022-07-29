@@ -9,18 +9,19 @@ namespace TaskManager.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string result=string.Empty;
-            if(value is DateTime dueDate)
+            string result = string.Empty;
+            if (value is DateTime dateTime)
             {
-                if (dueDate < DateTime.Now)
+                if (dateTime < DateTime.Now)
                     result = Constant.Overdue;
-                else if (dueDate.Date == DateTime.Today.Date.AddDays(1))
+                else if (dateTime.Date == DateTime.Today.Date.AddDays(1))
                     result += Constant.Tomorrow;
-                else if (dueDate.Date == DateTime.Today.Date)
+                else if (dateTime.Date == DateTime.Today.Date)
                     result += Constant.Today;
                 else
-                    result += $"{dueDate.ToShortDateString()}";
-                result += $" | {dueDate.ToShortTimeString()}";
+                    result += $"{dateTime.ToShortDateString()}";
+
+                result += $" | {dateTime.ToShortTimeString()}";
             }
             return result;
         }

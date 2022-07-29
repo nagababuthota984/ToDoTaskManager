@@ -1,14 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:converters="clr-namespace:TaskManager.Converters">
+    <BooleanToVisibilityConverter x:Key="TM.Converters.BooleanToVisibilityConverter"/>
     <converters:PriorityToColorConverter x:Key="TM.Converters.PriorityToColorConverter"/>
     <converters:EnumToBooleanConverter x:Key="TM.Converters.EnumToBooleanConverter"/>
     <converters:DateTimeToStringConverter x:Key="TM.Converters.DateTimeToStringConverter"/>
-    <converters:BooleanToVisibilityConverter x:Key="TM.Converters.BooleanToVisibilityConverter"/>
     <converters:DescriptionToMessageConverter x:Key="TM.Converters.DescriptionToMessageConverter"/>
     <converters:StatusToVisibilityConverter x:Key="TM.Converters.StatusToVisibilityConverter"/>
     <converters:DueDateToColorConverter x:Key="TM.Converters.DueDateToColorConverter"/>
-    <converters:ItemsCountToStyleConverter x:Key="TM.Converters.ItemsCountToStyleConverter"/>
     <converters:EnumToDescriptionConverter x:Key="TM.Converters.EnumToDescriptionConverter"/>
 
 </ResourceDictionary>
