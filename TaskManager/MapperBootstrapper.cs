@@ -2,7 +2,7 @@
 
 namespace TaskManager
 {
-    public class MapperHelper
+    public class MapperBootstrapper
     {
         public static IMapper Mapper { get; set; }
 

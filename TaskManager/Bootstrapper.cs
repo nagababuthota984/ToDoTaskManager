@@ -29,7 +29,7 @@ namespace TaskManager
                 .PerRequest<CreateTaskViewModel>()
                 .PerRequest<ListViewModel>()
                 .PerRequest<HomeViewModel>();
-            MapperHelper.CreateMapper();
+            MapperBootstrapper.CreateMapper();
         }
         protected override object GetInstance(Type service, string key)
         {

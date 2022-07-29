@@ -50,7 +50,7 @@ namespace TaskManager.Data
 
         public List<Models.Task> GetTasks(Status? status = null)
         {
-            return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && tsk.IsDeleted == false).ToList() : _context.Tasks.Where(tsk => tsk.IsDeleted == false).ToList();
+            return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && !tsk.IsDeleted ).ToList() : _context.Tasks.Where(tsk => !tsk.IsDeleted).ToList();
         }
 
         public void UpdateTask(Models.Task task)
@@ -58,7 +58,7 @@ namespace TaskManager.Data
             try
             {
                 var taskToUpdate = _context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id);
-                taskToUpdate = MapperHelper.Mapper.Map<Models.Task>(task);
+                taskToUpdate = MapperBootstrapper.Mapper.Map<Models.Task>(task);
                 _context.SaveChanges();
             }
             catch (Exception e)

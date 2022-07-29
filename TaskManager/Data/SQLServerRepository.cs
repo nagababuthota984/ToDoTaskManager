@@ -21,7 +21,7 @@ namespace TaskManager.Data
         {
             try
             {
-                _context.Tasks.Add(MapperHelper.Mapper.Map<SqlServer.Task>(task));
+                _context.Tasks.Add(MapperBootstrapper.Mapper.Map<SqlServer.Task>(task));
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -32,7 +32,7 @@ namespace TaskManager.Data
 
         public Models.Task GetTask(Guid id)
         {
-            return MapperHelper.Mapper.Map<Models.Task>(_context.Tasks.FirstOrDefault(tsk => tsk.Id == id));
+            return MapperBootstrapper.Mapper.Map<Models.Task>(_context.Tasks.FirstOrDefault(tsk => tsk.Id == id));
         }
 
         public void DeleteTask(Guid id)
@@ -50,7 +50,7 @@ namespace TaskManager.Data
 
         public List<Models.Task> GetTasks(Status? status = null)
         {
-            return MapperHelper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted == false) : _context.Tasks.Where(tsk => tsk.IsDeleted == false));
+            return MapperBootstrapper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted == false) : _context.Tasks.Where(tsk => tsk.IsDeleted == false));
 
         }
 
@@ -58,7 +58,7 @@ namespace TaskManager.Data
         {
             try
             {
-                var taskToUpdate = MapperHelper.Mapper.Map<SqlServer.Task>(task);
+                var taskToUpdate = MapperBootstrapper.Mapper.Map<SqlServer.Task>(task);
                 _context.SaveChanges();
             }
             catch (Exception e)

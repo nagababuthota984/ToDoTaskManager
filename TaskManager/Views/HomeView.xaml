@@ -101,7 +101,7 @@
             <Border BorderBrush="Gray" BorderThickness="1">
                 <TextBlock Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Foreground="Black" Background="White"/>
             </Border>
-            <ContentControl Grid.Row="1" BorderBrush="Black" BorderThickness="0 0 0 2"  cal:View.Model="{Binding CreateTaskView}" Margin="15"/>
+            <ContentControl Grid.Row="1" BorderBrush="Black" BorderThickness="0 0 0 2"  cal:View.Model="{Binding CreateTaskView}" Margin="5"/>
 
         </Grid>
 

@@ -34,7 +34,8 @@ namespace TaskManager.Common
         public const string GitHubRepoUrl = "https://github.com/nagababuthota984/ToDoTaskManager";
         public const string ProgId = "ProgId";
         public const string IEBrowserRegistryKeyName = @"HKEY_CLASSES_ROOT\https\shell\open\command";
-
+        public static string ProjectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        
         public static async System.Threading.Tasks.Task<bool> ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
             if (MessageDialogResult.Affirmative == await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(title, message, style))

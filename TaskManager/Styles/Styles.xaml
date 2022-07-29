@@ -427,7 +427,7 @@
     </Style>
 
     <DataTemplate x:Key="TM.ListBox.TaskCardViewTemplate">
-        <Grid Height="65">
+        <Grid Height="65" MaxWidth="300">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="auto"/>

@@ -1,8 +1,7 @@
 {
   "profiles": {
     "TaskManager": {
-      "commandName": "Project",
-      "workingDirectory": "C:\\Users\\nagababu.t\\source\\repos\\ToDoTaskManager\\TaskManager"
+      "commandName": "Project"
     }
   }
 }
