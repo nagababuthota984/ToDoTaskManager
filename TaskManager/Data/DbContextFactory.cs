@@ -6,7 +6,7 @@ namespace TaskManager.Data
 {
     public class DbContextFactory
     {
-        public const string sqliteConnectionString = @"Data Source=E:\Technovert Projects\TaskManager\TaskManager\Data\SQLite\TaskManager.db";
+        public const string sqliteConnectionString = @"Data Source=C:\Users\nagababu.t\source\repos\ToDoTaskManager\TaskManager\Data\SQLite\TaskManager.db";
         public const string sqlServerConnectionString = @"Data Source=NAG-HP\SQLEXPRESS;Initial Catalog=TaskManagerDb;Integrated Security=True";
 
         public static ITaskRepository TaskRepository { get; set; }

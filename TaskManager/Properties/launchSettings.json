@@ -2,7 +2,7 @@
   "profiles": {
     "TaskManager": {
       "commandName": "Project",
-      "workingDirectory": "E:\\Technovert Projects\\TaskManager\\TaskManager"
+      "workingDirectory": "C:\\Users\\nagababu.t\\source\\repos\\ToDoTaskManager\\TaskManager"
     }
   }
 }
