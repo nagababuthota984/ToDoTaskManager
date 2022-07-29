@@ -17,10 +17,12 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+
 
 
 
@@ -93,7 +95,11 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Nagababu Thota - [Twitter](https://twitter.com/nb_thota) - nagababuthota593@gmail.com
+Nagababu Thota 
+
+[Twitter](https://twitter.com/nb_thota) 
+
+nagababuthota593@gmail.com
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
