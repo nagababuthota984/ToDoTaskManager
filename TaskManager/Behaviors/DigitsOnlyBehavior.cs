@@ -24,9 +24,7 @@ namespace TaskManager.Behaviors
             {
                 tb.TextChanged -= OnTextChanged;
                 if ((bool)e.NewValue)
-                {
                     tb.TextChanged += OnTextChanged;
-                }
             }
         }
 
@@ -35,13 +33,9 @@ namespace TaskManager.Behaviors
             if (sender is TextBox tb && tb != null)
             {
                 if (int.TryParse(tb.Text, out int value))
-                {
                     tb.Style = (Style)Application.Current.FindResource("TM.TextBox.Default");
-                }
                 else
-                {
                     tb.Style = (Style)Application.Current.FindResource("TM.TextBox.IsDigitOnlyError");
-                }
             }
 
 
