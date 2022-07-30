@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using TaskManager.Common;
 using TaskManager.Data.SQLite;
 using static TaskManager.Models.Enums;
 
@@ -50,7 +48,7 @@ namespace TaskManager.Data
 
         public List<Models.Task> GetTasks(Status? status = null)
         {
-            return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && !tsk.IsDeleted ).ToList() : _context.Tasks.Where(tsk => !tsk.IsDeleted).ToList();
+            return status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == status && !tsk.IsDeleted).ToList() : _context.Tasks.Where(tsk => !tsk.IsDeleted).ToList();
         }
 
         public void UpdateTask(Models.Task task)

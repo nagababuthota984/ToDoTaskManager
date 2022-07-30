@@ -18,7 +18,7 @@ namespace TaskManager.ViewModels
 {
     public class HomeViewModel : Conductor<Screen>, IHandle<TaskEventMessage>
     {
-        
+
         #region Fields
 
         private bool _isListViewEnabled;
@@ -447,7 +447,7 @@ namespace TaskManager.ViewModels
 
         #endregion
 
-        
+
 
     }
 }
