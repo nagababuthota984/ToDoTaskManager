@@ -116,4 +116,4 @@ nagababuthota593@gmail.com
 [stars-url]: https://github.com/nagababuthota984/ToDoTaskManager/stargazers
 [issues-shield]: https://img.shields.io/github/issues/nagababuthota984/ToDoTaskManager.svg?style=for-the-badge
 [issues-url]: https://github.com/nagababuthota984/ToDoTaskManager/issues
-[product-screenshot]: /TaskManager/Images/image.png
+[product-screenshot]: /TaskManager/Images/app_screenshot.png
