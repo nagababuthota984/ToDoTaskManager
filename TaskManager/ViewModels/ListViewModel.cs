@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using TaskManager.Common;
 using TaskManager.Data;
+using TaskManager.Helpers;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
 
@@ -216,7 +217,7 @@ namespace TaskManager.ViewModels
 
         public async void DeleteTaskById(Guid id)
         {
-            if (await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            if (await DialogHelper.ShowMessageDialog(Constant.confirmDeleteWinTitle, Constant.confirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
             {
                 try
                 {
@@ -227,7 +228,7 @@ namespace TaskManager.ViewModels
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
+                    MessageBox.Show(Constant.deleteFailedMsg, Constant.deleteFailedWinTitle);
                 }
 
             }

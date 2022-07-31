@@ -13,7 +13,7 @@ namespace TaskManager
         public TaskbarIcon taskbarIcon { get; set; }
         public App()
         {
-            Properties.Add(Constant.Database, Constant.Sqlite);
+            Properties.Add(Constant.database, Constant.sqlite);
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
         protected override void OnStartup(StartupEventArgs e)
