@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using TaskManager.Common;
 using TaskManager.Data.SqlServer;
 using static TaskManager.Models.Enums;
 
@@ -24,7 +22,7 @@ namespace TaskManager.Data
                 _context.Tasks.Add(MapperBootstrapper.Mapper.Map<SqlServer.Task>(task));
                 _context.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -42,7 +40,7 @@ namespace TaskManager.Data
                 _context.Tasks.FirstOrDefault(tsk => tsk.Id == id).IsDeleted = true;
                 _context.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -61,7 +59,7 @@ namespace TaskManager.Data
                 var taskToUpdate = MapperBootstrapper.Mapper.Map<SqlServer.Task>(task);
                 _context.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

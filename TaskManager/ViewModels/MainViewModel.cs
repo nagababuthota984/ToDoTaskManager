@@ -79,13 +79,10 @@ namespace TaskManager.ViewModels
 
         public void GotoSource()
         {
-            if (!TryOpenDefaultBrowser(Constant.gitHubRepoUrl))
-            {
-                TryOpenIE(Constant.gitHubRepoUrl);
-            }
+            Process.Start(new ProcessStartInfo(Constant.GitHubRepoUrl) { UseShellExecute=true});
         }
 
-        public void SwitchTheme(object sender, RoutedEventArgs e)
+        public void SwitchTheme()
         {
             switch (ThemeManager.Current.DetectTheme(Application.Current).Name)
             {
@@ -98,42 +95,6 @@ namespace TaskManager.ViewModels
             }
         }
 
-        private void TryOpenIE(string url)
-        {
-            try
-            {
-                string keyValue = Registry.GetValue(Constant.iEBrowserRegistryKeyName, "", null).ToString();
-                string ieBrowserPath = keyValue.Replace("%1", "");
-                Process.Start(new ProcessStartInfo(ieBrowserPath, url));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-
-        public bool TryOpenDefaultBrowser(string url)
-        {
-            string? progId = Registry.GetValue(Constant.defaultBrowserRegistryKeyName, Constant.progId, null)?.ToString();
-            if (!string.IsNullOrWhiteSpace(progId))
-            {
-                string browserPath = $"{progId}\\shell\\open\\command";
-                using (RegistryKey? pathKey = Registry.ClassesRoot.OpenSubKey(browserPath))
-                {
-                    try
-                    {
-                        string defaultBrowser = pathKey.GetValue(null).ToString().Replace("%1", url);
-                        Process.Start(defaultBrowser);
-                        return true;
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
-                }
-            }
-            return false;
-        }
         public void DisplayHomeView()
         {
             HomeViewModel homeViewModel = _container.GetInstance<HomeViewModel>();

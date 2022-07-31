@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Windows.Data;
 using TaskManager.Helpers;
-using TaskManager.Models;
 
 namespace TaskManager.Converters
 {

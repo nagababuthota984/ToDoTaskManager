@@ -21,7 +21,7 @@ namespace TaskManager.Data.SQLite
         {
             if (!optionsBuilder.IsConfigured)
                 optionsBuilder.UseSqlite(DbContextFactory.sqliteConnectionString);
-            
+
         }
 
 
