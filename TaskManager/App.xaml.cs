@@ -13,7 +13,7 @@ namespace TaskManager
     {
         public App()
         {
-            Properties.Add(Constant.Database, Constant.Sqlite);
+            Properties.Add(Constant.database, Constant.sqlite);
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
     }

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using TaskManager.Common;
 using TaskManager.Data;
+using TaskManager.Helpers;
 using TaskManager.Models;
 using static TaskManager.Models.Enums;
 
@@ -201,7 +202,7 @@ namespace TaskManager.ViewModels
             }
             else
             {
-                MessageBox.Show(Constant.UpdateFailed, Constant.ErrorOccured);
+                MessageBox.Show(Constant.updateFailed, Constant.errorOccured);
             }
         }
 
@@ -245,7 +246,7 @@ namespace TaskManager.ViewModels
 
             if (!isUiUpdate)
             {
-                if (await Constant.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+                if (await DialogHelper.ShowMessageDialog(Constant.confirmDeleteWinTitle, Constant.confirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
                 {
                     await _eventAggregator.PublishOnUIThreadAsync(new TaskEventMessage() { Sender = this, OperationType = OperationType.Delete, Task = new() { Id = id } });
                     _repository.DeleteTask(id);
@@ -294,7 +295,7 @@ namespace TaskManager.ViewModels
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, Constant.ErrorOccured);
+                MessageBox.Show(e.Message, Constant.errorOccured);
             }
         }
 
@@ -346,7 +347,7 @@ namespace TaskManager.ViewModels
         //TODO: remove showmessageasync
         public async void DropOnCompletedTasks(DragEventArgs e)
         {
-            if (await Constant.ShowMessageDialog(Constant.TaskCompletedWinTitle, Constant.TaskCompletedMsg, MessageDialogStyle.AffirmativeAndNegative) && e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
+            if (await DialogHelper.ShowMessageDialog(Constant.taskCompletedWinTitle, Constant.taskCompletedMsg, MessageDialogStyle.AffirmativeAndNegative) && e.Data.GetData(typeof(Task)) is Task task && task.Status != Status.Completed)
             {
                 RemoveTaskFromUI(task);
                 task.Status = Status.Completed;
@@ -377,11 +378,11 @@ namespace TaskManager.ViewModels
                 case 0: break;
                 case 1:
                     message = $"{tasks[0].Name} is nearing due time";
-                    RaiseToastNotification(Constant.TaskDue, message);
+                    RaiseToastNotification(Constant.taskDue, message);
                     break;
                 default:
                     message = $"You have {tasks.Count} tasks nearing due time";
-                    RaiseToastNotification(Constant.TaskDue, message);
+                    RaiseToastNotification(Constant.taskDue, message);
                     break;
             }
         }
@@ -389,7 +390,7 @@ namespace TaskManager.ViewModels
         private void RaiseToastNotification(string title, string message, ToastScenario toastScenario = ToastScenario.Reminder, ToastDuration toastDuration = ToastDuration.Long)
         {
             new ToastContentBuilder()
-                .AddAppLogoOverride(Constant.IconPath)
+                .AddAppLogoOverride(Constant.iconPath)
                 .SetToastScenario(toastScenario)
                 .SetToastDuration(toastDuration)
                 .AddText(title)

@@ -28,11 +28,11 @@ namespace TaskManager.ViewModels
                 _userRole = value;
                 if (value == UserRole.Create)
                 {
-                    SubmitBtnContent = Constant.Create;
+                    SubmitBtnContent = Constant.create;
                 }
                 else
                 {
-                    SubmitBtnContent = Constant.Update;
+                    SubmitBtnContent = Constant.update;
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace TaskManager.ViewModels
         {
             InputTask = new();
             UserRole = UserRole.Create;
-            SubmitBtnContent = Constant.Create;
+            SubmitBtnContent = Constant.create;
         }
 
         public void Cancel()

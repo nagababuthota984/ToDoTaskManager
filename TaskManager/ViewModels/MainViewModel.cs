@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Windows;
 using TaskManager.Common;
 using TaskManager.Data;
+using TaskManager.Helpers;
 
 namespace TaskManager.ViewModels
 {
@@ -26,7 +27,7 @@ namespace TaskManager.ViewModels
 
         public List<string> DatabaseProviders
         {
-            get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
+            get { return new List<string>() { Constant.sqlite, Constant.sqlserver }; }
         }
 
         public string DatabaseProviderName
@@ -44,7 +45,7 @@ namespace TaskManager.ViewModels
         public MainViewModel(SimpleContainer container)
         {
             _container = container;
-            DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
+            DatabaseProviderName = Application.Current.Properties[Constant.database].ToString();
             DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
@@ -53,16 +54,16 @@ namespace TaskManager.ViewModels
         {
             switch (DatabaseProviderName)
             {
-                case Constant.Sqlserver:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
+                case Constant.sqlserver:
+                    Application.Current.Properties[Constant.database] = Constant.sqlserver;
                     DbContextFactory.TaskRepository = _container.GetInstance<SqlServerRepository>();
                     break;
                 default:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlite;
+                    Application.Current.Properties[Constant.database] = Constant.sqlite;
                     DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
                     break;
             }
-            await Constant.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
+            await DialogHelper.ShowMessageDialog(Constant.changeDbTitleMsg, $"{Constant.dbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
             DisplayHomeView();
         }
 
