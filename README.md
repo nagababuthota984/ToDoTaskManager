@@ -68,7 +68,6 @@
 
 - [x] Add Card view
 - [x] Added List view
-- [ ] Testing
 - [ ] Remote Database
 
 
