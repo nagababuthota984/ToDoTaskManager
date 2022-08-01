@@ -42,7 +42,7 @@
     <a href="https://github.com/nagababuthota984/ToDoTaskManager"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/nagababuthota984/ToDoTaskManager">View Demo</a>
     ·
     <a href="https://github.com/nagababuthota984/ToDoTaskManager/issues">Report Bug</a>
     ·
