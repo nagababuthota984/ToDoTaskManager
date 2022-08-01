@@ -24,12 +24,6 @@ namespace TaskManager.ViewModels
         #endregion
 
         #region Properties
-
-        public List<string> DatabaseProviders
-        {
-            get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
-        }
-
         public string DatabaseProviderName
         {
             get { return _dbProviderName; }
@@ -45,25 +39,8 @@ namespace TaskManager.ViewModels
         public MainViewModel(SimpleContainer container)
         {
             _container = container;
-            DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
+            DatabaseProviderName = Constant.Sqlite;
             DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
-            DisplayHomeView();
-        }
-
-        public async void ChangeDb()
-        {
-            switch (DatabaseProviderName)
-            {
-                case Constant.Sqlserver:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
-                    DbContextFactory.TaskRepository = _container.GetInstance<SqlServerRepository>();
-                    break;
-                default:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlite;
-                    DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
-                    break;
-            }
-            await DialogHelper.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
             DisplayHomeView();
         }
 
