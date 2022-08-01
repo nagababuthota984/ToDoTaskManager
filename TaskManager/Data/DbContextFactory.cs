@@ -7,7 +7,7 @@ namespace TaskManager.Data
 {
     public class DbContextFactory
     {
-        public static string sqliteConnectionString = $"Data Source={Constant.projectDirectory}\\TaskManager\\Data\\SQLite\\TaskManager.db";
+        public static string sqliteConnectionString = $"Data Source={Constant.ProjectDirectory}\\TaskManager\\Data\\SQLite\\TaskManager.db";
         public const string sqlServerConnectionString = @"Data Source=NAG-HP\SQLEXPRESS;Initial Catalog=TaskManagerDb;Integrated Security=True";
 
         public static ITaskRepository TaskRepository { get; set; }

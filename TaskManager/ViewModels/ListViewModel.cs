@@ -203,21 +203,20 @@ namespace TaskManager.ViewModels
             CurrentPageNumber = 1;
         }
 
-        public void SearchTasks()
+        public async System.Threading.Tasks.Task SearchTasks()
         {
-            if (!string.IsNullOrWhiteSpace(SearchKeyword) && SearchKeyword.Length > 2)
+            await System.Threading.Tasks.Task.Run(() =>
             {
-                FilteredTasks = FilteredTasks.Count > 0 ? new(FilteredTasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
-            }
-            else
-            {
-                LoadCurrentPage();
-            }
+                if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                    FilteredTasks = Tasks.Count > 0 ? new(Tasks.Where(tsk => tsk.Name.Contains(SearchKeyword, StringComparison.OrdinalIgnoreCase))) : new();
+                else
+                    LoadCurrentPage();
+            });
         }
 
-        public async void DeleteTaskById(Guid id)
+        public async System.Threading.Tasks.Task DeleteTaskById(Guid id)
         {
-            if (await DialogHelper.ShowMessageDialog(Constant.confirmDeleteWinTitle, Constant.confirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
+            if (await DialogHelper.ShowMessageDialog(Constant.ConfirmDeleteWinTitle, Constant.ConfirmDeleteMsg, MessageDialogStyle.AffirmativeAndNegative))
             {
                 try
                 {
@@ -228,9 +227,8 @@ namespace TaskManager.ViewModels
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(Constant.deleteFailedMsg, Constant.deleteFailedWinTitle);
+                    MessageBox.Show(Constant.DeleteFailedMsg, Constant.DeleteFailedWinTitle);
                 }
-
             }
         }
 
@@ -304,21 +302,20 @@ namespace TaskManager.ViewModels
         #region EventHandlers
         public System.Threading.Tasks.Task HandleAsync(TaskEventMessage message, CancellationToken cancellationToken)
         {
-            if (message.Sender.GetHashCode() != this.GetHashCode() && this.GetHashCode() == ActiveListViewModelId)
+            if (message != null && message.Sender.GetHashCode() != this.GetHashCode() && this.GetHashCode() == ActiveListViewModelId)
             {
-                if (message != null && message.OperationType == OperationType.Delete)
+                switch (message.OperationType)
                 {
-                    RemoveTaskFromUI(message.Task.Id);
+                    case OperationType.Create:
+                        AddTaskToUI(message.Task);
+                        break;
+                    case OperationType.Update:
+                        UpdateTask(message.Task);
+                        break;
+                    case OperationType.Delete:
+                        RemoveTaskFromUI(message.Task.Id);
+                        break;
                 }
-                else if (message != null && message.OperationType == OperationType.Create)
-                {
-                    AddTaskToUI(message.Task);
-                }
-                else if (message != null && message.OperationType == OperationType.Update)
-                {
-                    UpdateTask(message.Task);
-                }
-
                 CloseTaskForm();
             }
             return System.Threading.Tasks.Task.CompletedTask;

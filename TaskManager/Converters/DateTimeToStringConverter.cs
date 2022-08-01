@@ -13,11 +13,11 @@ namespace TaskManager.Converters
             if (value is DateTime dateTime)
             {
                 if (dateTime < DateTime.Now)
-                    result = Constant.overdue;
+                    result = Constant.Overdue;
                 else if (dateTime.Date == DateTime.Today.Date.AddDays(1))
-                    result += Constant.tomorrow;
+                    result += Constant.Tomorrow;
                 else if (dateTime.Date == DateTime.Today.Date)
-                    result += Constant.today;
+                    result += Constant.Today;
                 else
                     result += $"{dateTime.ToShortDateString()}";
 

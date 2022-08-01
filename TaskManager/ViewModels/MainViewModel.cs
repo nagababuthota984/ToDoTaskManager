@@ -27,7 +27,7 @@ namespace TaskManager.ViewModels
 
         public List<string> DatabaseProviders
         {
-            get { return new List<string>() { Constant.sqlite, Constant.sqlserver }; }
+            get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
         }
 
         public string DatabaseProviderName
@@ -45,7 +45,7 @@ namespace TaskManager.ViewModels
         public MainViewModel(SimpleContainer container)
         {
             _container = container;
-            DatabaseProviderName = Application.Current.Properties[Constant.database].ToString();
+            DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
             DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
@@ -54,16 +54,16 @@ namespace TaskManager.ViewModels
         {
             switch (DatabaseProviderName)
             {
-                case Constant.sqlserver:
-                    Application.Current.Properties[Constant.database] = Constant.sqlserver;
+                case Constant.Sqlserver:
+                    Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
                     DbContextFactory.TaskRepository = _container.GetInstance<SqlServerRepository>();
                     break;
                 default:
-                    Application.Current.Properties[Constant.database] = Constant.sqlite;
+                    Application.Current.Properties[Constant.Database] = Constant.Sqlite;
                     DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
                     break;
             }
-            await DialogHelper.ShowMessageDialog(Constant.changeDbTitleMsg, $"{Constant.dbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
+            await DialogHelper.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
             DisplayHomeView();
         }
 
