@@ -68,8 +68,8 @@
 
 - [x] Add Card view
 - [x] Added List view
-- [] Testing
-- [] Remote Database
+- [ ] Testing
+- [ ] Remote Database
 
 
 See the [open issues](https://github.com/nagababuthota984/ToDoTaskManager/issues) for a full list of proposed features (and known issues).
