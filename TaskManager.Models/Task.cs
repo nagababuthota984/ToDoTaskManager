@@ -22,14 +22,14 @@ namespace TaskManager.Models
 
         public string Name
         {
-            get 
+            get
             {
-                return _name; 
+                return _name;
             }
             set
             {
-                _name = value; 
-                NotifyOfPropertyChange(nameof(Name)); 
+                _name = value;
+                NotifyOfPropertyChange(nameof(Name));
             }
         }
 
