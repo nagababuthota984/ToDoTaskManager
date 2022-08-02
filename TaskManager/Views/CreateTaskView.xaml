@@ -29,10 +29,10 @@
         </Grid.RowDefinitions>
         
         <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.FormLabels}" Padding="0 0 4 4"/>
-        <TextBox Grid.Row="1" Name="Name" mah:TextBoxHelper.Watermark="Please enter task name" >
+        <TextBox Grid.Row="1" Name="Name" mah:TextBoxHelper.Watermark="Please enter task name">
             <Binding Path="Name" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" Mode="TwoWay" >
                 <Binding.ValidationRules>
-                    <validations:NameValidation />
+                    <validations:NameValidation/>
                 </Binding.ValidationRules>
             </Binding>
         </TextBox>
@@ -87,8 +87,11 @@
                     <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
                         <Setter Property="IsEnabled" Value="False"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=Name}" Value="False">
-                                <Setter Property="IsEnabled" Value="True"/>
+                                <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=Name}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Text.Length,ElementName=Name}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -96,7 +99,7 @@
             </Button>
             <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" Background="#E0E0E0" 
                             Style="{StaticResource TM.Button.DefaultStyle}"
-                            cal:Message.Attach="[Event Click] = [Action ResetInputControls()]" />
+                            cal:Message.Attach="[Event Click] = [Action ResetInputControls]" />
         </Grid>
     </Grid>
 </UserControl>
