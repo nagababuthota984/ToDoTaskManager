@@ -16,13 +16,21 @@ namespace TaskManager.Models
         private DateTime _dueDate;
 
         #endregion
+
         #region Properties
         public Guid Id { get; set; }
 
         public string Name
         {
-            get { return _name; }
-            set { _name = value; NotifyOfPropertyChange(nameof(Name)); }
+            get 
+            {
+                return _name; 
+            }
+            set
+            {
+                _name = value; 
+                NotifyOfPropertyChange(nameof(Name)); 
+            }
         }
 
         public string Description

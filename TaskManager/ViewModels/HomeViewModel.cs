@@ -413,11 +413,11 @@ namespace TaskManager.ViewModels
                 }
                 else if (message.OperationType == OperationType.Create)
                 {
-                    CreateTask(new(message.Task));
+                    CreateTask(message.Task);
                 }
                 else if (message.OperationType == OperationType.Update)
                 {
-                    UpdateTask(new(message.Task));
+                    UpdateTask(message.Task);
                 }
                 else if (message.OperationType == OperationType.Delete)
                 {
