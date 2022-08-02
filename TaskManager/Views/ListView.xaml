@@ -64,9 +64,9 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.8*"/>
         </Grid.RowDefinitions>
 
         <Grid Name="Filters" HorizontalAlignment="Left">
@@ -175,7 +175,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal" Style="{StaticResource TM.Panel.Pagination}">
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" Height="Auto" Orientation="Horizontal" Style="{StaticResource TM.Panel.Pagination}">
             <TextBlock Text="Items shown per page: " Style="{StaticResource TM.TextBlock.BoldLabels}" Margin="3" Padding="5"/>
             <ComboBox  Margin="3 3 20 3"  SelectedValue="{Binding ItemsPerPage}" SelectedValuePath="Content">
                 <ComboBoxItem Content="5"  IsSelected="True"/>
