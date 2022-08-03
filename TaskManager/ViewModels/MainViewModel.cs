@@ -46,7 +46,7 @@ namespace TaskManager.ViewModels
         {
             _container = container;
             DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
-            DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
+            DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
             DisplayHomeView();
         }
 

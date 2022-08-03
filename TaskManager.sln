@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager", "TaskManager\
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "TaskManagerInstaller", "TaskManagerInstaller\TaskManagerInstaller.wapproj", "{76E0C9FE-C1E2-49BB-9814-91C290595A41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.RemoteData", "TaskManager.RemoteData\TaskManager.RemoteData.csproj", "{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Models", "TaskManager.Models\TaskManager.Models.csproj", "{F2A8F023-8BB3-480F-AC0E-BAB4C0F45084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Models", "TaskManager.Models\TaskManager.Models.csproj", "{F2A8F023-8BB3-480F-AC0E-BAB4C0F45084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,26 +73,6 @@ Global
 		{76E0C9FE-C1E2-49BB-9814-91C290595A41}.Release|x86.ActiveCfg = Release|x86
 		{76E0C9FE-C1E2-49BB-9814-91C290595A41}.Release|x86.Build.0 = Release|x86
 		{76E0C9FE-C1E2-49BB-9814-91C290595A41}.Release|x86.Deploy.0 = Release|x86
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|ARM.Build.0 = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|x64.Build.0 = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Debug|x86.Build.0 = Debug|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|ARM.ActiveCfg = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|ARM.Build.0 = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|ARM64.Build.0 = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|x64.ActiveCfg = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|x64.Build.0 = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|x86.ActiveCfg = Release|Any CPU
-		{8F4BE9D0-37F1-4CE9-B39A-277A19C25A7E}.Release|x86.Build.0 = Release|Any CPU
 		{F2A8F023-8BB3-480F-AC0E-BAB4C0F45084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2A8F023-8BB3-480F-AC0E-BAB4C0F45084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2A8F023-8BB3-480F-AC0E-BAB4C0F45084}.Debug|ARM.ActiveCfg = Debug|Any CPU

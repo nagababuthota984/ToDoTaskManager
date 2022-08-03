@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 using TaskManager.Common;
+using TaskManager.Data.AzureSql;
 using TaskManager.Data.SQLite;
 using TaskManager.Data.SqlServer;
 
@@ -13,7 +15,6 @@ namespace TaskManager.Data
         
         public static ITaskRepository TaskRepository { get; set; }
 
-        
 
         public static SQLiteDbContext GetSQLiteDbContext()
         {
@@ -26,9 +27,17 @@ namespace TaskManager.Data
         public static TaskManagerDbContext GetSqlServerDbContext()
         {
             var options = new DbContextOptionsBuilder<TaskManagerDbContext>()
-            .UseSqlServer(sqlServerConnectionString)
+            .UseSqlServer(ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString)
             .Options;
             return new TaskManagerDbContext(options);
+        }
+
+        public static TaskManagerContext GetAzureSqlDbContext()
+        {
+            var options = new DbContextOptionsBuilder<TaskManagerContext>()
+            .UseSqlServer(ConfigurationManager.ConnectionStrings["AzureSql"].ConnectionString)
+            .Options;
+            return new TaskManagerContext(options);
         }
     }
 }

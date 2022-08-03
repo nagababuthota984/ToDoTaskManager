@@ -17,8 +17,8 @@ namespace TaskManager.Data
 
         public void CreateTask(Models.Task task)
         {
-            _context.Tasks.Add(MapperBootstrapper.Mapper.Map<SqlServer.Task>(task));
-            _context.SaveChanges();
+                _context.Tasks.Add(MapperBootstrapper.Mapper.Map<SqlServer.Task>(task));
+                _context.SaveChanges();
         }
 
         public Models.Task GetTask(Guid id)
@@ -35,12 +35,12 @@ namespace TaskManager.Data
         public List<Models.Task> GetTasks(Status? status = null)
         {
             return MapperBootstrapper.Mapper.Map<List<Models.Task>>(status.HasValue ? _context.Tasks.Where(tsk => tsk.Status == (int)status && tsk.IsDeleted == false) : _context.Tasks.Where(tsk => tsk.IsDeleted == false));
-
         }
 
         public void UpdateTask(Models.Task task)
         {
-            var taskToUpdate = MapperBootstrapper.Mapper.Map<SqlServer.Task>(task);
+            SqlServer.Task taskToUpdate = _context.Tasks.FirstOrDefault(tsk => tsk.Id == task.Id);
+            taskToUpdate = MapperBootstrapper.Mapper.Map<SqlServer.Task>(task);
             _context.SaveChanges();
         }
     }

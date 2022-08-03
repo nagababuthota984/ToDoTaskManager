@@ -19,16 +19,6 @@ namespace TaskManager.RemoteData
             _dbContext = BuildDbContext();
         }
 
-        public void CreateTask(Task task)
-        {
-           
-        }
-
-        //public List<Models.Task> GetTasks()
-        //{
-        //    return _dbContext.Tasks.ToList();
-        //}
-
         public TaskManagerContext BuildDbContext()
         {
             var options = new DbContextOptionsBuilder<TaskManagerContext>()

@@ -24,6 +24,7 @@ namespace TaskManager
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<SqliteRepository>()
+                .Singleton<AzureSqlRepository>()
                 .Singleton<SqlServerRepository>()
                 .PerRequest<MainViewModel>()
                 .PerRequest<CreateTaskViewModel>()
