@@ -27,7 +27,7 @@ namespace TaskManager.ViewModels
 
         public List<string> DatabaseProviders
         {
-            get { return new List<string>() { Constant.Sqlite, Constant.Sqlserver }; }
+            get { return new List<string>() { Constant.Sqlite, Constant.AzureSql }; }
         }
 
         public string DatabaseProviderName
@@ -46,7 +46,7 @@ namespace TaskManager.ViewModels
         {
             _container = container;
             DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
-            DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
+            DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
 
@@ -54,9 +54,9 @@ namespace TaskManager.ViewModels
         {
             switch (DatabaseProviderName)
             {
-                case Constant.Sqlserver:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlserver;
-                    DbContextFactory.TaskRepository = _container.GetInstance<SqlServerRepository>();
+                case Constant.AzureSql:
+                    Application.Current.Properties[Constant.AzureSql] = Constant.AzureSql;
+                    DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
                     break;
                 default:
                     Application.Current.Properties[Constant.Database] = Constant.Sqlite;
@@ -79,7 +79,7 @@ namespace TaskManager.ViewModels
 
         public void GotoSource()
         {
-            Process.Start(new ProcessStartInfo(Constant.GitHubRepoUrl) { UseShellExecute=true});
+            Process.Start(new ProcessStartInfo(Constant.GitHubRepoUrl) { UseShellExecute = true });
         }
 
         public void SwitchTheme()

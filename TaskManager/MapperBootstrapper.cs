@@ -16,9 +16,7 @@ namespace TaskManager
         {
             return new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Data.SqlServer.Task, Models.Task>();
                 cfg.CreateMap<Data.AzureSql.Task, Models.Task>();
-                cfg.CreateMap<Models.Task, Data.SqlServer.Task>();
                 cfg.CreateMap<Models.Task, Data.AzureSql.Task>();
                 cfg.CreateMap<Models.Task, Models.Task>();
 
