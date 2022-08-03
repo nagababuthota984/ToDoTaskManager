@@ -1,15 +1,11 @@
 ﻿using Caliburn.Micro;
 using ControlzEx.Theming;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using TaskManager.Common;
 using TaskManager.Data;
-using TaskManager.Helpers;
 
 namespace TaskManager.ViewModels
 {
@@ -18,7 +14,7 @@ namespace TaskManager.ViewModels
         #region Fields
 
         private readonly SimpleContainer _container;
-
+        private bool _isProgressRingActive=false;
         private string _dbProviderName;
 
         #endregion
@@ -40,6 +36,18 @@ namespace TaskManager.ViewModels
             }
         }
 
+        public bool IsProgressRingActive
+        {
+            get 
+            { 
+                return _isProgressRingActive; 
+            }
+            set
+            {
+                _isProgressRingActive = value;
+                NotifyOfPropertyChange(nameof(IsProgressRingActive));
+            }
+        }
         #endregion
 
         public MainViewModel(SimpleContainer container)
@@ -55,16 +63,28 @@ namespace TaskManager.ViewModels
             switch (DatabaseProviderName)
             {
                 case Constant.AzureSql:
-                    Application.Current.Properties[Constant.AzureSql] = Constant.AzureSql;
-                    DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
+                    if (IsConnectedToInternet())
+                    {
+                        DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
+                        Application.Current.Properties[Constant.AzureSql] = Constant.AzureSql;
+                    }
+                    else
+                    {
+                        DatabaseProviderName = Constant.Sqlite;
+                        MessageBox.Show(Constant.NoActiveInternet, Constant.AzureConnectionFailed);
+                    }
                     break;
                 default:
                     Application.Current.Properties[Constant.Database] = Constant.Sqlite;
                     DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
                     break;
             }
-            await DialogHelper.ShowMessageDialog(Constant.ChangeDbTitleMsg, $"{Constant.DbSwitchSuccessMsg} {DatabaseProviderName}", MessageDialogStyle.Affirmative);
-            DisplayHomeView();
+            await System.Threading.Tasks.Task.Run(DisplayHomeView);
+        }
+
+        private bool IsConnectedToInternet()
+        {
+            return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
         }
 
         public void Open()
@@ -95,11 +115,13 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public void DisplayHomeView()
+        public async void DisplayHomeView()
         {
+            IsProgressRingActive = true;
             HomeViewModel homeViewModel = _container.GetInstance<HomeViewModel>();
             HomeViewModel.ActiveHomeViewModelId = homeViewModel.GetHashCode();
-            ActivateItemAsync(homeViewModel);
+            await ActivateItemAsync(homeViewModel);
+            IsProgressRingActive=false;
         }
     }
 }

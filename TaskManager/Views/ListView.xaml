@@ -66,7 +66,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.2*"/>
             <RowDefinition Height="3*"/>
-            <RowDefinition Height="0.8*"/>
+            <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>
 
         <Grid Name="Filters" HorizontalAlignment="Left">
