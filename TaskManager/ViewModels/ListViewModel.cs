@@ -263,10 +263,8 @@ namespace TaskManager.ViewModels
 
         private void UpdateTask(Task task)
         {
-            Task oldTask = Tasks.FirstOrDefault(tsk => tsk.Id == task.Id);
-            oldTask = MapperBootstrapper.Mapper.Map<Models.Task>(task);
-            Task oldFilteredTask = FilteredTasks.FirstOrDefault(tsk => tsk.Id == task.Id);
-            oldFilteredTask = MapperBootstrapper.Mapper.Map<Models.Task>(task);
+            RemoveTaskFromUI(task.Id);
+            AddTaskToUI(task);
             _repository.UpdateTask(task);
         }
 

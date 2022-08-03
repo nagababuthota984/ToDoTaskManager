@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TaskManager.Data.SqlServer
+namespace TaskManager.RemoteData
 {
-    public partial class TaskManagerDbContext : DbContext
+    public partial class TaskManagerContext : DbContext
     {
-        public TaskManagerDbContext()
+        public TaskManagerContext()
         {
-            Database.EnsureCreated();
         }
 
-        public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options)
+        public TaskManagerContext(DbContextOptions<TaskManagerContext> options)
             : base(options)
         {
         }
@@ -20,7 +22,8 @@ namespace TaskManager.Data.SqlServer
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(DbContextFactory.sqlServerConnectionString);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=tcp:nbthota.database.windows.net,1433;Initial Catalog=TaskManager;Persist Security Info=False;User ID=taskmanager;Password=Nag@1211;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -28,8 +31,6 @@ namespace TaskManager.Data.SqlServer
         {
             modelBuilder.Entity<Task>(entity =>
             {
-                entity.ToTable("Task");
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
