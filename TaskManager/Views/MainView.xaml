@@ -31,15 +31,32 @@
     </mah:MetroWindow.RightWindowCommands>
 
     <Grid>
-        <tb:TaskbarIcon IconSource="/Images/app_icon.ico" ToolTipText="Task manager">
-            <tb:TaskbarIcon.TrayPopup>
-                <StackPanel Width="100">
-                    <Button Content="Open" cal:Message.Attach="[Event Click] = [Action Open]" Style="{StaticResource TM.Button.TrayButton}"/>
-                    <Button Content="Quit" cal:Message.Attach="[Event Click] = [Action Quit]" Style="{StaticResource TM.Button.TrayButton}"/>
-                </StackPanel>
-            </tb:TaskbarIcon.TrayPopup>
-        </tb:TaskbarIcon>
-        <ContentControl x:Name="ActiveItem"/>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="IsHitTestVisible" Value="True"/>
+                    <Setter Property="Opacity" Value="1"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProgressRingActive}" Value="True">
+                            <Setter Property="Opacity" Value="0.3"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <tb:TaskbarIcon IconSource="/Images/app_icon.ico" ToolTipText="Task manager">
+                <tb:TaskbarIcon.TrayPopup>
+                    <StackPanel Width="100">
+                        <Button Content="Open" cal:Message.Attach="[Event Click] = [Action Open]" Style="{StaticResource TM.Button.TrayButton}"/>
+                        <Button Content="Quit" cal:Message.Attach="[Event Click] = [Action Quit]" Style="{StaticResource TM.Button.TrayButton}"/>
+                    </StackPanel>
+                </tb:TaskbarIcon.TrayPopup>
+            </tb:TaskbarIcon>
+
+            <ContentControl x:Name="ActiveItem"/>
+        </Grid>
+        <mah:ProgressRing IsActive="{Binding IsProgressRingActive}" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 
 </mah:MetroWindow>

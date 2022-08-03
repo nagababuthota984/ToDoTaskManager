@@ -434,10 +434,10 @@
             </Grid.ColumnDefinitions>
 
             <WrapPanel Orientation="Vertical" ToolTip="{Binding Description}">
-                <TextBlock Text="{Binding Name}" FontWeight="DemiBold" 
+                <TextBlock Text="{Binding Name}" FontWeight="DemiBold" MaxWidth="220"
                            VerticalAlignment="Top" FontSize="15"  Margin="3 0 0 0" TextTrimming="CharacterEllipsis" />
                 <TextBlock Text="{Binding Description,Converter={StaticResource TM.Converters.DescriptionToMessageConverter}}" FontSize="12"
-                           Foreground="Black" Opacity="0.7"
+                           Foreground="Black" Opacity="0.7" MaxWidth="220"
                            TextTrimming="CharacterEllipsis"  VerticalAlignment="Center" Padding="3"/>
                 <TextBlock Text="{Binding Category,Converter={StaticResource TM.Converters.EnumToDescriptionConverter}}" Foreground="DarkBlue"
                            VerticalAlignment="Bottom" FontSize="11" Opacity="0.5" Padding="3"/>
