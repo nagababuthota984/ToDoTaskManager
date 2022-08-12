@@ -91,12 +91,18 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
         <Grid Name="CreateTaskForm" Margin="0 30 0 0" Visibility="{Binding IsCardViewEnabled,Converter={StaticResource TM.Converters.BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
             <Border BorderBrush="Gray" BorderThickness="1">
                 <TextBlock Text="Create Task" Style="{StaticResource TM.TextBlock.PrimaryHeading}" Foreground="Black" Background="White"/>

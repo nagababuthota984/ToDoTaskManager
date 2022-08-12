@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace TaskManager.Data.SqlServer
+namespace TaskManager.RemoteData
 {
     public partial class Task
     {

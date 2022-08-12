@@ -13,7 +13,7 @@ namespace TaskManager.Common
         public const string DeleteFailedWinTitle = "Delete Unsuccessful";
         public const string Database = "Database";
         public const string Sqlite = "Sqlite";
-        public const string Sqlserver = "Sqlserver";
+        public const string AzureSql = "AzureSql";
         public const string ChangeDbTitleMsg = "Database Changed!";
         public const string DbChangeResultsIn = "This action results in switching to ";
         public const string ConfirmChangeDb = "Are you sure you want to change the database?";
@@ -32,7 +32,8 @@ namespace TaskManager.Common
         public const string ProgId = "ProgId";
         public const string IEBrowserRegistryKeyName = @"HKEY_CLASSES_ROOT\https\shell\open\command";
         public static string ProjectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
-
+        public const string NoActiveInternet = "Make sure you have active internet connection";
+        public const string AzureConnectionFailed = "Unable to connect to azure services";
 
     }
 }

@@ -1,15 +1,11 @@
 ﻿using Caliburn.Micro;
 using ControlzEx.Theming;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using TaskManager.Common;
 using TaskManager.Data;
-using TaskManager.Helpers;
 
 namespace TaskManager.ViewModels
 {
@@ -18,12 +14,13 @@ namespace TaskManager.ViewModels
         #region Fields
 
         private readonly SimpleContainer _container;
-
+        private bool _isProgressRingActive=false;
         private string _dbProviderName;
 
         #endregion
 
         #region Properties
+
         public string DatabaseProviderName
         {
             get { return _dbProviderName; }
@@ -34,6 +31,18 @@ namespace TaskManager.ViewModels
             }
         }
 
+        public bool IsProgressRingActive
+        {
+            get 
+            { 
+                return _isProgressRingActive; 
+            }
+            set
+            {
+                _isProgressRingActive = value;
+                NotifyOfPropertyChange(nameof(IsProgressRingActive));
+            }
+        }
         #endregion
 
         public MainViewModel(SimpleContainer container)
@@ -43,6 +52,7 @@ namespace TaskManager.ViewModels
             DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
+
 
         public void Open()
         {
@@ -56,7 +66,7 @@ namespace TaskManager.ViewModels
 
         public void GotoSource()
         {
-            Process.Start(new ProcessStartInfo(Constant.GitHubRepoUrl) { UseShellExecute=true});
+            Process.Start(new ProcessStartInfo(Constant.GitHubRepoUrl) { UseShellExecute = true });
         }
 
         public void SwitchTheme()
@@ -72,11 +82,13 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public void DisplayHomeView()
+        public async void DisplayHomeView()
         {
+            IsProgressRingActive = true;
             HomeViewModel homeViewModel = _container.GetInstance<HomeViewModel>();
             HomeViewModel.ActiveHomeViewModelId = homeViewModel.GetHashCode();
-            ActivateItemAsync(homeViewModel);
+            await ActivateItemAsync(homeViewModel);
+            IsProgressRingActive=false;
         }
     }
 }

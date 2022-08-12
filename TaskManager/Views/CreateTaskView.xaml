@@ -8,7 +8,7 @@
              xmlns:cal ="http://www.caliburnproject.org"
              xmlns:local="clr-namespace:TaskManager.Views"
              mc:Ignorable="d"  >
-    <Grid DataContext="{Binding InputTask}" HorizontalAlignment="Center">
+    <Grid DataContext="{Binding InputTask}" HorizontalAlignment="Center" Width="Auto">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,20 +27,18 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" MaxWidth="300"/>
-        </Grid.ColumnDefinitions>
+        
         <TextBlock Text="Name" Style="{StaticResource TM.TextBlock.FormLabels}" Padding="0 0 4 4"/>
-        <TextBox Grid.Row="1" Name="Name" mah:TextBoxHelper.Watermark="Please enter task name" MaxWidth="290">
+        <TextBox Grid.Row="1" Name="Name" mah:TextBoxHelper.Watermark="Please enter task name">
             <Binding Path="Name" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" Mode="TwoWay" >
                 <Binding.ValidationRules>
-                    <validations:NameValidation />
+                    <validations:NameValidation/>
                 </Binding.ValidationRules>
             </Binding>
         </TextBox>
         <TextBlock Grid.Row="2" Text="Description" Margin="0 10 0 0" Style="{StaticResource TM.TextBlock.FormLabels}" />
         <TextBox Grid.Row="3"  mah:TextBoxHelper.Watermark="Give a brief description about the task"
-                         Text="{Binding Description}" Height="70" MaxWidth="290" TextWrapping="Wrap"/>
+                         Text="{Binding Description}" Height="70" TextWrapping="Wrap"/>
         <TextBlock Grid.Row="4" Text="Status"  Style="{StaticResource TM.TextBlock.FormLabels}"/>
         <ComboBox Grid.Row="5" ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}, Path = DataContext.StatusOptions}" SelectedItem="{Binding Status}"/>
         <TextBlock Grid.Row="6" Text="Due Date"   Style="{StaticResource TM.TextBlock.FormLabels}"/>
@@ -58,7 +56,7 @@
                         ConverterParameter=2}" Content="High"/>
         </WrapPanel>
         <TextBlock Grid.Row="10" Text="Task Category" Style="{StaticResource TM.TextBlock.FormLabels}"/>
-        <WrapPanel Grid.Row="11" MaxWidth="290">
+        <WrapPanel Grid.Row="11">
             <RadioButton  Style="{StaticResource TM.RadioButton.DefaultStyle}" Content="New Feature"
                                  IsChecked="{Binding Category, Converter={StaticResource TM.Converters.EnumToBooleanConverter},
                                    ConverterParameter=0}"/>
@@ -89,8 +87,11 @@
                     <Style TargetType="Button" BasedOn="{StaticResource TM.Button.DefaultStyle}">
                         <Setter Property="IsEnabled" Value="False"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=Name}" Value="False">
-                                <Setter Property="IsEnabled" Value="True"/>
+                                <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=Name}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Text.Length,ElementName=Name}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -98,7 +99,7 @@
             </Button>
             <Button Grid.Column="2" x:Name="Cancel" Content="Cancel" Background="#E0E0E0" 
                             Style="{StaticResource TM.Button.DefaultStyle}"
-                            cal:Message.Attach="[Event Click] = [Action ResetInputControls()]" />
+                            cal:Message.Attach="[Event Click] = [Action ResetInputControls]" />
         </Grid>
     </Grid>
 </UserControl>

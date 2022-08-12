@@ -26,7 +26,7 @@ namespace TaskManager.ViewModels
         private CreateTaskViewModel _createTaskView;
         private bool _isTaskFormEnabled;
         private BindableCollection<Task> _tasks;
-        public static int _activeListViewModelId;
+        private static int _activeListViewModelId;
         private BindableCollection<Task> _filteredTasks;
         #endregion
 
@@ -198,6 +198,7 @@ namespace TaskManager.ViewModels
         private void InitializeTaskLists()
         {
             Tasks = new(_repository.GetTasks());
+            //Tasks = new(DataGenerator.CreateTasks(100));
             FilteredTasks = new(Tasks.Take(ItemsPerPage));
             TotalPagesCount = (Tasks.Count + ItemsPerPage - 1) / ItemsPerPage;
             CurrentPageNumber = 1;
@@ -263,10 +264,8 @@ namespace TaskManager.ViewModels
 
         private void UpdateTask(Task task)
         {
-            Task oldTask = Tasks.FirstOrDefault(tsk => tsk.Id == task.Id);
-            oldTask = new(task);
-            Task oldFilteredTask = FilteredTasks.FirstOrDefault(tsk => tsk.Id == task.Id);
-            oldFilteredTask = new(task);
+            RemoveTaskFromUI(task.Id);
+            AddTaskToUI(task);
             _repository.UpdateTask(task);
         }
 

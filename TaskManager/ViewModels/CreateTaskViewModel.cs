@@ -85,6 +85,8 @@ namespace TaskManager.ViewModels
 
         public void CreateOrUpdateTask()
         {
+            InputTask.Name = InputTask.Name.Trim();
+            InputTask.Description = InputTask.Description.Trim();
             if (UserRole == UserRole.Create)
             {
                 CreateTask();
@@ -93,7 +95,6 @@ namespace TaskManager.ViewModels
             {
                 UpdateTask();
             }
-
             ResetInputControls();
         }
 

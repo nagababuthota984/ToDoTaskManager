@@ -68,6 +68,8 @@
 
 - [x] Add Card view
 - [x] Added List view
+- [ ] Remote Database
+- [ ] Task OnHover Popup
 
 
 See the [open issues](https://github.com/nagababuthota984/ToDoTaskManager/issues) for a full list of proposed features (and known issues).
