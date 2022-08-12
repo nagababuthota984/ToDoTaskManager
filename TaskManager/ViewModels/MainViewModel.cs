@@ -21,11 +21,6 @@ namespace TaskManager.ViewModels
 
         #region Properties
 
-        public List<string> DatabaseProviders
-        {
-            get { return new List<string>() { Constant.Sqlite, Constant.AzureSql }; }
-        }
-
         public string DatabaseProviderName
         {
             get { return _dbProviderName; }
@@ -53,39 +48,11 @@ namespace TaskManager.ViewModels
         public MainViewModel(SimpleContainer container)
         {
             _container = container;
-            DatabaseProviderName = Application.Current.Properties[Constant.Database].ToString();
+            DatabaseProviderName = Constant.Sqlite;
             DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
             DisplayHomeView();
         }
 
-        public async void ChangeDb()
-        {
-            switch (DatabaseProviderName)
-            {
-                case Constant.AzureSql:
-                    if (IsConnectedToInternet())
-                    {
-                        DbContextFactory.TaskRepository = _container.GetInstance<AzureSqlRepository>();
-                        Application.Current.Properties[Constant.AzureSql] = Constant.AzureSql;
-                    }
-                    else
-                    {
-                        DatabaseProviderName = Constant.Sqlite;
-                        MessageBox.Show(Constant.NoActiveInternet, Constant.AzureConnectionFailed);
-                    }
-                    break;
-                default:
-                    Application.Current.Properties[Constant.Database] = Constant.Sqlite;
-                    DbContextFactory.TaskRepository = _container.GetInstance<SqliteRepository>();
-                    break;
-            }
-            await System.Threading.Tasks.Task.Run(DisplayHomeView);
-        }
-
-        private bool IsConnectedToInternet()
-        {
-            return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
-        }
 
         public void Open()
         {

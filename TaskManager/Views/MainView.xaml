@@ -19,8 +19,7 @@
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <TextBlock Text="Db Provider" Style="{StaticResource TM.TextBlock.TitleBarDbName}"/>
-            <ComboBox ItemsSource="{Binding DatabaseProviders}" SelectedItem="{Binding DatabaseProviderName}" 
-                      cal:Message.Attach="[Event SelectionChanged] = [Action ChangeDb()]" Width="160" Margin="3" FontWeight="DemiBold" Background="#F6F5F9"/>
+            <TextBox Width="160" Text="{Binding DatabaseProviderName}" Margin="3" FontWeight="DemiBold" Background="#F6F5F9" IsEnabled="False"/>
             <Button cal:Message.Attach="[Event Click]=[Action SwitchTheme]" ToolTip="Switch Theme">
                 <iconPacks:PackIconModern Kind="Moon" Width="20" Height="15"/>
             </Button>
