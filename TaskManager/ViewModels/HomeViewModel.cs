@@ -180,6 +180,7 @@ namespace TaskManager.ViewModels
         private void InitializeTaskLists()
         {
             var tasks = _repository.GetTasks();
+            //var tasks = DataGenerator.CreateTasks(100);
             NewTasks = new(tasks.Where(tsk => tsk.Status == Status.New));
             InProgressTasks = new(tasks.Where(tsk => tsk.Status == Status.InProgress));
             CompletedTasks = new(tasks.Where(tsk => tsk.Status == Status.Completed));
